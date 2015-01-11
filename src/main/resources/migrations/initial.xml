@@ -13,7 +13,7 @@
             Actors, Entities that can initiate actions (maybe)
         * TUUID for sequences, assuming they're efficient
         * naming convention for primary keys and foreign keys
-        * indicees
+        * indices
         * views
     -->
     
@@ -24,14 +24,36 @@
             </not>
         </preConditions>
 
+        <sql>CREATE TYPE entity_type_enum AS ENUM ('system','person','legal')</sql>
+
         <createTable tableName="entities">
             <column name="entity_id" type="bigint" autoIncrement="true">
                 <constraints primaryKeyName="pk_entities_entity_id" primaryKey="true" />
             </column>
-            <column name="entity_type" type="varchar(255)">
+            <column name="entity_type" type="entity_type_enum">
                 <constraints nullable="false" />
             </column>
         </createTable>
+
+        <rollback>
+            <dropTable tableName="entities" />
+            <sql>DROP TYPE entity_type_enum</sql>
+            <dropTable tableName="email_entities" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="michael">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="email_entities" />
+            </not>
+        </preConditions>
+
+        <sql>CREATE TABLE email_entities () INHERITS (entities)</sql>
+
+        <rollback>
+            <dropTable tableName="email_entities" />
+        </rollback>
     </changeSet>
     
     <changeSet id="2" author="saem">
@@ -39,7 +61,7 @@
             <tableIsEmpty tableName="entities" />
         </preConditions>
         
-        <!-- Entities that are extrinsic to the interals of the System -->
+        <!-- Entities that are extrinsic to the internals of the System -->
         <insert tableName="entities">
             <column name="entity_id" value="1" />
             <column name="entity_type" value="system" />
@@ -67,7 +89,7 @@
             <column name="sequence" type="bigint" autoIncrement="true">
                 <constraints primaryKeyName="pk_events_sequence" primaryKey="true" />
             </column>
-            <column name="event" type="varchar(255)">
+            <column name="event" type="text">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="int">
@@ -108,10 +130,10 @@
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
-            <column name="username" type="varchar(255)">
+            <column name="username" type="text">
                 <constraints nullable="false" />
             </column>
-            <column name="email" type="varchar(255)">
+            <column name="email" type="text">
                 <constraints nullable="false" />
             </column>
             <column name="password" type="varchar(60)">
@@ -159,6 +181,63 @@
         TODO:
             * might be worth making this a materialized view
         -->
+    </changeSet>
+
+    <changeSet id="6" author="michael">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="people_states" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="people_states">
+            <column name="sequence" type="bigint">
+                <constraints primaryKeyName="pk_people_states_sequence"
+                             primaryKey="true"
+                             foreignKeyName="fk_people_states_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence" />
+            </column>
+            <column name="first_name" type="text">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_name" type="text">
+                <constraints nullable="false" />
+            </column>
+            <column name="primary_email" type="bigint">
+                <constraints nullable ="true"
+                             foreignKeyName="fk_people_states_email_entities"
+                             />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="7" author="michael">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="email_states" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="email_states">
+            <column name="sequence" type="bigint">
+                <constraints primaryKeyName="pk_email_states_sequence"
+                             primaryKey="true"
+                             foreignKeyName="fk_email_states_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence" />
+            </column>
+            <column name="email_id" type="bigint">
+                <constraints foreignKeyName="fk_email_states_entities"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+            <column name="email" type="text">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>
