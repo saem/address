@@ -8,7 +8,9 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-                 @TODO
+        @TODO
+        * Differentiate between Entities (things that vary state over time), and
+            Actors, Entities that can initiate actions (maybe)
         * TUUID for sequences, assuming they're efficient
         * naming convention for primary keys and foreign keys
         * indicees
@@ -18,25 +20,29 @@
     <changeSet id="1" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="users" />
+                <tableExists tableName="entities" />
             </not>
         </preConditions>
 
-        <createTable tableName="users">
-            <column name="user_id" type="bigint" autoIncrement="true">
-                <constraints primaryKeyName="pk_users_user_id" primaryKey="true" />
+        <createTable tableName="entities">
+            <column name="entity_id" type="bigint" autoIncrement="true">
+                <constraints primaryKeyName="pk_entities_entity_id" primaryKey="true" />
+            </column>
+            <column name="entity_type" type="varchar(255)">
+                <constraints nullable="false" />
             </column>
         </createTable>
     </changeSet>
     
     <changeSet id="2" author="saem">
         <preConditions onFail="MARK_RAN">
-            <tableIsEmpty tableName="users" />
+            <tableIsEmpty tableName="entities" />
         </preConditions>
         
-        <!-- System User -->
-        <insert tableName="users">
-            <column name="user_id" value="1" />
+        <!-- Entities that are extrinsic to the interals of the System -->
+        <insert tableName="entities">
+            <column name="entity_id" value="1" />
+            <column name="entity_type" value="system" />
         </insert>
     </changeSet>
         
@@ -50,6 +56,14 @@
         <!-- Events -->
         
         <createTable tableName="events">
+            
+            <!--
+            There are two requirements primary for the events table:
+            - They provide a valid partial order based on causality of events.
+            - They are stored on disk in a total order satisfying the partial 
+                order.
+            -->
+            
             <column name="sequence" type="bigint" autoIncrement="true">
                 <constraints primaryKeyName="pk_events_sequence" primaryKey="true" />
             </column>
@@ -59,10 +73,10 @@
             <column name="version" type="int">
                 <constraints nullable="false" />
             </column>
-            <column name="user_id" type="bigint">
-                <constraints foreignKeyName="fk_events_users"
-                             referencedTableName="users"
-                             referencedColumnNames="user_id"
+            <column name="entity_id" type="bigint">
+                <constraints foreignKeyName="fk_events_entities"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
             <column name="when" type="datetime">
@@ -89,9 +103,9 @@
                              referencedColumnNames="sequence" />
             </column>
             <column name="user_id" type="bigint">
-                <constraints foreignKeyName="fk_user_states_users"
-                             referencedTableName="users"
-                             referencedColumnNames="user_id"
+                <constraints foreignKeyName="fk_user_states_entities"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
             <column name="username" type="varchar(255)">
@@ -106,80 +120,19 @@
             <column name="is_disabled" type="bool" defaultValueBoolean="false">
                 <constraints nullable="false"/>
             </column>
+            <column name="is_deleted" type="bool" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         
         <!--
-                     TODO:
+        TODO:
             * index by (user_id, sequence) for fast max(sequence) group by user_id queries (current_users view)?
         -->
         
     </changeSet>
     
     <changeSet id="5" author="saem">
-        <!-- Ignore this, will be fixed up and used for security in the future -->
-        
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="user_api_keys" />
-            </not>
-        </preConditions>
-        
-        <createTable tableName="user_api_keys">
-            <column name="sequence" type="bigint">
-                <constraints primaryKeyName="pk_user_api_keys_sequence" 
-                             primaryKey="true"
-                             foreignKeyName="fk_user_api_keys_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence" />
-            </column>
-            <column name="user_id" type="bigint">
-                <constraints foreignKeyName="fk_user_api_keys_users"
-                             referencedTableName="users"
-                             referencedColumnNames="user_id"
-                             nullable="false" />
-            </column>
-            <column name="api_key" type="varchar(100)">
-                <constraints nullable="false" />
-            </column>
-            <column name="secret" type="varchar(100)">
-                <constraints nullable="false" />
-            </column>
-            <column name="revoked" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        
-        <addUniqueConstraint tableName="user_api_keys" columnNames="user_id, api_key" />
-    </changeSet>
-    
-    <changeSet id="6" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="user_authorities" />
-            </not>
-        </preConditions>
-        
-        <createTable tableName="user_authorities">
-            <column name="sequence" type="bigint">
-                <constraints primaryKeyName="pk_user_authorities_sequence" 
-                             primaryKey="true"
-                             foreignKeyName="fk_user_api_keys_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence" />
-            </column>
-            <column name="user_id" type="bigint">
-                <constraints foreignKeyName="fk_user_authorities_users"
-                             referencedTableName="users"
-                             referencedColumnNames="user_id"
-                             nullable="false" />
-            </column>
-            <column name="authority" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-    </changeSet>
-    
-    <changeSet id="7" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <viewExists viewName="current_users" />
@@ -203,60 +156,7 @@
         </createView>
 
         <!--
-                     TODO:
-            * might be worth making this a materialized view
-        -->
-    </changeSet>
-    
-    <changeSet id="8" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <viewExists viewName="current_api_keys" />
-            </not>
-        </preConditions>
-        
-        <createView viewName="current_api_keys">
-            select
-              user_api_keys.user_id,
-              user_api_keys.sequence,
-              user_api_keys.api_key,
-              user_api_keys.secret
-            from user_api_keys
-              inner join
-                (select max(sequence) as sequence, user_id from user_api_keys group by user_id) as current_keys
-                  ON (user_api_keys.user_id = current_keys.user_id
-                  and user_api_keys.sequence = current_keys.sequence)
-            where user_api_keys.revoked = false
-        </createView>
-
-        <!--
-                     TODO:
-            * might be worth making this a materialized view
-        -->
-    </changeSet>
-    
-    <changeSet id="9" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <viewExists viewName="current_api_users" />
-            </not>
-        </preConditions>
-        
-        <createView viewName="current_api_users">
-            select
-              current_users.user_id,
-              current_users.sequence,
-              current_users.username,
-              current_users.email,
-              current_api_keys.api_key,
-              current_api_keys.secret
-            from current_users
-              inner join
-                current_api_keys ON (current_api_keys.user_id = current_users.user_id)
-        </createView>
-
-        <!--
-                     TODO:
+        TODO:
             * might be worth making this a materialized view
         -->
     </changeSet>
