@@ -24,7 +24,7 @@
             </not>
         </preConditions>
 
-        <sql>CREATE TYPE entity_type_enum AS ENUM ('system','person','organisation','non-acting')</sql>
+        <sql>CREATE TYPE entity_type_enum AS ENUM ('system','person','organisation','non-acting','extrinsic')</sql>
 
         <createTable tableName="entities">
             <column name="entity_id" type="bigint" autoIncrement="true">
@@ -125,7 +125,7 @@
             <column name="version" type="int">
                 <constraints nullable="false" />
             </column>
-            <column name="entity_id" type="bigint">
+            <column name="actor" type="bigint">
                 <constraints foreignKeyName="fk_events_entities"
                              referencedTableName="entities"
                              referencedColumnNames="entity_id"
