@@ -24,7 +24,7 @@
             </not>
         </preConditions>
 
-        <sql>CREATE TYPE entity_type_enum AS ENUM ('system','person','legal','non-acting')</sql>
+        <sql>CREATE TYPE entity_type_enum AS ENUM ('system','person','organisation','non-acting')</sql>
 
         <createTable tableName="entities">
             <column name="entity_id" type="bigint" autoIncrement="true">
