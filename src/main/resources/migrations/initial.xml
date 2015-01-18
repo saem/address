@@ -4,7 +4,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
@@ -24,7 +24,7 @@
             </not>
         </preConditions>
 
-        <sql>CREATE TYPE entity_type_enum AS ENUM ('system','person','legal')</sql>
+        <sql>CREATE TYPE entity_type_enum AS ENUM ('system','person','legal','non-acting')</sql>
 
         <createTable tableName="entities">
             <column name="entity_id" type="bigint" autoIncrement="true">
@@ -38,7 +38,6 @@
         <rollback>
             <dropTable tableName="entities" />
             <sql>DROP TYPE entity_type_enum</sql>
-            <dropTable tableName="email_entities" />
         </rollback>
     </changeSet>
 
@@ -50,13 +49,44 @@
         </preConditions>
 
         <sql>CREATE TABLE email_entities () INHERITS (entities)</sql>
+        <addPrimaryKey columnNames="entity_id" tableName="email_entities" />
 
         <rollback>
             <dropTable tableName="email_entities" />
         </rollback>
     </changeSet>
+
+    <changeSet id="3" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="address_entities" />
+            </not>
+        </preConditions>
+
+        <sql>CREATE TABLE address_entities () INHERITS (entities)</sql>
+        <addPrimaryKey columnNames="entity_id" tableName="address_entities" />
+
+        <rollback>
+            <dropTable tableName="address_entities" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="4" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="phone_entities" />
+            </not>
+        </preConditions>
+
+        <sql>CREATE TABLE phone_entities () INHERITS (entities)</sql>
+        <addPrimaryKey columnNames="entity_id" tableName="phone_entities" />
+
+        <rollback>
+            <dropTable tableName="phone_entities" />
+        </rollback>
+    </changeSet>
     
-    <changeSet id="2" author="saem">
+    <changeSet id="5" author="saem">
         <preConditions onFail="MARK_RAN">
             <tableIsEmpty tableName="entities" />
         </preConditions>
@@ -68,7 +98,7 @@
         </insert>
     </changeSet>
         
-    <changeSet id="3" author="saem">
+    <changeSet id="6" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="events" />
@@ -109,7 +139,7 @@
         
     <!-- Users -->
         
-    <changeSet id="4" author="saem">
+    <changeSet id="7" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="user_states" />
@@ -154,7 +184,7 @@
         
     </changeSet>
     
-    <changeSet id="5" author="saem">
+    <changeSet id="8" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <viewExists viewName="current_users" />
@@ -183,7 +213,7 @@
         -->
     </changeSet>
 
-    <changeSet id="6" author="michael">
+    <changeSet id="9" author="michael">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="people_states" />
@@ -207,12 +237,14 @@
             <column name="primary_email" type="bigint">
                 <constraints nullable ="true"
                              foreignKeyName="fk_people_states_email_entities"
+                             referencedTableName="email_entities"
+                             referencedColumnNames="entity_id"
                              />
             </column>
         </createTable>
     </changeSet>
 
-    <changeSet id="7" author="michael">
+    <changeSet id="10" author="michael">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="email_states" />
@@ -228,12 +260,104 @@
                              referencedColumnNames="sequence" />
             </column>
             <column name="email_id" type="bigint">
-                <constraints foreignKeyName="fk_email_states_entities"
-                             referencedTableName="entities"
+                <constraints foreignKeyName="fk_email_states_email_entities"
+                             referencedTableName="email_entities"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
-            <column name="email" type="text">
+            <column name="local_part" type="text">
+                <constraints nullable="false" />
+            </column>
+            <column name="domain" type="text">
+                <constraints nullable="false" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="11" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="address_states" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="address_states">
+            <column name="sequence" type="bigint">
+                <constraints primaryKeyName="pk_address_states_sequence"
+                             primaryKey="true"
+                             foreignKeyName="fk_address_states_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence" />
+            </column>
+            <column name="address_id" type="bigint">
+                <constraints foreignKeyName="fk_address_states_address_entities"
+                             referencedTableName="address_entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+            <column name="country_code" type="text">
+                <constraints nullable="true" />
+            </column>
+            <column name="address_line" type="text">
+                <constraints nullable="true" />
+            </column>
+            <column name="administrative_area" type="text">
+                <constraints nullable="true" />
+            </column>
+            <column name="locality" type="text">
+                <constraints nullable="true" />
+            </column>
+            <column name="dependent_locality" type="text">
+                <constraints nullable="true" />
+            </column>
+            <column name="postal_code" type="text">
+                <constraints nullable="true" />
+            </column>
+            <column name="sorting_code" type="text">
+                <constraints nullable="true" />
+            </column>
+            <column name="organization" type="text">
+                <constraints nullable="true" />
+            </column>
+            <column name="recipient" type="text">
+                <constraints nullable="true" />
+            </column>
+            <column name="language_code" type="text">
+                <constraints nullable="true" />
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="12" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="phone_states" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="phone_states">
+            <column name="sequence" type="bigint">
+                <constraints primaryKeyName="pk_phone_states_sequence"
+                             primaryKey="true"
+                             foreignKeyName="fk_phone_states_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence" />
+            </column>
+            <column name="phone_id" type="bigint">
+                <constraints foreignKeyName="fk_phone_states_email_entities"
+                             referencedTableName="phone_entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+            <column name="number" type="text">
+                <constraints nullable="false" />
+            </column>
+            <column name="extension" type="text">
+                <constraints nullable="false" />
+            </column>
+            <column name="type" type="text">
                 <constraints nullable="false" />
             </column>
 

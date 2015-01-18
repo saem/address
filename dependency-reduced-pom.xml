@@ -4,7 +4,7 @@
   <groupId>opus</groupId>
   <artifactId>address</artifactId>
   <name>Glorified Address Book</name>
-  <version>0.8.0-rc1</version>
+  <version>0.1</version>
   <prerequisites>
     <maven>3.0.0</maven>
   </prerequisites>
@@ -92,10 +92,144 @@
           </filters>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.jooq</groupId>
+        <artifactId>jooq-codegen-maven</artifactId>
+        <version>${jooq.version}</version>
+        <configuration>
+          <jdbc>
+            <driver>org.postgresql.Driver</driver>
+            <url>jdbc:postgresql://localpg/address</url>
+            <user>postgres</user>
+            <password>postgres</password>
+          </jdbc>
+          <generator>
+            <name>org.jooq.util.DefaultGenerator</name>
+            <database>
+              <name>org.jooq.util.postgres.PostgresDatabase</name>
+              <includes>.*</includes>
+              <excludes />
+              <inputSchema>address</inputSchema>
+              <schemata>
+                <schema>
+                  <inputSchema>address</inputSchema>
+                  <outputSchema>address</outputSchema>
+                </schema>
+              </schemata>
+            </database>
+            <target>
+              <packageName>opus.address.database.jooq.generated</packageName>
+              <directory>src/main/java/</directory>
+            </target>
+            <generate>
+              <relations>true</relations>
+              <generatedAnnotation>true</generatedAnnotation>
+              <records>true</records>
+              <pojos>true</pojos>
+              <immutablePojos>true</immutablePojos>
+              <interfaces>false</interfaces>
+              <daos>false</daos>
+              <jpaAnnotations>false</jpaAnnotations>
+              <validationAnnotations>false</validationAnnotations>
+              <globalObjectReferences>true</globalObjectReferences>
+              <fluentSetters>false</fluentSetters>
+            </generate>
+            <strategy>
+              <matchers>
+                <schemas>
+                  <MatchersSchemaType>
+                    <expression>address</expression>
+                    <schemaClass>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </schemaClass>
+                    <schemaIdentifier>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </schemaIdentifier>
+                  </MatchersSchemaType>
+                </schemas>
+                <tables>
+                  <table>
+                    <tableIdentifier>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </tableIdentifier>
+                    <tableClass>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </tableClass>
+                    <daoClass>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </daoClass>
+                    <recordClass>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </recordClass>
+                    <interfaceClass>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </interfaceClass>
+                    <pojoClass>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </pojoClass>
+                  </table>
+                </tables>
+                <fields>
+                  <field>
+                    <fieldIdentifier>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </fieldIdentifier>
+                    <fieldMember>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </fieldMember>
+                    <fieldSetter>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </fieldSetter>
+                    <fieldGetter>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </fieldGetter>
+                  </field>
+                </fields>
+                <routines>
+                  <routine>
+                    <routineClass>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </routineClass>
+                    <routineMethod>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </routineMethod>
+                  </routine>
+                </routines>
+                <sequences>
+                  <sequence>
+                    <sequenceIdentifier>
+                      <transform>AS_IS</transform>
+                      <expression>$0</expression>
+                    </sequenceIdentifier>
+                  </sequence>
+                </sequences>
+              </matchers>
+            </strategy>
+          </generator>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <repositories>
     <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots />
       <id>sonatype-nexus-snapshots</id>
       <name>Sonatype Nexus Snapshots</name>
       <url>http://oss.sonatype.org/content/repositories/snapshots</url>
@@ -128,8 +262,11 @@
     </dependency>
   </dependencies>
   <properties>
+    <dropwizard.jooq.version>0.8.0-0-SNAPSHOT</dropwizard.jooq.version>
+    <dropwizard.version>0.8.0-rc1</dropwizard.version>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jooq.version>3.5.0</jooq.version>
   </properties>
 </project>
 

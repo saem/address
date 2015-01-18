@@ -68,6 +68,12 @@
             <artifactId>dropwizard-jooq</artifactId>
             <version>${dropwizard.jooq.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.3-1102-jdbc41</version>
+        </dependency>
     </dependencies>
 
     <build>
