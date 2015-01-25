@@ -191,8 +191,8 @@
                 <jdbc>
                     <driver>org.postgresql.Driver</driver>
                     <url>jdbc:postgresql://localpg/address</url>
-                    <user>postgres</user>
-                    <password>postgres</password>
+                    <user>address</user>
+                    <password>address</password>
                 </jdbc>
 
                 <!-- Generator parameters -->
@@ -206,10 +206,10 @@
                         <schemata>
                             <schema>
                                 <!-- Use this as the developer's schema: -->
-                                <inputSchema>address</inputSchema>
+                                <inputSchema>public</inputSchema>
 
                                 <!-- Use this as the integration / production database: -->
-                                <outputSchema>address</outputSchema>
+                                <outputSchemaToDefault>true</outputSchemaToDefault>
                             </schema>
                         </schemata>
                     </database>
@@ -329,7 +329,7 @@
                                         - UPPER  : Transform the database name into upper case  : MY_name => MY_NAME
                                         - CAMEL  : Transform the database name into camel case  : MY_name => myName
                                         - PASCAL : Transform the database name into pascal case : MY_name => MyName -->
-                                        <transform>AS_IS</transform>
+                                        <transform>PASCAL</transform>
                                         <!-- The mandatory expression element lets you specify a replacement expression to be used when
                                         replacing the matcher's regular expression. You can use indexed variables $0, $1, $2. -->
                                         <expression>$0</expression>
@@ -342,7 +342,7 @@
                                         - UPPER  : Transform the database name into upper case  : MY_name => MY_NAME
                                         - CAMEL  : Transform the database name into camel case  : MY_name => myName
                                         - PASCAL : Transform the database name into pascal case : MY_name => MyName -->
-                                        <transform>AS_IS</transform>
+                                        <transform>PASCAL</transform>
                                         <!-- The mandatory expression element lets you specify a replacement expression to be used when
                                         replacing the matcher's regular expression. You can use indexed variables $0, $1, $2. -->
                                         <expression>$0</expression>
@@ -355,7 +355,7 @@
                                         - UPPER  : Transform the database name into upper case  : MY_name => MY_NAME
                                         - CAMEL  : Transform the database name into camel case  : MY_name => myName
                                         - PASCAL : Transform the database name into pascal case : MY_name => MyName -->
-                                        <transform>AS_IS</transform>
+                                        <transform>PASCAL</transform>
                                         <!-- The mandatory expression element lets you specify a replacement expression to be used when
                                         replacing the matcher's regular expression. You can use indexed variables $0, $1, $2. -->
                                         <expression>$0</expression>
@@ -368,7 +368,7 @@
                                         - UPPER  : Transform the database name into upper case  : MY_name => MY_NAME
                                         - CAMEL  : Transform the database name into camel case  : MY_name => myName
                                         - PASCAL : Transform the database name into pascal case : MY_name => MyName -->
-                                        <transform>AS_IS</transform>
+                                        <transform>PASCAL</transform>
                                         <!-- The mandatory expression element lets you specify a replacement expression to be used when
                                         replacing the matcher's regular expression. You can use indexed variables $0, $1, $2. -->
                                         <expression>$0</expression>
@@ -381,7 +381,7 @@
                                         - UPPER  : Transform the database name into upper case  : MY_name => MY_NAME
                                         - CAMEL  : Transform the database name into camel case  : MY_name => myName
                                         - PASCAL : Transform the database name into pascal case : MY_name => MyName -->
-                                        <transform>AS_IS</transform>
+                                        <transform>PASCAL</transform>
                                         <!-- The mandatory expression element lets you specify a replacement expression to be used when
                                         replacing the matcher's regular expression. You can use indexed variables $0, $1, $2. -->
                                         <expression>$0</expression>
@@ -394,10 +394,10 @@
                                         - UPPER  : Transform the database name into upper case  : MY_name => MY_NAME
                                         - CAMEL  : Transform the database name into camel case  : MY_name => myName
                                         - PASCAL : Transform the database name into pascal case : MY_name => MyName -->
-                                        <transform>AS_IS</transform>
+                                        <transform>PASCAL</transform>
                                         <!-- The mandatory expression element lets you specify a replacement expression to be used when
                                         replacing the matcher's regular expression. You can use indexed variables $0, $1, $2. -->
-                                        <expression>$0</expression>
+                                        <expression>$0_Projection</expression>
                                     </pojoClass>
                                 </table>
                             </tables>
@@ -412,7 +412,7 @@
                                         - UPPER  : Transform the database name into upper case  : MY_name => MY_NAME
                                         - CAMEL  : Transform the database name into camel case  : MY_name => myName
                                         - PASCAL : Transform the database name into pascal case : MY_name => MyName -->
-                                        <transform>AS_IS</transform>
+                                        <transform>PASCAL</transform>
                                         <!-- The mandatory expression element lets you specify a replacement expression to be used when
                                         replacing the matcher's regular expression. You can use indexed variables $0, $1, $2. -->
                                         <expression>$0</expression>
@@ -425,7 +425,7 @@
                                         - UPPER  : Transform the database name into upper case  : MY_name => MY_NAME
                                         - CAMEL  : Transform the database name into camel case  : MY_name => myName
                                         - PASCAL : Transform the database name into pascal case : MY_name => MyName -->
-                                        <transform>AS_IS</transform>
+                                        <transform>CAMEL</transform>
                                         <!-- The mandatory expression element lets you specify a replacement expression to be used when
                                         replacing the matcher's regular expression. You can use indexed variables $0, $1, $2. -->
                                         <expression>$0</expression>
@@ -438,7 +438,7 @@
                                         - UPPER  : Transform the database name into upper case  : MY_name => MY_NAME
                                         - CAMEL  : Transform the database name into camel case  : MY_name => myName
                                         - PASCAL : Transform the database name into pascal case : MY_name => MyName -->
-                                        <transform>AS_IS</transform>
+                                        <transform>CAMEL</transform>
                                         <!-- The mandatory expression element lets you specify a replacement expression to be used when
                                         replacing the matcher's regular expression. You can use indexed variables $0, $1, $2. -->
                                         <expression>$0</expression>
@@ -451,7 +451,7 @@
                                         - UPPER  : Transform the database name into upper case  : MY_name => MY_NAME
                                         - CAMEL  : Transform the database name into camel case  : MY_name => myName
                                         - PASCAL : Transform the database name into pascal case : MY_name => MyName -->
-                                        <transform>AS_IS</transform>
+                                        <transform>CAMEL</transform>
                                         <!-- The mandatory expression element lets you specify a replacement expression to be used when
                                         replacing the matcher's regular expression. You can use indexed variables $0, $1, $2. -->
                                         <expression>$0</expression>

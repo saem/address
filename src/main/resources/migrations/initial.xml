@@ -86,7 +86,7 @@
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
-            <column name="when" type="datetime">
+            <column name="when" type="datetime" defaultValueComputed="(now() at time zone 'utc')">
                 <constraints nullable="false" />
             </column>
         </createTable>

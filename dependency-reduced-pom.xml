@@ -100,8 +100,8 @@
           <jdbc>
             <driver>org.postgresql.Driver</driver>
             <url>jdbc:postgresql://localpg/address</url>
-            <user>postgres</user>
-            <password>postgres</password>
+            <user>address</user>
+            <password>address</password>
           </jdbc>
           <generator>
             <name>org.jooq.util.DefaultGenerator</name>
@@ -112,8 +112,8 @@
               <inputSchema>address</inputSchema>
               <schemata>
                 <schema>
-                  <inputSchema>address</inputSchema>
-                  <outputSchema>address</outputSchema>
+                  <inputSchema>public</inputSchema>
+                  <outputSchemaToDefault>true</outputSchemaToDefault>
                 </schema>
               </schemata>
             </database>
@@ -173,7 +173,7 @@
                     </interfaceClass>
                     <pojoClass>
                       <transform>AS_IS</transform>
-                      <expression>$0</expression>
+                      <expression>$0Projection</expression>
                     </pojoClass>
                   </table>
                 </tables>
