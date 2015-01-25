@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="phone_entities"/>
+            </not>
+        </preConditions>
+
+        <sql>CREATE TABLE phone_entities () INHERITS (entities)</sql>
+        <addPrimaryKey columnNames="entity_id" tableName="phone_entities"/>
+
+        <rollback>
+            <dropTable tableName="phone_entities"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="saem">
+        <preConditions>
+            <not>
+                <columnExists tableName="people_states" columnName="primary_phone"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="people_states">
+            <column name="primary_phone" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="fk_people_states_phone_entities"
+                             referencedTableName="phone_entities"
+                             referencedColumnNames="entity_id"
+                        />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="3" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="phone_states"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="phone_states">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_phone_states_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence"
+                             nullable="false" />
+            </column>
+            <column name="phone_id" type="bigint">
+                <constraints foreignKeyName="fk_phone_states_phone_entities"
+                             referencedTableName="phone_entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+            <column name="number" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="extension" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="do_not_call" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_deleted" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="phone_states" columnNames="sequence,phone_id" constraintName="pk_phone_states" />
+    </changeSet>
+
+    <changeSet id="4" author="saem">
+        <preConditions>
+            <not>
+                <tableExists tableName="entity_phone_states" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="entity_phone_states">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_entity_phone_states_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence"
+                             nullable="false" />
+            </column>
+            <column name="entity_id" type="bigint">
+                <constraints foreignKeyName="fk_entity_phone_states_entities"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+            <column name="phone_id" type="bigint">
+                <constraints foreignKeyName="fk_entity_phone_states_phone_entities"
+                             referencedTableName="phone_entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="entity_phone_states"
+                       columnNames="sequence,entity_id,phone_id"
+                       constraintName="pk_entity_phone_states" />
+    </changeSet>
+</databaseChangeLog>

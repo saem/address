@@ -4,6 +4,8 @@ Glorified address book
 # notes
 ## connecting to local postgres instance
 ```
+psql -a -f bin/initial.sql
+java -jar target/address-0.1.jar db migrate --dry-run dev.yml
 psql address -h 127.0.0.1 -d address
 ```
 
