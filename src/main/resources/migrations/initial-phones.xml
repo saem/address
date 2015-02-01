@@ -10,16 +10,20 @@
     <changeSet id="1" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="phone_entities"/>
+                <tableExists tableName="phones"/>
             </not>
         </preConditions>
 
-        <sql>CREATE TABLE phone_entities () INHERITS (entities)</sql>
-        <addPrimaryKey columnNames="entity_id" tableName="phone_entities"/>
-
-        <rollback>
-            <dropTable tableName="phone_entities"/>
-        </rollback>
+        <createTable tableName="phones">
+            <column name="entity_id" type="bigint" autoIncrement="false">
+                <constraints primaryKeyName="pk_phones"
+                             primaryKey="true"
+                             foreignKeyName="fk_phones"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+        </createTable>
     </changeSet>
 
     <changeSet id="2" author="saem">
@@ -32,8 +36,8 @@
         <addColumn tableName="people_states">
             <column name="primary_phone" type="bigint">
                 <constraints nullable="true"
-                             foreignKeyName="fk_people_states_phone_entities"
-                             referencedTableName="phone_entities"
+                             foreignKeyName="fk_people_states_phones"
+                             referencedTableName="phones"
                              referencedColumnNames="entity_id"
                         />
             </column>
@@ -55,8 +59,8 @@
                              nullable="false" />
             </column>
             <column name="phone_id" type="bigint">
-                <constraints foreignKeyName="fk_phone_states_phone_entities"
-                             referencedTableName="phone_entities"
+                <constraints foreignKeyName="fk_phone_states_phones"
+                             referencedTableName="phones"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
@@ -101,8 +105,8 @@
                              nullable="false" />
             </column>
             <column name="phone_id" type="bigint">
-                <constraints foreignKeyName="fk_entity_phone_states_phone_entities"
-                             referencedTableName="phone_entities"
+                <constraints foreignKeyName="fk_entity_phone_states_phones"
+                             referencedTableName="phones"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>

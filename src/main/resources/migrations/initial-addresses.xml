@@ -10,16 +10,20 @@
     <changeSet id="1" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="address_entities" />
+                <tableExists tableName="addresses" />
             </not>
         </preConditions>
 
-        <sql>CREATE TABLE address_entities () INHERITS (entities)</sql>
-        <addPrimaryKey columnNames="entity_id" tableName="address_entities" />
-
-        <rollback>
-            <dropTable tableName="address_entities" />
-        </rollback>
+        <createTable tableName="addresses">
+            <column name="entity_id" type="bigint" autoIncrement="false">
+                <constraints primaryKeyName="pk_addresses"
+                             primaryKey="true"
+                             foreignKeyName="fk_addresses_entities"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+        </createTable>
     </changeSet>
 
     <changeSet id="2" author="saem">
@@ -32,8 +36,8 @@
         <addColumn tableName="people_states">
             <column name="primary_address" type="bigint">
                 <constraints nullable ="true"
-                             foreignKeyName="fk_people_states_address_entities"
-                             referencedTableName="address_entities"
+                             foreignKeyName="fk_people_states_addresses"
+                             referencedTableName="addresses"
                              referencedColumnNames="entity_id"
                         />
             </column>
@@ -55,8 +59,8 @@
                              nullable="false" />
             </column>
             <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_address_states_address_entities"
-                             referencedTableName="address_entities"
+                <constraints foreignKeyName="fk_address_states_addresses"
+                             referencedTableName="addresses"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
@@ -119,8 +123,8 @@
                              nullable="false" />
             </column>
             <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_entity_address_states_address_entities"
-                             referencedTableName="address_entities"
+                <constraints foreignKeyName="fk_entity_address_states_addresses"
+                             referencedTableName="addresses"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>

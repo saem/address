@@ -24,36 +24,78 @@
             </not>
         </preConditions>
 
-        <sql>CREATE TYPE entity_type_enum AS ENUM ('system','user','organisation','non-acting','extrinsic')</sql>
-
+        <comment>Entities are all things that change over time, and have an identity</comment>
+        
         <createTable tableName="entities">
             <column name="entity_id" type="bigint" autoIncrement="true">
                 <constraints primaryKeyName="pk_entities_entity_id" primaryKey="true" />
             </column>
-            <column name="entity_type" type="entity_type_enum">
-                <constraints nullable="false" />
-            </column>
         </createTable>
-
-        <rollback>
-            <dropTable tableName="entities" />
-            <sql>DROP TYPE entity_type_enum</sql>
-        </rollback>
     </changeSet>
-    
+
     <changeSet id="2" author="saem">
         <preConditions onFail="MARK_RAN">
-            <tableIsEmpty tableName="entities" />
+            <not>
+                <tableExists tableName="users" />
+            </not>
         </preConditions>
+
+        <comment>These are the authenticatable entities that can make changes (actors)</comment>
         
-        <!-- Entities that are extrinsic to the internals of the System -->
+        <createTable tableName="users">
+            <column name="entity_id" type="bigint" autoIncrement="false">
+                <constraints primaryKeyName="pk_users"
+                             primaryKey="true"
+                             foreignKeyName="fk_users_entities"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="3" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="system" />
+            </not>
+        </preConditions>
+
+        <comment>The extrinsic part of the system itself, as an entity</comment>
+
+        <createTable tableName="system">
+            <column name="entity_id" type="bigint" autoIncrement="false">
+                <constraints primaryKeyName="pk_system"
+                             primaryKey="true"
+                             foreignKeyName="fk_system_entities"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="4" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <tableIsEmpty tableName="system" />
+        </preConditions>
+
+        <comment>Create the system itself (extrinsic part)</comment>
+
         <insert tableName="entities">
+            <column name="entity_id">1</column>
+        </insert>
+        
+        <insert tableName="system">
             <column name="entity_id" value="1" />
-            <column name="entity_type" value="system" />
+        </insert>
+
+        <insert tableName="users">
+            <column name="entity_id">1</column>
         </insert>
     </changeSet>
-        
-    <changeSet id="3" author="saem">
+    
+    <changeSet id="5" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="events" />
@@ -81,8 +123,8 @@
                 <constraints nullable="false" />
             </column>
             <column name="actor" type="bigint">
-                <constraints foreignKeyName="fk_events_entities"
-                             referencedTableName="entities"
+                <constraints foreignKeyName="fk_events_users"
+                             referencedTableName="users"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
@@ -94,7 +136,7 @@
         
     <!-- Users -->
         
-    <changeSet id="4" author="saem">
+    <changeSet id="6" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="user_states" />
@@ -110,8 +152,8 @@
                              referencedColumnNames="sequence" />
             </column>
             <column name="user_id" type="bigint">
-                <constraints foreignKeyName="fk_user_states_entities"
-                             referencedTableName="entities"
+                <constraints foreignKeyName="fk_user_states_users"
+                             referencedTableName="users"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
@@ -139,7 +181,7 @@
         
     </changeSet>
     
-    <changeSet id="5" author="saem">
+    <changeSet id="7" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <viewExists viewName="current_users" />
@@ -168,22 +210,26 @@
         -->
     </changeSet>
 
-    <changeSet id="6" author="saem">
+    <changeSet id="8" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="people_entities" />
+                <tableExists tableName="people" />
             </not>
         </preConditions>
 
-        <sql>CREATE TABLE people_entities () INHERITS (entities)</sql>
-        <addPrimaryKey columnNames="entity_id" tableName="people_entities" />
-
-        <rollback>
-            <dropTable tableName="people_entities" />
-        </rollback>
+        <createTable tableName="people">
+            <column name="entity_id" type="bigint" autoIncrement="false">
+                <constraints primaryKeyName="pk_people"
+                             primaryKey="true"
+                             foreignKeyName="fk_people_entities"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+        </createTable>
     </changeSet>
 
-    <changeSet id="7" author="michael">
+    <changeSet id="9" author="michael">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="people_states" />
@@ -197,8 +243,8 @@
                              referencedColumnNames="sequence" />
             </column>
             <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_people_states_people_entities"
-                             referencedTableName="people_entities"
+                <constraints foreignKeyName="fk_people_states_people"
+                             referencedTableName="people"
                              referencedColumnNames="entity_id" />
             </column>
             <column name="first_name" type="text">

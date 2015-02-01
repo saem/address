@@ -152,47 +152,47 @@
                 <tables>
                   <table>
                     <tableIdentifier>
-                      <transform>AS_IS</transform>
+                      <transform>PASCAL</transform>
                       <expression>$0</expression>
                     </tableIdentifier>
                     <tableClass>
-                      <transform>AS_IS</transform>
+                      <transform>PASCAL</transform>
                       <expression>$0</expression>
                     </tableClass>
                     <daoClass>
-                      <transform>AS_IS</transform>
+                      <transform>PASCAL</transform>
                       <expression>$0</expression>
                     </daoClass>
                     <recordClass>
-                      <transform>AS_IS</transform>
+                      <transform>PASCAL</transform>
                       <expression>$0</expression>
                     </recordClass>
                     <interfaceClass>
-                      <transform>AS_IS</transform>
+                      <transform>PASCAL</transform>
                       <expression>$0</expression>
                     </interfaceClass>
                     <pojoClass>
-                      <transform>AS_IS</transform>
-                      <expression>$0Projection</expression>
+                      <transform>PASCAL</transform>
+                      <expression>$0_Projection</expression>
                     </pojoClass>
                   </table>
                 </tables>
                 <fields>
                   <field>
                     <fieldIdentifier>
-                      <transform>AS_IS</transform>
+                      <transform>PASCAL</transform>
                       <expression>$0</expression>
                     </fieldIdentifier>
                     <fieldMember>
-                      <transform>AS_IS</transform>
+                      <transform>CAMEL</transform>
                       <expression>$0</expression>
                     </fieldMember>
                     <fieldSetter>
-                      <transform>AS_IS</transform>
+                      <transform>CAMEL</transform>
                       <expression>$0</expression>
                     </fieldSetter>
                     <fieldGetter>
-                      <transform>AS_IS</transform>
+                      <transform>CAMEL</transform>
                       <expression>$0</expression>
                     </fieldGetter>
                   </field>
@@ -266,11 +266,12 @@
     </dependency>
   </dependencies>
   <properties>
+    <jasypt.version>1.9.2</jasypt.version>
     <dropwizard.jooq.version>0.8.0-0-SNAPSHOT</dropwizard.jooq.version>
     <dropwizard.version>0.8.0-rc2</dropwizard.version>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jooq.version>3.5.0</jooq.version>
+    <jooq.version>3.5.1</jooq.version>
   </properties>
 </project>
 

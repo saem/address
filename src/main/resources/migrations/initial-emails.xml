@@ -10,16 +10,20 @@
     <changeSet id="1" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="email_entities" />
+                <tableExists tableName="emails" />
             </not>
         </preConditions>
 
-        <sql>CREATE TABLE email_entities () INHERITS (entities)</sql>
-        <addPrimaryKey columnNames="entity_id" tableName="email_entities" />
-
-        <rollback>
-            <dropTable tableName="email_entities" />
-        </rollback>
+        <createTable tableName="emails">
+            <column name="entity_id" type="bigint" autoIncrement="false">
+                <constraints primaryKeyName="pk_emails"
+                             primaryKey="true"
+                             foreignKeyName="fk_emails_entities"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+        </createTable>
     </changeSet>
 
     <changeSet id="2" author="saem">
@@ -32,8 +36,8 @@
         <addColumn tableName="people_states">
             <column name="primary_email" type="bigint">
                 <constraints nullable ="true"
-                             foreignKeyName="fk_people_states_email_entities"
-                             referencedTableName="email_entities"
+                             foreignKeyName="fk_people_states_emails"
+                             referencedTableName="emails"
                              referencedColumnNames="entity_id"
                         />
             </column>
@@ -57,8 +61,8 @@
                              nullable="false" />
             </column>
             <column name="email_id" type="bigint">
-                <constraints foreignKeyName="fk_email_states_email_entities"
-                             referencedTableName="email_entities"
+                <constraints foreignKeyName="fk_email_states_emails"
+                             referencedTableName="emails"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
@@ -100,8 +104,8 @@
                              nullable="false" />
             </column>
             <column name="email_id" type="bigint">
-                <constraints foreignKeyName="fk_entity_email_states_email_entities"
-                             referencedTableName="email_entities"
+                <constraints foreignKeyName="fk_entity_email_states_emails"
+                             referencedTableName="emails"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
