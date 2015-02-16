@@ -1,43 +1,102 @@
 package opus.address.users.resources;
 
-import opus.address.database.jooq.generated.tables.records.Events;
+import io.dropwizard.jersey.params.IntParam;
+import io.dropwizard.jersey.params.LongParam;
+import opus.address.users.events.UserCreated;
+import opus.address.users.events.UserUpdated;
 import opus.address.users.factories.UserFactory;
+import opus.address.users.representations.UserStateReadRepresentation;
 import opus.address.users.representations.UserWriteRepresentation;
-import opus.address.users.writers.UserWriter;
 import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 
 import javax.validation.Valid;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Path("/users")
-public class UserResource {
+public final class UserResource {
 
-    public UserResource() {}
+    private final UserFactory userFactory;
+
+    public UserResource(UserFactory userFactory) {
+        this.userFactory = userFactory;
+    }
 
     @POST
-    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response postUser(
             @Valid UserWriteRepresentation userWriteRepresentation,
             @Context DSLContext database
     ) {
-        final Optional<Events>
-        database.transaction(c -> {
-                    final Events sequenceWhen = UserFactory.buildUserWriter(DSL.using(c))
-                            .write(
-                                    userWriteRepresentation.email,
-                                    userWriteRepresentation.username,
-                                    userWriteRepresentation.password,
-                                    1L);
-                    
-                }
-        );
+        final Optional<UserCreated> userCreated = userFactory.buildUserWriter(database)
+                .write(
+                        userWriteRepresentation.email,
+                        userWriteRepresentation.username,
+                        userWriteRepresentation.password,
+                        userWriteRepresentation.isDisabled,
+                        1L);
+
+        return userCreated
+                .map(u ->
+                        Response.created(
+                                UriBuilder
+                                        .fromPath("/events/{sequenceId}/users/{userId}")
+                                        .build(u.sequence, u.userId))
+                                .build())
+                .orElseGet(() -> Response.serverError().build());
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}")
+    public List<UserStateReadRepresentation> getUserHistory(
+            @Context DSLContext database,
+            @PathParam("userId") LongParam userId,
+            @QueryParam("numberOfRecords") @DefaultValue("10") IntParam numberOfRecords,
+            @QueryParam("offset") @DefaultValue("0") IntParam offset
+    ){
+        return UserFactory.buildUserReader(database).getUserHistory(userId.get(), numberOfRecords.get(), offset.get())
+                .stream()
+                .map(u -> new UserStateReadRepresentation(
+                        u.sequence(), 
+                        u.userId(), 
+                        u.username(), 
+                        u.email(), 
+                        u.isDeleted(), 
+                        u.isDisabled())
+                )
+                .collect(Collectors.toList());
+    } 
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{userId}")
+    public Response putUser(
+            @PathParam("userId") LongParam userId,
+            @Valid UserWriteRepresentation userWriteRepresentation,
+            @Context DSLContext database
+    ) {
+        final Optional<UserUpdated> useUpdated = userFactory.buildUserWriter(database)
+                .update(userId.get(),
+                        userWriteRepresentation.email,
+                        userWriteRepresentation.username,
+                        userWriteRepresentation.password,
+                        userWriteRepresentation.isDisabled,
+                        1L
+                );
         
-        return Response.created(UriBuilder.fromPath("0").build())
-                .build();
+        return useUpdated.map(u ->
+                Response.created(
+                        UriBuilder
+                                .fromPath("/events/{sequenceId}/users/{userId}")
+                                .build(u.sequence, u.userId))
+                        .build())
+        .orElseGet(() -> Response.serverError().build());
     }
 }

@@ -16,24 +16,27 @@ package opus.address.database.jooq.generated.tables.pojos;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EventsProjection implements java.io.Serializable {
 
-	private static final long serialVersionUID = -1349747216;
+	private static final long serialVersionUID = -2094316383;
 
 	private final java.lang.Long     sequence;
 	private final java.lang.String   event;
-	private final java.lang.Integer  version;
+	private final java.lang.Integer  eventVersion;
+	private final java.lang.String   codeVersion;
 	private final java.lang.Long     actor;
 	private final java.sql.Timestamp when;
 
 	public EventsProjection(
 		java.lang.Long     sequence,
 		java.lang.String   event,
-		java.lang.Integer  version,
+		java.lang.Integer  eventVersion,
+		java.lang.String   codeVersion,
 		java.lang.Long     actor,
 		java.sql.Timestamp when
 	) {
 		this.sequence = sequence;
 		this.event = event;
-		this.version = version;
+		this.eventVersion = eventVersion;
+		this.codeVersion = codeVersion;
 		this.actor = actor;
 		this.when = when;
 	}
@@ -46,8 +49,12 @@ public class EventsProjection implements java.io.Serializable {
 		return this.event;
 	}
 
-	public java.lang.Integer version() {
-		return this.version;
+	public java.lang.Integer eventVersion() {
+		return this.eventVersion;
+	}
+
+	public java.lang.String codeVersion() {
+		return this.codeVersion;
 	}
 
 	public java.lang.Long actor() {

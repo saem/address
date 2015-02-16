@@ -16,7 +16,7 @@ package opus.address.database.jooq.generated.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Events extends org.jooq.impl.TableImpl<opus.address.database.jooq.generated.tables.records.Events> {
 
-	private static final long serialVersionUID = -64392275;
+	private static final long serialVersionUID = -768956197;
 
 	/**
 	 * The reference instance of <code>events</code>
@@ -42,9 +42,14 @@ public class Events extends org.jooq.impl.TableImpl<opus.address.database.jooq.g
 	public final org.jooq.TableField<opus.address.database.jooq.generated.tables.records.Events, java.lang.String> Event = createField("event", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
 	/**
-	 * The column <code>events.version</code>.
+	 * The column <code>events.event_version</code>.
 	 */
-	public final org.jooq.TableField<opus.address.database.jooq.generated.tables.records.Events, java.lang.Integer> Version = createField("version", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+	public final org.jooq.TableField<opus.address.database.jooq.generated.tables.records.Events, java.lang.Integer> EventVersion = createField("event_version", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+	/**
+	 * The column <code>events.code_version</code>.
+	 */
+	public final org.jooq.TableField<opus.address.database.jooq.generated.tables.records.Events, java.lang.String> CodeVersion = createField("code_version", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
 	/**
 	 * The column <code>events.actor</code>.

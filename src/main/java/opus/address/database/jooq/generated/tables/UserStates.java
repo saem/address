@@ -16,7 +16,7 @@ package opus.address.database.jooq.generated.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserStates extends org.jooq.impl.TableImpl<opus.address.database.jooq.generated.tables.records.UserStates> {
 
-	private static final long serialVersionUID = 2100637272;
+	private static final long serialVersionUID = 103093946;
 
 	/**
 	 * The reference instance of <code>user_states</code>
@@ -54,7 +54,7 @@ public class UserStates extends org.jooq.impl.TableImpl<opus.address.database.jo
 	/**
 	 * The column <code>user_states.password</code>.
 	 */
-	public final org.jooq.TableField<opus.address.database.jooq.generated.tables.records.UserStates, java.lang.String> Password = createField("password", org.jooq.impl.SQLDataType.VARCHAR.length(60).nullable(false), this, "");
+	public final org.jooq.TableField<opus.address.database.jooq.generated.tables.records.UserStates, java.lang.String> Password = createField("password", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
 	/**
 	 * The column <code>user_states.is_disabled</code>.

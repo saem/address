@@ -27,11 +27,6 @@ public class Tables {
 	public static final opus.address.database.jooq.generated.tables.AddressStates AddressStates = opus.address.database.jooq.generated.tables.AddressStates.AddressStates;
 
 	/**
-	 * The table current_users
-	 */
-	public static final opus.address.database.jooq.generated.tables.CurrentUsers CurrentUsers = opus.address.database.jooq.generated.tables.CurrentUsers.CurrentUsers;
-
-	/**
 	 * The table databasechangelog
 	 */
 	public static final opus.address.database.jooq.generated.tables.Databasechangelog Databasechangelog = opus.address.database.jooq.generated.tables.Databasechangelog.Databasechangelog;

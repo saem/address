@@ -16,7 +16,7 @@ package opus.address.database.jooq.generated;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefaultSchema extends org.jooq.impl.SchemaImpl {
 
-	private static final long serialVersionUID = 114244097;
+	private static final long serialVersionUID = -2061616213;
 
 	/**
 	 * The reference instance of <code></code>
@@ -54,7 +54,6 @@ public class DefaultSchema extends org.jooq.impl.SchemaImpl {
 		return java.util.Arrays.<org.jooq.Table<?>>asList(
 			opus.address.database.jooq.generated.tables.Addresses.Addresses,
 			opus.address.database.jooq.generated.tables.AddressStates.AddressStates,
-			opus.address.database.jooq.generated.tables.CurrentUsers.CurrentUsers,
 			opus.address.database.jooq.generated.tables.Databasechangelog.Databasechangelog,
 			opus.address.database.jooq.generated.tables.Databasechangeloglock.Databasechangeloglock,
 			opus.address.database.jooq.generated.tables.Emails.Emails,
