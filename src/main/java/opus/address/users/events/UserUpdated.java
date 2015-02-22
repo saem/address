@@ -1,5 +1,7 @@
 package opus.address.users.events;
 
+import opus.address.commons.Event;
+
 import java.time.Instant;
 
 public class UserUpdated implements Event {

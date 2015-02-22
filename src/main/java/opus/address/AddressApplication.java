@@ -2,6 +2,7 @@ package opus.address;
 
 import com.bendb.dropwizard.jooq.JooqBundle;
 import com.bendb.dropwizard.jooq.JooqFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.jcabi.manifests.Manifests;
 import io.dropwizard.Application;
@@ -10,6 +11,7 @@ import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import opus.address.users.factories.UserFactory;
+import opus.address.users.representations.deserializer.UserActionRepresentationDeserializer;
 import opus.address.users.resources.UserResource;
 import org.joda.time.DateTimeZone;
 
@@ -59,7 +61,9 @@ public class AddressApplication extends Application<AddressConfiguration> {
                 .orElseThrow(() -> new InvalidCodeVersionException("'Implementation-Build' property was not set."));
         
         // Serialization Configuration
-        environment.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        ObjectMapper objectMapper = environment.getObjectMapper();
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.registerModule(new UserActionRepresentationDeserializer().getModule());
         
         environment.jersey().register(new UserResource(new UserFactory(codeVersion)));
     }

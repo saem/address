@@ -5,14 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 
-public final class UserWriteRepresentation {
+public final class UserWriteRepresentation implements UserActionRepresentation {
     @NotNull
     public final String username;
     @NotNull
     public final String password;
     @NotNull
     public final String email;
-    public final Boolean isDisabled;
     @NotNull
     public final long actorId;
 
@@ -21,13 +20,11 @@ public final class UserWriteRepresentation {
             @JsonProperty("username") String username,
             @JsonProperty("password") String password,
             @JsonProperty("email") String email,
-            @JsonProperty("isDisabled") Boolean isDisabled,
             @JsonProperty("actorId") long actorId
     ) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.isDisabled = isDisabled == null ? false : isDisabled;
         this.actorId = actorId;
     }
 }

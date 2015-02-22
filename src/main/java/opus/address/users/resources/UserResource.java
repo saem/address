@@ -5,7 +5,7 @@ import io.dropwizard.jersey.params.LongParam;
 import opus.address.users.events.UserCreated;
 import opus.address.users.events.UserUpdated;
 import opus.address.users.factories.UserFactory;
-import opus.address.users.representations.UserStateReadRepresentation;
+import opus.address.users.representations.UserFactReadRepresentation;
 import opus.address.users.representations.UserWriteRepresentation;
 import org.jooq.DSLContext;
 
@@ -55,7 +55,7 @@ public final class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}")
-    public List<UserStateReadRepresentation> getUserHistory(
+    public List<UserFactReadRepresentation> getUserHistory(
             @Context DSLContext database,
             @PathParam("userId") LongParam userId,
             @QueryParam("numberOfRecords") @DefaultValue("10") IntParam numberOfRecords,
@@ -63,7 +63,7 @@ public final class UserResource {
     ){
         return UserFactory.buildUserReader(database).getUserHistory(userId.get(), numberOfRecords.get(), offset.get())
                 .stream()
-                .map(u -> new UserStateReadRepresentation(
+                .map(u -> new UserFactReadRepresentation(
                         u.sequence, 
                         u.userId, 
                         u.username, 
@@ -88,7 +88,6 @@ public final class UserResource {
                         userWriteRepresentation.email,
                         userWriteRepresentation.username,
                         userWriteRepresentation.password,
-                        userWriteRepresentation.isDisabled,
                         userWriteRepresentation.actorId
                 );
         

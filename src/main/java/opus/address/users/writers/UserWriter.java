@@ -1,10 +1,12 @@
 package opus.address.users.writers;
 
 import opus.address.database.jooq.generated.Tables;
+import opus.address.database.jooq.generated.tables.UserFacts;
 import opus.address.database.jooq.generated.tables.records.Events;
 import opus.address.security.PasswordDigester;
 import opus.address.users.events.UserCreated;
 import opus.address.users.events.UserUpdated;
+import opus.address.users.projections.UserFactProjection;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -30,7 +32,7 @@ public final class UserWriter {
                             Tables.Events.CodeVersion,
                             Tables.Events.EventVersion,
                             Tables.Events.Actor)
-                            .values("create_user", codeVersion, 1, actorId)
+                            .values(UserCreated.EVENT_NAME, codeVersion, 1, actorId)
                             .returning(Tables.Events.Sequence, Tables.Events.When)
                             .fetchOne();
 
@@ -73,8 +75,7 @@ public final class UserWriter {
             Long userId,
             String email, 
             String username, 
-            String password, 
-            Boolean isDisabled, 
+            String password,
             Long actorId
     ) {
         return Optional.ofNullable(database.transactionResult(c -> {
@@ -85,26 +86,34 @@ public final class UserWriter {
                             Tables.Events.CodeVersion,
                             Tables.Events.EventVersion,
                             Tables.Events.Actor)
-                            .values("create_user", codeVersion, 1, actorId)
+                            .values(UserUpdated.EVENT_NAME, codeVersion, 1, actorId)
                             .returning(Tables.Events.Sequence, Tables.Events.When)
                             .fetchOne();
 
                     final String digestedPassword = passwordDigester.digestPassword(password);
 
+                    final UserFactProjection existingUserFacts = db.select()
+                            .from(UserFacts.UserFacts)
+                            .where(UserFacts.UserFacts.UserId.equal(userId))
+                            .orderBy(DSL.max(UserFacts.UserFacts.Sequence).desc())
+                            .fetchOneInto(UserFactProjection.class);
+                    
                     db.insertInto(Tables.UserFacts,
                             Tables.UserFacts.Email,
                             Tables.UserFacts.Password,
                             Tables.UserFacts.Sequence,
                             Tables.UserFacts.Username,
                             Tables.UserFacts.UserId,
-                            Tables.UserFacts.IsDisabled)
+                            Tables.UserFacts.IsDisabled,
+                            Tables.UserFacts.IsDeleted)
                             .values(
                                     email,
                                     digestedPassword,
                                     sequenceWhen.sequence(),
                                     username,
                                     userId,
-                                    isDisabled
+                                    existingUserFacts.isDisabled,
+                                    existingUserFacts.isDeleted
                             )
                             .execute();
 
