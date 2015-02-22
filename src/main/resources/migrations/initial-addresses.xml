@@ -29,14 +29,14 @@
     <changeSet id="2" author="saem">
         <preConditions>
             <not>
-                <columnExists tableName="people_states" columnName="primary_address"/>
+                <columnExists tableName="people_facts" columnName="primary_address"/>
             </not>
         </preConditions>
 
-        <addColumn tableName="people_states">
+        <addColumn tableName="people_facts">
             <column name="primary_address" type="bigint">
                 <constraints nullable ="true"
-                             foreignKeyName="fk_people_states_addresses"
+                             foreignKeyName="fk_people_facts_addresses"
                              referencedTableName="addresses"
                              referencedColumnNames="entity_id"
                         />
@@ -47,19 +47,19 @@
     <changeSet id="3" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="address_states" />
+                <tableExists tableName="address_facts" />
             </not>
         </preConditions>
 
-        <createTable tableName="address_states">
+        <createTable tableName="address_facts">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_address_states_events"
+                <constraints foreignKeyName="fk_address_facts_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence"
                              nullable="false" />
             </column>
             <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_address_states_addresses"
+                <constraints foreignKeyName="fk_address_facts_addresses"
                              referencedTableName="addresses"
                              referencedColumnNames="entity_id"
                              nullable="false" />
@@ -99,39 +99,39 @@
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="address_states" columnNames="sequence,address_id" constraintName="pk_address_states" />
+        <addPrimaryKey tableName="address_facts" columnNames="sequence,address_id" constraintName="pk_address_facts" />
     </changeSet>
 
     <changeSet id="4" author="saem">
         <preConditions>
             <not>
-                <tableExists tableName="entity_address_states" />
+                <tableExists tableName="entity_address_facts" />
             </not>
         </preConditions>
 
-        <createTable tableName="entity_address_states">
+        <createTable tableName="entity_address_facts">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_entity_address_states_events"
+                <constraints foreignKeyName="fk_entity_address_facts_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence"
                              nullable="false" />
             </column>
             <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_entity_address_states_entities"
+                <constraints foreignKeyName="fk_entity_address_facts_entities"
                              referencedTableName="entities"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
             <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_entity_address_states_addresses"
+                <constraints foreignKeyName="fk_entity_address_facts_addresses"
                              referencedTableName="addresses"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="entity_address_states"
+        <addPrimaryKey tableName="entity_address_facts"
                        columnNames="sequence,entity_id,address_id"
-                       constraintName="pk_entity_address_states" />
+                       constraintName="pk_entity_address_facts" />
     </changeSet>
 </databaseChangeLog>

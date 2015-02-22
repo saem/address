@@ -13,17 +13,21 @@ public final class UserWriteRepresentation {
     @NotNull
     public final String email;
     public final Boolean isDisabled;
+    @NotNull
+    public final long actorId;
 
     @JsonCreator
     public UserWriteRepresentation(
             @JsonProperty("username") String username,
             @JsonProperty("password") String password,
             @JsonProperty("email") String email,
-            @JsonProperty("isDisabled") Boolean isDisabled
+            @JsonProperty("isDisabled") Boolean isDisabled,
+            @JsonProperty("actorId") long actorId
     ) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.isDisabled = isDisabled == null ? false : isDisabled;
+        this.actorId = actorId;
     }
 }

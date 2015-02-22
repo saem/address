@@ -40,7 +40,7 @@ public final class UserResource {
                         userWriteRepresentation.username,
                         userWriteRepresentation.password,
                         userWriteRepresentation.isDisabled,
-                        1L);
+                        userWriteRepresentation.actorId);
 
         return userCreated
                 .map(u ->
@@ -64,12 +64,13 @@ public final class UserResource {
         return UserFactory.buildUserReader(database).getUserHistory(userId.get(), numberOfRecords.get(), offset.get())
                 .stream()
                 .map(u -> new UserStateReadRepresentation(
-                        u.sequence(), 
-                        u.userId(), 
-                        u.username(), 
-                        u.email(), 
-                        u.isDeleted(), 
-                        u.isDisabled())
+                        u.sequence, 
+                        u.userId, 
+                        u.username, 
+                        u.email, 
+                        u.isDeleted, 
+                        u.isDisabled, 
+                        u.actorId)
                 )
                 .collect(Collectors.toList());
     } 
@@ -88,7 +89,7 @@ public final class UserResource {
                         userWriteRepresentation.username,
                         userWriteRepresentation.password,
                         userWriteRepresentation.isDisabled,
-                        1L
+                        userWriteRepresentation.actorId
                 );
         
         return useUpdated.map(u ->

@@ -29,14 +29,14 @@
     <changeSet id="2" author="saem">
         <preConditions>
             <not>
-                <columnExists tableName="people_states" columnName="primary_phone"/>
+                <columnExists tableName="people_facts" columnName="primary_phone"/>
             </not>
         </preConditions>
 
-        <addColumn tableName="people_states">
+        <addColumn tableName="people_facts">
             <column name="primary_phone" type="bigint">
                 <constraints nullable="true"
-                             foreignKeyName="fk_people_states_phones"
+                             foreignKeyName="fk_people_facts_phones"
                              referencedTableName="phones"
                              referencedColumnNames="entity_id"
                         />
@@ -47,19 +47,19 @@
     <changeSet id="3" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="phone_states"/>
+                <tableExists tableName="phone_facts"/>
             </not>
         </preConditions>
 
-        <createTable tableName="phone_states">
+        <createTable tableName="phone_facts">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_phone_states_events"
+                <constraints foreignKeyName="fk_phone_facts_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence"
                              nullable="false" />
             </column>
             <column name="phone_id" type="bigint">
-                <constraints foreignKeyName="fk_phone_states_phones"
+                <constraints foreignKeyName="fk_phone_facts_phones"
                              referencedTableName="phones"
                              referencedColumnNames="entity_id"
                              nullable="false" />
@@ -81,39 +81,39 @@
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="phone_states" columnNames="sequence,phone_id" constraintName="pk_phone_states" />
+        <addPrimaryKey tableName="phone_facts" columnNames="sequence,phone_id" constraintName="pk_phone_facts" />
     </changeSet>
 
     <changeSet id="4" author="saem">
         <preConditions>
             <not>
-                <tableExists tableName="entity_phone_states" />
+                <tableExists tableName="entity_phone_facts" />
             </not>
         </preConditions>
 
-        <createTable tableName="entity_phone_states">
+        <createTable tableName="entity_phone_facts">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_entity_phone_states_events"
+                <constraints foreignKeyName="fk_entity_phone_facts_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence"
                              nullable="false" />
             </column>
             <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_entity_phone_states_entities"
+                <constraints foreignKeyName="fk_entity_phone_facts_entities"
                              referencedTableName="entities"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
             <column name="phone_id" type="bigint">
-                <constraints foreignKeyName="fk_entity_phone_states_phones"
+                <constraints foreignKeyName="fk_entity_phone_facts_phones"
                              referencedTableName="phones"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="entity_phone_states"
+        <addPrimaryKey tableName="entity_phone_facts"
                        columnNames="sequence,entity_id,phone_id"
-                       constraintName="pk_entity_phone_states" />
+                       constraintName="pk_entity_phone_facts" />
     </changeSet>
 </databaseChangeLog>

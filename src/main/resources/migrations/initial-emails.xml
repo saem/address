@@ -29,14 +29,14 @@
     <changeSet id="2" author="saem">
         <preConditions>
             <not>
-                <columnExists tableName="people_states" columnName="primary_email"/>
+                <columnExists tableName="people_facts" columnName="primary_email"/>
             </not>
         </preConditions>
 
-        <addColumn tableName="people_states">
+        <addColumn tableName="people_facts">
             <column name="primary_email" type="bigint">
                 <constraints nullable ="true"
-                             foreignKeyName="fk_people_states_emails"
+                             foreignKeyName="fk_people_facts_emails"
                              referencedTableName="emails"
                              referencedColumnNames="entity_id"
                         />
@@ -47,21 +47,21 @@
     <changeSet id="3" author="michael">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="email_states" />
+                <tableExists tableName="email_facts" />
             </not>
         </preConditions>
 
         <sql>CREATE TYPE opted_enum AS ENUM ('opted','opted-out','non-opted')</sql>
 
-        <createTable tableName="email_states">
+        <createTable tableName="email_facts">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_email_states_events"
+                <constraints foreignKeyName="fk_email_facts_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence"
                              nullable="false" />
             </column>
             <column name="email_id" type="bigint">
-                <constraints foreignKeyName="fk_email_states_emails"
+                <constraints foreignKeyName="fk_email_facts_emails"
                              referencedTableName="emails"
                              referencedColumnNames="entity_id"
                              nullable="false" />
@@ -80,39 +80,39 @@
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="email_states" columnNames="sequence,email_id" constraintName="pk_email_states" />
+        <addPrimaryKey tableName="email_facts" columnNames="sequence,email_id" constraintName="pk_email_facts" />
     </changeSet>
 
     <changeSet id="4" author="saem">
         <preConditions>
             <not>
-                <tableExists tableName="entity_email_states" />
+                <tableExists tableName="entity_email_facts" />
             </not>
         </preConditions>
 
-        <createTable tableName="entity_email_states">
+        <createTable tableName="entity_email_facts">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_entity_email_states_events"
+                <constraints foreignKeyName="fk_entity_email_facts_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence"
                              nullable="false" />
             </column>
             <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_entity_email_states_entities"
+                <constraints foreignKeyName="fk_entity_email_facts_entities"
                              referencedTableName="entities"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
             <column name="email_id" type="bigint">
-                <constraints foreignKeyName="fk_entity_email_states_emails"
+                <constraints foreignKeyName="fk_entity_email_facts_emails"
                              referencedTableName="emails"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="entity_email_states"
+        <addPrimaryKey tableName="entity_email_facts"
                        columnNames="sequence,entity_id,email_id"
-                       constraintName="pk_entity_email_states" />
+                       constraintName="pk_entity_email_facts" />
     </changeSet>
 </databaseChangeLog>

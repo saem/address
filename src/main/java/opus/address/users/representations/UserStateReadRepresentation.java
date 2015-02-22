@@ -7,6 +7,7 @@ public final class UserStateReadRepresentation {
     public final String email;
     public final Boolean deleted;
     public final Boolean disabled;
+    public final long actorId;
 
     public UserStateReadRepresentation(
             final Long sequence, 
@@ -14,7 +15,8 @@ public final class UserStateReadRepresentation {
             final String username, 
             final String email, 
             final Boolean deleted, 
-            final Boolean disabled
+            final Boolean disabled,
+            final long actorId
     ) {
         this.sequence = sequence;
         this.userId = userId;
@@ -22,5 +24,6 @@ public final class UserStateReadRepresentation {
         this.email = email;
         this.deleted = deleted;
         this.disabled = disabled;
+        this.actorId = actorId;
     }
 }

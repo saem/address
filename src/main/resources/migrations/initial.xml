@@ -27,7 +27,7 @@
         <comment>Entities are all things that change over time, and have an identity</comment>
         
         <createTable tableName="entities">
-            <column name="entity_id" type="bigint" autoIncrement="true" startWith="2">
+            <column name="entity_id" type="bigint" autoIncrement="true">
                 <constraints primaryKeyName="pk_entities_entity_id" primaryKey="true" />
             </column>
         </createTable>
@@ -83,15 +83,15 @@
         <comment>Create the system itself (extrinsic part)</comment>
 
         <insert tableName="entities">
-            <column name="entity_id">1</column>
+            <column name="entity_id" valueComputed="nextval('entities_entity_id_seq')" />
         </insert>
         
         <insert tableName="system">
-            <column name="entity_id" value="1" />
+            <column name="entity_id" valueComputed="currval('entities_entity_id_seq')" />
         </insert>
 
         <insert tableName="users">
-            <column name="entity_id">1</column>
+            <column name="entity_id" valueComputed="currval('entities_entity_id_seq')" />
         </insert>
     </changeSet>
     
@@ -142,20 +142,20 @@
     <changeSet id="6" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="user_states" />
+                <tableExists tableName="user_facts" />
             </not>
         </preConditions>
         
-        <createTable tableName="user_states">
+        <createTable tableName="user_facts">
             <column name="sequence" type="bigint">
-                <constraints primaryKeyName="pk_user_states_sequence" 
+                <constraints primaryKeyName="pk_user_facts_sequence"
                              primaryKey="true"
-                             foreignKeyName="fk_user_states_events"
+                             foreignKeyName="fk_user_facts_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence" />
             </column>
             <column name="user_id" type="bigint">
-                <constraints foreignKeyName="fk_user_states_users"
+                <constraints foreignKeyName="fk_user_facts_users"
                              referencedTableName="users"
                              referencedColumnNames="entity_id"
                              nullable="false" />
@@ -206,18 +206,18 @@
     <changeSet id="8" author="michael">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="people_states" />
+                <tableExists tableName="people_facts" />
             </not>
         </preConditions>
 
-        <createTable tableName="people_states">
+        <createTable tableName="people_facts">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_people_states_events"
+                <constraints foreignKeyName="fk_people_facts_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence" />
             </column>
             <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_people_states_people"
+                <constraints foreignKeyName="fk_people_facts_people"
                              referencedTableName="people"
                              referencedColumnNames="entity_id" />
             </column>
@@ -232,7 +232,7 @@
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="people_states" columnNames="sequence,entity_id" constraintName="pk_people_states" />
+        <addPrimaryKey tableName="people_facts" columnNames="sequence,entity_id" constraintName="pk_people_facts" />
     </changeSet>
 
 </databaseChangeLog>

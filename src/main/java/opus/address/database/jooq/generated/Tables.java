@@ -22,9 +22,9 @@ public class Tables {
 	public static final opus.address.database.jooq.generated.tables.Addresses Addresses = opus.address.database.jooq.generated.tables.Addresses.Addresses;
 
 	/**
-	 * The table address_states
+	 * The table address_facts
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressStates AddressStates = opus.address.database.jooq.generated.tables.AddressStates.AddressStates;
+	public static final opus.address.database.jooq.generated.tables.AddressFacts AddressFacts = opus.address.database.jooq.generated.tables.AddressFacts.AddressFacts;
 
 	/**
 	 * The table databasechangelog
@@ -37,14 +37,14 @@ public class Tables {
 	public static final opus.address.database.jooq.generated.tables.Databasechangeloglock Databasechangeloglock = opus.address.database.jooq.generated.tables.Databasechangeloglock.Databasechangeloglock;
 
 	/**
+	 * The table email_facts
+	 */
+	public static final opus.address.database.jooq.generated.tables.EmailFacts EmailFacts = opus.address.database.jooq.generated.tables.EmailFacts.EmailFacts;
+
+	/**
 	 * The table emails
 	 */
 	public static final opus.address.database.jooq.generated.tables.Emails Emails = opus.address.database.jooq.generated.tables.Emails.Emails;
-
-	/**
-	 * The table email_states
-	 */
-	public static final opus.address.database.jooq.generated.tables.EmailStates EmailStates = opus.address.database.jooq.generated.tables.EmailStates.EmailStates;
 
 	/**
 	 * The table entities
@@ -52,19 +52,19 @@ public class Tables {
 	public static final opus.address.database.jooq.generated.tables.Entities Entities = opus.address.database.jooq.generated.tables.Entities.Entities;
 
 	/**
-	 * The table entity_address_states
+	 * The table entity_address_facts
 	 */
-	public static final opus.address.database.jooq.generated.tables.EntityAddressStates EntityAddressStates = opus.address.database.jooq.generated.tables.EntityAddressStates.EntityAddressStates;
+	public static final opus.address.database.jooq.generated.tables.EntityAddressFacts EntityAddressFacts = opus.address.database.jooq.generated.tables.EntityAddressFacts.EntityAddressFacts;
 
 	/**
-	 * The table entity_email_states
+	 * The table entity_email_facts
 	 */
-	public static final opus.address.database.jooq.generated.tables.EntityEmailStates EntityEmailStates = opus.address.database.jooq.generated.tables.EntityEmailStates.EntityEmailStates;
+	public static final opus.address.database.jooq.generated.tables.EntityEmailFacts EntityEmailFacts = opus.address.database.jooq.generated.tables.EntityEmailFacts.EntityEmailFacts;
 
 	/**
-	 * The table entity_phone_states
+	 * The table entity_phone_facts
 	 */
-	public static final opus.address.database.jooq.generated.tables.EntityPhoneStates EntityPhoneStates = opus.address.database.jooq.generated.tables.EntityPhoneStates.EntityPhoneStates;
+	public static final opus.address.database.jooq.generated.tables.EntityPhoneFacts EntityPhoneFacts = opus.address.database.jooq.generated.tables.EntityPhoneFacts.EntityPhoneFacts;
 
 	/**
 	 * The table events
@@ -77,9 +77,14 @@ public class Tables {
 	public static final opus.address.database.jooq.generated.tables.People People = opus.address.database.jooq.generated.tables.People.People;
 
 	/**
-	 * The table people_states
+	 * The table people_facts
 	 */
-	public static final opus.address.database.jooq.generated.tables.PeopleStates PeopleStates = opus.address.database.jooq.generated.tables.PeopleStates.PeopleStates;
+	public static final opus.address.database.jooq.generated.tables.PeopleFacts PeopleFacts = opus.address.database.jooq.generated.tables.PeopleFacts.PeopleFacts;
+
+	/**
+	 * The table phone_facts
+	 */
+	public static final opus.address.database.jooq.generated.tables.PhoneFacts PhoneFacts = opus.address.database.jooq.generated.tables.PhoneFacts.PhoneFacts;
 
 	/**
 	 * The table phones
@@ -87,22 +92,17 @@ public class Tables {
 	public static final opus.address.database.jooq.generated.tables.Phones Phones = opus.address.database.jooq.generated.tables.Phones.Phones;
 
 	/**
-	 * The table phone_states
-	 */
-	public static final opus.address.database.jooq.generated.tables.PhoneStates PhoneStates = opus.address.database.jooq.generated.tables.PhoneStates.PhoneStates;
-
-	/**
 	 * The table system
 	 */
 	public static final opus.address.database.jooq.generated.tables.System System = opus.address.database.jooq.generated.tables.System.System;
 
 	/**
+	 * The table user_facts
+	 */
+	public static final opus.address.database.jooq.generated.tables.UserFacts UserFacts = opus.address.database.jooq.generated.tables.UserFacts.UserFacts;
+
+	/**
 	 * The table users
 	 */
 	public static final opus.address.database.jooq.generated.tables.Users Users = opus.address.database.jooq.generated.tables.Users.Users;
-
-	/**
-	 * The table user_states
-	 */
-	public static final opus.address.database.jooq.generated.tables.UserStates UserStates = opus.address.database.jooq.generated.tables.UserStates.UserStates;
 }

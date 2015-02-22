@@ -1,7 +1,8 @@
 package opus.address.users.readers;
 
-import opus.address.database.jooq.generated.tables.UserStates;
-import opus.address.database.jooq.generated.tables.pojos.UserStatesProjection;
+import opus.address.database.jooq.generated.tables.Events;
+import opus.address.database.jooq.generated.tables.UserFacts;
+import opus.address.users.projections.UserFactProjection;
 import org.jooq.DSLContext;
 
 import java.util.List;
@@ -14,17 +15,37 @@ public final class UserReader {
         this.database = database;
     }
     
-    public List<UserStatesProjection> getUserHistory(
+    public List<UserFactProjection> getUserHistory(
             Long userId,
             Integer numberOfRecords,
             Integer offset
     ) {
-        return database.select()
-                .from(UserStates.UserStates)
-                .where(UserStates.UserStates.UserId.equal(userId))
-                .orderBy(UserStates.UserStates.Sequence.desc())
+        return database.select(
+                UserFacts.UserFacts.Email,
+                UserFacts.UserFacts.IsDeleted,
+                UserFacts.UserFacts.Username,
+                UserFacts.UserFacts.Sequence,
+                UserFacts.UserFacts.IsDisabled,
+                UserFacts.UserFacts.UserId,
+                UserFacts.UserFacts.Password,
+                Events.Events.Actor
+        )
+                .from(UserFacts.UserFacts)
+                .leftOuterJoin(Events.Events).on(Events.Events.Sequence.equal(UserFacts.UserFacts.Sequence))
+                .where(UserFacts.UserFacts.UserId.equal(userId))
+                .orderBy(UserFacts.UserFacts.Sequence.desc())
                 .limit(Math.min(numberOfRecords, USER_HISTORY_LIMIT))
                 .offset(offset)
-                .fetchInto(UserStatesProjection.class);
+                .fetch()
+                .map(r -> new UserFactProjection(
+                        r.value4(),
+                        r.value6(),
+                        r.value3(),
+                        r.value1(),
+                        r.value5(),
+                        r.value2(),
+                        r.value7(),
+                        r.value8()
+                ));
     }
 }

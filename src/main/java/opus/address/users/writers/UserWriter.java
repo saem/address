@@ -47,13 +47,13 @@ public final class UserWriter {
                             .values(entityId)
                             .execute();
 
-                    db.insertInto(Tables.UserStates,
-                            Tables.UserStates.Email,
-                            Tables.UserStates.Password,
-                            Tables.UserStates.Sequence,
-                            Tables.UserStates.Username,
-                            Tables.UserStates.UserId,
-                            Tables.UserStates.IsDisabled)
+                    db.insertInto(Tables.UserFacts,
+                            Tables.UserFacts.Email,
+                            Tables.UserFacts.Password,
+                            Tables.UserFacts.Sequence,
+                            Tables.UserFacts.Username,
+                            Tables.UserFacts.UserId,
+                            Tables.UserFacts.IsDisabled)
                             .values(
                                     email,
                                     digestedPassword,
@@ -91,13 +91,13 @@ public final class UserWriter {
 
                     final String digestedPassword = passwordDigester.digestPassword(password);
 
-                    db.insertInto(Tables.UserStates,
-                            Tables.UserStates.Email,
-                            Tables.UserStates.Password,
-                            Tables.UserStates.Sequence,
-                            Tables.UserStates.Username,
-                            Tables.UserStates.UserId,
-                            Tables.UserStates.IsDisabled)
+                    db.insertInto(Tables.UserFacts,
+                            Tables.UserFacts.Email,
+                            Tables.UserFacts.Password,
+                            Tables.UserFacts.Sequence,
+                            Tables.UserFacts.Username,
+                            Tables.UserFacts.UserId,
+                            Tables.UserFacts.IsDisabled)
                             .values(
                                     email,
                                     digestedPassword,
