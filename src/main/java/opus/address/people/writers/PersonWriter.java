@@ -49,23 +49,23 @@ public final class PersonWriter {
                             .values(entityId)
                             .execute();
 
-                    db.insertInto(Tables.PeopleFacts,
-                            
-                            
-                            Tables.PeopleFacts.Email,
-                            Tables.PeopleFacts.Password,
-                            Tables.PeopleFacts.Sequence,
-                            Tables.PeopleFacts.Username,
-                            Tables.PeopleFacts.UserId,
-                            Tables.PeopleFacts.IsDisabled)
-                            .values(
-                                    email,
-                                    sequenceWhen.sequence(),
-                                    username,
-                                    entityId,
-                                    isDisabled
-                            )
-                            .execute();
+//                    db.insertInto(Tables.PeopleFacts,
+//                            
+//
+//                            Tables.PeopleFacts.Email,
+//                            Tables.PeopleFacts.Password,
+//                            Tables.PeopleFacts.Sequence,
+//                            Tables.PeopleFacts.Username,
+//                            Tables.PeopleFacts.UserId,
+//                            Tables.PeopleFacts.IsDisabled)
+//                            .values(
+//                                    email,
+//                                    sequenceWhen.sequence(),
+//                                    username,
+//                                    entityId,
+//                                    isDisabled
+//                            )
+//                            .execute();
 
                     return new PersonCreated(sequenceWhen.sequence(), entityId, sequenceWhen.when().toInstant());
                 }

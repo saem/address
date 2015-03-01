@@ -12,7 +12,9 @@ mvn clean && mvn package && java -jar target/address-0.1.jar server dev.yml
 ```
 
 # todos
+1) Rework code to deal with single value tables.
+2) Write address book command processor.
+
+
 1) Separate deletes into DeletedEntityFacts Table, extrinsic entities share a single delete table. Traits/intrinsic entities(ie: User) each have their own delete table.
 | is_deleted(type=boolean,default=false) | is_disabled(type=boolean, default=false) | sequence | entity_id | encrypted(type=bytea,default="") |
-2) Finish user api for delete/disable, but not encrypt.
-3) Do the same for person.

@@ -34,22 +34,24 @@ public final class UserResource {
             @Valid UserWriteRepresentation userWriteRepresentation,
             @Context DSLContext database
     ) {
-        final Optional<UserCreated> userCreated = userFactory.buildUserWriter(database)
-                .write(
-                        userWriteRepresentation.email,
-                        userWriteRepresentation.username,
-                        userWriteRepresentation.password,
-                        userWriteRepresentation.isDisabled,
-                        userWriteRepresentation.actorId);
-
-        return userCreated
-                .map(u ->
-                        Response.created(
-                                UriBuilder
-                                        .fromPath("/events/{sequenceId}/users/{userId}")
-                                        .build(u.sequence, u.userId))
-                                .build())
-                .orElseGet(() -> Response.serverError().build());
+//        final Optional<UserCreated> userCreated = userFactory.buildUserWriter(database)
+//                .write(
+//                        userWriteRepresentation.email,
+//                        userWriteRepresentation.username,
+//                        userWriteRepresentation.password,
+//                        userWriteRepresentation.isDisabled,
+//                        userWriteRepresentation.actorId);
+//
+//        return userCreated
+//                .map(u ->
+//                        Response.created(
+//                                UriBuilder
+//                                        .fromPath("/events/{sequenceId}/users/{userId}")
+//                                        .build(u.sequence, u.userId))
+//                                .build())
+//                .orElseGet(() -> Response.serverError().build());
+        
+        return null;
     }
     
     @GET

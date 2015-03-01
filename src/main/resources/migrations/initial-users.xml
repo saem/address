@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!-- Users Entity table is defined in initial.xml -->
+        
+    <!-- Users -->
+        
+    <!-- users_facts_username -->
+    <changeSet id="1" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users_facts_username" />
+            </not>
+        </preConditions>
+        
+        <createTable tableName="users_facts_username">
+            <column name="sequence" type="bigint">
+                <constraints primaryKeyName="pk_users_facts_username_sequence"
+                             primaryKey="true"
+                             foreignKeyName="fk_users_facts_username_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence" />
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="fk_users_facts_username_users"
+                             referencedTableName="users"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+            <column name="username" type="text">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        
+        <!--
+        TODO:
+            * index by (user_id, sequence) for fast max(sequence) group by user_id queries (current_users view)?
+        -->
+        
+    </changeSet>
+
+    <!-- users_facts_email -->
+    <changeSet id="2" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users_facts_email" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="users_facts_email">
+            <column name="sequence" type="bigint">
+                <constraints primaryKeyName="pk_users_facts_email_sequence"
+                             primaryKey="true"
+                             foreignKeyName="fk_users_facts_email_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence" />
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="fk_users_facts_email_users"
+                             referencedTableName="users"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+            <column name="email" type="text">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <!--
+        TODO:
+            * index by (user_id, sequence) for fast max(sequence) group by user_id queries (current_users view)?
+        -->
+
+    </changeSet>
+
+    <!-- users_facts_password -->
+    <changeSet id="3" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users_facts_password" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="users_facts_password">
+            <column name="sequence" type="bigint">
+                <constraints primaryKeyName="pk_users_facts_password_sequence"
+                             primaryKey="true"
+                             foreignKeyName="fk_users_facts_password_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence" />
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="fk_users_facts_password_users"
+                             referencedTableName="users"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+            <column name="password" type="text">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <!--
+        TODO:
+            * index by (user_id, sequence) for fast max(sequence) group by user_id queries (current_users view)?
+        -->
+
+    </changeSet>
+
+    <!-- users_facts_is_deleted -->
+    <changeSet id="4" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users_facts_is_deleted" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="users_facts_is_deleted">
+            <column name="sequence" type="bigint">
+                <constraints primaryKeyName="pk_users_facts_is_deleted_sequence"
+                             primaryKey="true"
+                             foreignKeyName="fk_users_facts_is_deleted_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence" />
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="fk_users_facts_is_deleted_users"
+                             referencedTableName="users"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+            <column name="is_deleted" type="bool" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!--
+        TODO:
+            * index by (user_id, sequence) for fast max(sequence) group by user_id queries (current_users view)?
+        -->
+
+    </changeSet>
+
+</databaseChangeLog>

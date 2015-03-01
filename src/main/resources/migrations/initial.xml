@@ -136,103 +136,31 @@
             </column>
         </createTable>
     </changeSet>
-        
-    <!-- Users -->
-        
-    <changeSet id="6" author="saem">
+
+    <changeSet id="6" author="michael">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="user_facts" />
+                <tableExists tableName="entities_facts_is_deleted" />
             </not>
         </preConditions>
-        
-        <createTable tableName="user_facts">
+
+        <createTable tableName="entities_facts_is_deleted">
             <column name="sequence" type="bigint">
-                <constraints primaryKeyName="pk_user_facts_sequence"
-                             primaryKey="true"
-                             foreignKeyName="fk_user_facts_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence" />
-            </column>
-            <column name="user_id" type="bigint">
-                <constraints foreignKeyName="fk_user_facts_users"
-                             referencedTableName="users"
-                             referencedColumnNames="entity_id"
-                             nullable="false" />
-            </column>
-            <column name="username" type="text">
-                <constraints nullable="false" />
-            </column>
-            <column name="email" type="text">
-                <constraints nullable="false" />
-            </column>
-            <column name="password" type="text">
-                <constraints nullable="false" />
-            </column>
-            <column name="is_disabled" type="bool" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-            <column name="is_deleted" type="bool" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        
-        <!--
-        TODO:
-            * index by (user_id, sequence) for fast max(sequence) group by user_id queries (current_users view)?
-        -->
-        
-    </changeSet>
-
-    <changeSet id="7" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="people" />
-            </not>
-        </preConditions>
-
-        <createTable tableName="people">
-            <column name="entity_id" type="bigint" autoIncrement="false">
-                <constraints primaryKeyName="pk_people"
-                             primaryKey="true"
-                             foreignKeyName="fk_people_entities"
-                             referencedTableName="entities"
-                             referencedColumnNames="entity_id"
-                             nullable="false" />
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="8" author="michael">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="people_facts" />
-            </not>
-        </preConditions>
-
-        <createTable tableName="people_facts">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_people_facts_events"
+                <constraints foreignKeyName="fk_entities_facts_is_deleted_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence" />
             </column>
             <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_people_facts_people"
-                             referencedTableName="people"
+                <constraints foreignKeyName="fk_entities_facts_is_deleted_people"
+                             referencedTableName="entities"
                              referencedColumnNames="entity_id" />
-            </column>
-            <column name="first_name" type="text">
-                <constraints nullable="false" />
-            </column>
-            <column name="last_name" type="text">
-                <constraints nullable="false" />
             </column>
             <column name="is_deleted" type="boolean" defaultValueBoolean="false">
                 <constraints nullable="false" />
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="people_facts" columnNames="sequence,entity_id" constraintName="pk_people_facts" />
+        <addPrimaryKey tableName="entities_facts_is_deleted" columnNames="sequence,entity_id" constraintName="pk_entities_facts_is_deleted" />
     </changeSet>
 
 </databaseChangeLog>
