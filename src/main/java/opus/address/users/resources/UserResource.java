@@ -2,6 +2,7 @@ package opus.address.users.resources;
 
 import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.params.LongParam;
+import opus.address.security.PasswordDigester;
 import opus.address.users.events.UserCreated;
 import opus.address.users.events.UserUpdated;
 import opus.address.users.factories.UserFactory;
@@ -34,48 +35,47 @@ public final class UserResource {
             @Valid UserWriteRepresentation userWriteRepresentation,
             @Context DSLContext database
     ) {
-//        final Optional<UserCreated> userCreated = userFactory.buildUserWriter(database)
-//                .write(
-//                        userWriteRepresentation.email,
-//                        userWriteRepresentation.username,
-//                        userWriteRepresentation.password,
-//                        userWriteRepresentation.isDisabled,
-//                        userWriteRepresentation.actorId);
-//
-//        return userCreated
-//                .map(u ->
-//                        Response.created(
-//                                UriBuilder
-//                                        .fromPath("/events/{sequenceId}/users/{userId}")
-//                                        .build(u.sequence, u.userId))
-//                                .build())
-//                .orElseGet(() -> Response.serverError().build());
-        
-        return null;
+        final Optional<UserCreated> userCreated = userFactory.buildUserWriter(database)
+                .write(
+                        userWriteRepresentation.email,
+                        userWriteRepresentation.username,
+                        new PasswordDigester().digestPassword(
+                                userWriteRepresentation.password
+                        ),
+                        userWriteRepresentation.actorId);
+
+        return userCreated
+                .map(u ->
+                        Response.created(
+                                UriBuilder
+                                        .fromPath("/events/{sequenceId}/users/{userId}")
+                                        .build(u.sequence, u.userId))
+                                .build())
+                .orElseGet(() -> Response.serverError().build());
     }
     
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{userId}")
-    public List<UserFactReadRepresentation> getUserHistory(
-            @Context DSLContext database,
-            @PathParam("userId") LongParam userId,
-            @QueryParam("numberOfRecords") @DefaultValue("10") IntParam numberOfRecords,
-            @QueryParam("offset") @DefaultValue("0") IntParam offset
-    ){
-        return UserFactory.buildUserReader(database).getUserHistory(userId.get(), numberOfRecords.get(), offset.get())
-                .stream()
-                .map(u -> new UserFactReadRepresentation(
-                        u.sequence, 
-                        u.userId, 
-                        u.username, 
-                        u.email, 
-                        u.isDeleted, 
-                        u.isDisabled, 
-                        u.actorId)
-                )
-                .collect(Collectors.toList());
-    } 
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Path("/{userId}")
+//    public List<UserFactReadRepresentation> getUserHistory(
+//            @Context DSLContext database,
+//            @PathParam("userId") LongParam userId,
+//            @QueryParam("numberOfRecords") @DefaultValue("10") IntParam numberOfRecords,
+//            @QueryParam("offset") @DefaultValue("0") IntParam offset
+//    ){
+//        return UserFactory.buildUserReader(database).getUserHistory(userId.get(), numberOfRecords.get(), offset.get())
+//                .stream()
+//                .map(u -> new UserFactReadRepresentation(
+//                        u.sequence,
+//                        u.userId,
+//                        u.username,
+//                        u.email,
+//                        u.isDeleted,
+//                        u.isDisabled,
+//                        u.actorId)
+//                )
+//                .collect(Collectors.toList());
+//    }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

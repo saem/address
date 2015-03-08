@@ -16,7 +16,7 @@ package opus.address.database.jooq.generated;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefaultSchema extends org.jooq.impl.SchemaImpl {
 
-	private static final long serialVersionUID = 1607755557;
+	private static final long serialVersionUID = -1507991505;
 
 	/**
 	 * The reference instance of <code></code>
@@ -53,22 +53,45 @@ public class DefaultSchema extends org.jooq.impl.SchemaImpl {
 	private final java.util.List<org.jooq.Table<?>> getTables0() {
 		return java.util.Arrays.<org.jooq.Table<?>>asList(
 			opus.address.database.jooq.generated.tables.Addresses.Addresses,
-			opus.address.database.jooq.generated.tables.AddressFacts.AddressFacts,
+			opus.address.database.jooq.generated.tables.AddressesFactsAddressLine.AddressesFactsAddressLine,
+			opus.address.database.jooq.generated.tables.AddressesFactsAdministrativeArea.AddressesFactsAdministrativeArea,
+			opus.address.database.jooq.generated.tables.AddressesFactsCountryCode.AddressesFactsCountryCode,
+			opus.address.database.jooq.generated.tables.AddressesFactsDependentLocality.AddressesFactsDependentLocality,
+			opus.address.database.jooq.generated.tables.AddressesFactsLanguageCode.AddressesFactsLanguageCode,
+			opus.address.database.jooq.generated.tables.AddressesFactsLocality.AddressesFactsLocality,
+			opus.address.database.jooq.generated.tables.AddressesFactsOrganization.AddressesFactsOrganization,
+			opus.address.database.jooq.generated.tables.AddressesFactsPostalCode.AddressesFactsPostalCode,
+			opus.address.database.jooq.generated.tables.AddressesFactsRecipient.AddressesFactsRecipient,
+			opus.address.database.jooq.generated.tables.AddressesFactsSortingCode.AddressesFactsSortingCode,
+			opus.address.database.jooq.generated.tables.AddressesFactsSuite.AddressesFactsSuite,
 			opus.address.database.jooq.generated.tables.Databasechangelog.Databasechangelog,
 			opus.address.database.jooq.generated.tables.Databasechangeloglock.Databasechangeloglock,
-			opus.address.database.jooq.generated.tables.EmailFacts.EmailFacts,
 			opus.address.database.jooq.generated.tables.Emails.Emails,
+			opus.address.database.jooq.generated.tables.EmailsFactsDomain.EmailsFactsDomain,
+			opus.address.database.jooq.generated.tables.EmailsFactsLocalPart.EmailsFactsLocalPart,
+			opus.address.database.jooq.generated.tables.EmailsFactsOptedEnum.EmailsFactsOptedEnum,
 			opus.address.database.jooq.generated.tables.Entities.Entities,
-			opus.address.database.jooq.generated.tables.EntityAddressFacts.EntityAddressFacts,
-			opus.address.database.jooq.generated.tables.EntityEmailFacts.EntityEmailFacts,
-			opus.address.database.jooq.generated.tables.EntityPhoneFacts.EntityPhoneFacts,
+			opus.address.database.jooq.generated.tables.EntitiesAndAddressesFactsIsRelated.EntitiesAndAddressesFactsIsRelated,
+			opus.address.database.jooq.generated.tables.EntitiesAndEmailsFactsIsRelated.EntitiesAndEmailsFactsIsRelated,
+			opus.address.database.jooq.generated.tables.EntitiesAndPhonesFactsIsRelated.EntitiesAndPhonesFactsIsRelated,
+			opus.address.database.jooq.generated.tables.EntitiesFactsIsDeleted.EntitiesFactsIsDeleted,
 			opus.address.database.jooq.generated.tables.Events.Events,
 			opus.address.database.jooq.generated.tables.People.People,
-			opus.address.database.jooq.generated.tables.PeopleFacts.PeopleFacts,
-			opus.address.database.jooq.generated.tables.PhoneFacts.PhoneFacts,
+			opus.address.database.jooq.generated.tables.PeopleFactsFirstName.PeopleFactsFirstName,
+			opus.address.database.jooq.generated.tables.PeopleFactsLastName.PeopleFactsLastName,
+			opus.address.database.jooq.generated.tables.PeopleFactsPrimaryAddress.PeopleFactsPrimaryAddress,
+			opus.address.database.jooq.generated.tables.PeopleFactsPrimaryEmail.PeopleFactsPrimaryEmail,
+			opus.address.database.jooq.generated.tables.PeopleFactsPrimaryPhone.PeopleFactsPrimaryPhone,
 			opus.address.database.jooq.generated.tables.Phones.Phones,
+			opus.address.database.jooq.generated.tables.PhonesFactsDoNotCall.PhonesFactsDoNotCall,
+			opus.address.database.jooq.generated.tables.PhonesFactsExtension.PhonesFactsExtension,
+			opus.address.database.jooq.generated.tables.PhonesFactsNumber.PhonesFactsNumber,
+			opus.address.database.jooq.generated.tables.PhonesFactsType.PhonesFactsType,
 			opus.address.database.jooq.generated.tables.System.System,
-			opus.address.database.jooq.generated.tables.UserFacts.UserFacts,
-			opus.address.database.jooq.generated.tables.Users.Users);
+			opus.address.database.jooq.generated.tables.Users.Users,
+			opus.address.database.jooq.generated.tables.UsersFactsEmail.UsersFactsEmail,
+			opus.address.database.jooq.generated.tables.UsersFactsIsDeleted.UsersFactsIsDeleted,
+			opus.address.database.jooq.generated.tables.UsersFactsPassword.UsersFactsPassword,
+			opus.address.database.jooq.generated.tables.UsersFactsUsername.UsersFactsUsername);
 	}
 }

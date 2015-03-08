@@ -16,7 +16,7 @@ package opus.address.database.jooq.generated.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Events extends org.jooq.impl.TableImpl<opus.address.database.jooq.generated.tables.records.Events> {
 
-	private static final long serialVersionUID = -768956197;
+	private static final long serialVersionUID = 1406283777;
 
 	/**
 	 * The reference instance of <code>events</code>
@@ -55,6 +55,11 @@ public class Events extends org.jooq.impl.TableImpl<opus.address.database.jooq.g
 	 * The column <code>events.actor</code>.
 	 */
 	public final org.jooq.TableField<opus.address.database.jooq.generated.tables.records.Events, java.lang.Long> Actor = createField("actor", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+	/**
+	 * The column <code>events.tables_affected</code>.
+	 */
+	public final org.jooq.TableField<opus.address.database.jooq.generated.tables.records.Events, java.lang.String> TablesAffected = createField("tables_affected", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
 	/**
 	 * The column <code>events.when</code>.

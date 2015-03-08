@@ -12,9 +12,6 @@ mvn clean && mvn package && java -jar target/address-0.1.jar server dev.yml
 ```
 
 # todos
-1) Rework code to deal with single value tables.
-2) Write address book command processor.
-
-
-1) Separate deletes into DeletedEntityFacts Table, extrinsic entities share a single delete table. Traits/intrinsic entities(ie: User) each have their own delete table.
-| is_deleted(type=boolean,default=false) | is_disabled(type=boolean, default=false) | sequence | entity_id | encrypted(type=bytea,default="") |
+1) Write to tables_affected column in the events table.
+2) Rework the resource to post events instead of users.
+3) Write address book command processor.

@@ -1,29 +1,32 @@
 package opus.address.users.writers;
 
 import opus.address.database.jooq.generated.Tables;
-import opus.address.database.jooq.generated.tables.UserFacts;
 import opus.address.database.jooq.generated.tables.records.Events;
-import opus.address.security.PasswordDigester;
 import opus.address.users.events.UserCreated;
 import opus.address.users.events.UserUpdated;
-import opus.address.users.projections.UserFactProjection;
 import org.jooq.DSLContext;
+import org.jooq.Query;
 import org.jooq.impl.DSL;
 
 import java.util.Optional;
 
 public final class UserWriter {
     private final DSLContext database;
-    private final PasswordDigester passwordDigester;
     private final String codeVersion;
 
-    public UserWriter(final DSLContext database, final PasswordDigester passwordDigester, final String codeVersion) {
+    public UserWriter(
+            final DSLContext database, 
+            final String codeVersion
+    ) {
         this.database = database;
-        this.passwordDigester = passwordDigester;
         this.codeVersion = codeVersion;
     }
 
-    public Optional<UserCreated> write(String email, String username, String password, Boolean isDisabled, Long actorId) {
+    public Optional<UserCreated> write(
+            final String email,
+            final String username,
+            final String password,
+            final Long actorId) {
         return Optional.ofNullable(database.transactionResult(c -> {
                     final DSLContext db = DSL.using(c);
 
@@ -35,41 +38,126 @@ public final class UserWriter {
                             .values(UserCreated.EVENT_NAME, codeVersion, 1, actorId)
                             .returning(Tables.Events.Sequence, Tables.Events.When)
                             .fetchOne();
-
-                    final String digestedPassword = passwordDigester.digestPassword(password);
-
+ 
                     final Long entityId = db.insertInto(Tables.Entities)
                             .defaultValues()
                             .returning(Tables.Entities.EntityId)
                             .fetchOne()
                             .entityId();
 
-                    db.insertInto(Tables.Users,
-                            Tables.Users.EntityId)
-                            .values(entityId)
-                            .execute();
-
-                    db.insertInto(Tables.UserFacts,
-                            Tables.UserFacts.Email,
-                            Tables.UserFacts.Password,
-                            Tables.UserFacts.Sequence,
-                            Tables.UserFacts.Username,
-                            Tables.UserFacts.UserId,
-                            Tables.UserFacts.IsDisabled)
-                            .values(
-                                    email,
-                                    digestedPassword,
+                    db.batch(                    
+                            buildWriteQuery(
+                                    entityId, 
+                                    db
+                            ),
+                            buildPasswordQuery(
+                                    password,
+                                    entityId,
                                     sequenceWhen.sequence(),
+                                    db
+                            ),
+                            buildEmailQuery(
+                                    email,
+                                    entityId,
+                                    sequenceWhen.sequence(),
+                                    db
+                            ),
+                            buildUsernameQuery(
                                     username,
                                     entityId,
-                                    isDisabled
+                                    sequenceWhen.sequence(),
+                                    db
                             )
-                            .execute();
+                    ).execute();
 
                     return new UserCreated(sequenceWhen.sequence(), entityId, sequenceWhen.when().toInstant());
                 }
         ));
     }
+
+    private static Query buildEmailQuery(
+            final String email,
+            final long entityId,
+            final long sequence,
+            final DSLContext db
+    ) {
+        return db.insertInto(Tables.UsersFactsEmail,
+                Tables.UsersFactsEmail.Email,
+                Tables.UsersFactsEmail.Sequence,
+                Tables.UsersFactsEmail.UserId)
+                .values(
+                        email,
+                        sequence,
+                        entityId
+                );
+    }
+
+    private static Query buildIsDeletedQuery(
+            final boolean isDeleted,
+            final long entityId,
+            final long sequence,
+            final DSLContext db
+    ) {
+        return db.insertInto(Tables.UsersFactsIsDeleted,
+                Tables.UsersFactsIsDeleted.IsDeleted,
+                Tables.UsersFactsIsDeleted.Sequence,
+                Tables.UsersFactsIsDeleted.UserId)
+                .values(
+                        isDeleted,
+                        sequence,
+                        entityId
+                );
+    }
+
+    private static Query buildPasswordQuery(
+            final String password,
+            final long entityId,
+            final long sequence,
+            final DSLContext db
+    ) {
+        return db.insertInto(Tables.UsersFactsPassword,
+                Tables.UsersFactsPassword.Password,
+                Tables.UsersFactsPassword.Sequence,
+                Tables.UsersFactsPassword.UserId)
+                .values(
+                        password,
+                        sequence,
+                        entityId
+                );
+    }
+
+    private static Query buildUsernameQuery(
+            final String username,
+            final long entityId,
+            final long sequence,
+            final DSLContext db
+    ) {
+        return db.insertInto(Tables.UsersFactsUsername,
+                Tables.UsersFactsUsername.Username,
+                Tables.UsersFactsUsername.Sequence,
+                Tables.UsersFactsUsername.UserId)
+                .values(
+                        username,
+                        sequence,
+                        entityId
+                );
+    }
+    
+    private static Query buildWriteQuery(
+            final long entityId,
+            final DSLContext db
+    ) {
+        return db.insertInto(Tables.Users,
+                Tables.Users.EntityId)
+                .values(entityId);
+    }
+    
+//    public Optional<UserDeleted> delete(
+//            long userId
+//    ) {
+//        
+//        
+//    }
     
     public Optional<UserUpdated> update(
             Long userId,
@@ -86,36 +174,30 @@ public final class UserWriter {
                             Tables.Events.CodeVersion,
                             Tables.Events.EventVersion,
                             Tables.Events.Actor)
-                            .values(UserUpdated.EVENT_NAME, codeVersion, 1, actorId)
+                            .values(UserCreated.EVENT_NAME, codeVersion, 1, actorId)
                             .returning(Tables.Events.Sequence, Tables.Events.When)
                             .fetchOne();
 
-                    final String digestedPassword = passwordDigester.digestPassword(password);
-
-                    final UserFactProjection existingUserFacts = db.select()
-                            .from(UserFacts.UserFacts)
-                            .where(UserFacts.UserFacts.UserId.equal(userId))
-                            .orderBy(DSL.max(UserFacts.UserFacts.Sequence).desc())
-                            .fetchOneInto(UserFactProjection.class);
-                    
-                    db.insertInto(Tables.UserFacts,
-                            Tables.UserFacts.Email,
-                            Tables.UserFacts.Password,
-                            Tables.UserFacts.Sequence,
-                            Tables.UserFacts.Username,
-                            Tables.UserFacts.UserId,
-                            Tables.UserFacts.IsDisabled,
-                            Tables.UserFacts.IsDeleted)
-                            .values(
-                                    email,
-                                    digestedPassword,
+                    db.batch(
+                            buildPasswordQuery(
+                                    password,
+                                    userId,
                                     sequenceWhen.sequence(),
+                                    db
+                            ),
+                            buildEmailQuery(
+                                    email,
+                                    userId,
+                                    sequenceWhen.sequence(),
+                                    db
+                            ),
+                            buildUsernameQuery(
                                     username,
                                     userId,
-                                    existingUserFacts.isDisabled,
-                                    existingUserFacts.isDeleted
+                                    sequenceWhen.sequence(),
+                                    db
                             )
-                            .execute();
+                    ).execute();
 
                     return new UserUpdated(sequenceWhen.sequence(), userId, sequenceWhen.when().toInstant());
                 }
