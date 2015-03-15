@@ -1,9 +1,7 @@
-package opus.address.users.writers;
+package opus.address.users;
 
 import opus.address.database.jooq.generated.Tables;
 import opus.address.database.jooq.generated.tables.records.Events;
-import opus.address.users.events.UserCreated;
-import opus.address.users.events.UserUpdated;
 import org.jooq.DSLContext;
 import org.jooq.Query;
 import org.jooq.impl.DSL;

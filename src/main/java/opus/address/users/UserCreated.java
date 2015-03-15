@@ -1,4 +1,4 @@
-package opus.address.users.events;
+package opus.address.users;
 
 import opus.address.commons.Event;
 

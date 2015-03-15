@@ -1,4 +1,4 @@
-package opus.address.users.projections;
+package opus.address.users;
 
 public final class UserFactProjection {
     public final Long sequence;

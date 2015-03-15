@@ -1,4 +1,4 @@
-package opus.address.users.representations;
+package opus.address.users;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

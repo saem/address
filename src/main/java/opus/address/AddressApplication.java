@@ -10,15 +10,13 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import opus.address.users.factories.UserFactory;
-import opus.address.users.representations.deserializer.UserActionRepresentationDeserializer;
-import opus.address.users.resources.UserResource;
+import opus.address.users.UserFactory;
+import opus.address.users.UserActionRepresentationDeserializer;
+import opus.address.users.UserResource;
 import org.joda.time.DateTimeZone;
 
-import java.io.InputStream;
 import java.util.Optional;
 import java.util.TimeZone;
-import java.util.jar.Manifest;
 
 public class AddressApplication extends Application<AddressConfiguration> {
     private final JooqBundle<AddressConfiguration> jooq = new JooqBundle<AddressConfiguration>() {

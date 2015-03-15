@@ -1,4 +1,4 @@
-package opus.address.users.representations.deserializer;
+package opus.address.users;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.Version;
@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import opus.address.users.representations.UserActionRepresentation;
-import opus.address.users.representations.UserDeleteRepresentation;
-import opus.address.users.representations.UserWriteRepresentation;
+import opus.address.users.UserActionRepresentation;
+import opus.address.users.UserDeleteRepresentation;
+import opus.address.users.UserWriteRepresentation;
 
 import java.io.IOException;
 

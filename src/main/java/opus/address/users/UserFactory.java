@@ -1,7 +1,5 @@
-package opus.address.users.factories;
+package opus.address.users;
 
-import opus.address.users.readers.UserReader;
-import opus.address.users.writers.UserWriter;
 import org.jooq.DSLContext;
 
 public final class UserFactory {
@@ -9,12 +7,6 @@ public final class UserFactory {
 
     public UserFactory(String codeVersion) {
         this.codeVersion = codeVersion;
-    }
-    
-    public static UserReader buildUserReader(
-            DSLContext database
-    ) {
-        return new UserReader(database);
     }
 
     public UserWriter buildUserWriter(

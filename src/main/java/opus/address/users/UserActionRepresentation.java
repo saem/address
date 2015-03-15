@@ -1,4 +1,4 @@
-package opus.address.users.representations;
+package opus.address.users;
 
 public interface UserActionRepresentation {
 }

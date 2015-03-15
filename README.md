@@ -12,6 +12,7 @@ mvn clean && mvn package && java -jar target/address-0.1.jar server dev.yml
 ```
 
 # todos
+0) Finish Persister, such that it can add various operations, and save things
 1) Write to tables_affected column in the events table.
 2) Rework the resource to post events instead of users.
 3) Write address book command processor.

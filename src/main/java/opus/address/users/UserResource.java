@@ -1,24 +1,19 @@
-package opus.address.users.resources;
+package opus.address.users;
 
-import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.params.LongParam;
 import opus.address.security.PasswordDigester;
-import opus.address.users.events.UserCreated;
-import opus.address.users.events.UserUpdated;
-import opus.address.users.factories.UserFactory;
-import opus.address.users.representations.UserFactReadRepresentation;
-import opus.address.users.representations.UserWriteRepresentation;
 import org.jooq.DSLContext;
 
 import javax.validation.Valid;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Path("/users")
 public final class UserResource {
@@ -31,7 +26,7 @@ public final class UserResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response postUser(
+    public Response createAUser(
             @Valid UserWriteRepresentation userWriteRepresentation,
             @Context DSLContext database
     ) {
@@ -54,33 +49,10 @@ public final class UserResource {
                 .orElseGet(() -> Response.serverError().build());
     }
     
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Path("/{userId}")
-//    public List<UserFactReadRepresentation> getUserHistory(
-//            @Context DSLContext database,
-//            @PathParam("userId") LongParam userId,
-//            @QueryParam("numberOfRecords") @DefaultValue("10") IntParam numberOfRecords,
-//            @QueryParam("offset") @DefaultValue("0") IntParam offset
-//    ){
-//        return UserFactory.buildUserReader(database).getUserHistory(userId.get(), numberOfRecords.get(), offset.get())
-//                .stream()
-//                .map(u -> new UserFactReadRepresentation(
-//                        u.sequence,
-//                        u.userId,
-//                        u.username,
-//                        u.email,
-//                        u.isDeleted,
-//                        u.isDisabled,
-//                        u.actorId)
-//                )
-//                .collect(Collectors.toList());
-//    }
-    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{userId}")
-    public Response putUser(
+    public Response updateAUser(
             @PathParam("userId") LongParam userId,
             @Valid UserWriteRepresentation userWriteRepresentation,
             @Context DSLContext database
