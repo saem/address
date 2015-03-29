@@ -1,5 +1,8 @@
 package opus.address.users;
 
+import opus.address.commons.persistence.EntityOperation;
+import opus.address.commons.persistence.Persister;
+import opus.address.commons.persistence.StringFactOperation;
 import opus.address.database.jooq.generated.Tables;
 import opus.address.database.jooq.generated.tables.records.Events;
 import org.jooq.DSLContext;
@@ -25,50 +28,64 @@ public final class UserWriter {
             final String username,
             final String password,
             final Long actorId) {
+        final Persister persister = new Persister(codeVersion, 1, actorId, UserCreated.EVENT_NAME);
         return Optional.ofNullable(database.transactionResult(c -> {
                     final DSLContext db = DSL.using(c);
 
-                    final Events sequenceWhen = db.insertInto(Tables.Events,
-                            Tables.Events.Event,
-                            Tables.Events.CodeVersion,
-                            Tables.Events.EventVersion,
-                            Tables.Events.Actor)
-                            .values(UserCreated.EVENT_NAME, codeVersion, 1, actorId)
-                            .returning(Tables.Events.Sequence, Tables.Events.When)
-                            .fetchOne();
- 
-                    final Long entityId = db.insertInto(Tables.Entities)
-                            .defaultValues()
-                            .returning(Tables.Entities.EntityId)
-                            .fetchOne()
-                            .entityId();
+                    final EntityOperation entity = new EntityOperation();
+                    final UserEntityTypeOperation userEntity = new UserEntityTypeOperation(entity);
+                    
+                    persister.addOperation(userEntity)
+                            .addOperation(new StringFactOperation(entity, Tables.UsersFactsPassword.UserId, Tables.UsersFactsPassword.Password, password))
+                            .addOperation(new StringFactOperation(entity, Tables.UsersFactsEmail.UserId, Tables.UsersFactsEmail.Email, email))
+                            .addOperation(new StringFactOperation(entity, Tables.UsersFactsUsername.UserId, Tables.UsersFactsUsername.Username, username))
+                    ;
 
-                    db.batch(                    
-                            buildWriteQuery(
-                                    entityId, 
-                                    db
-                            ),
-                            buildPasswordQuery(
-                                    password,
-                                    entityId,
-                                    sequenceWhen.sequence(),
-                                    db
-                            ),
-                            buildEmailQuery(
-                                    email,
-                                    entityId,
-                                    sequenceWhen.sequence(),
-                                    db
-                            ),
-                            buildUsernameQuery(
-                                    username,
-                                    entityId,
-                                    sequenceWhen.sequence(),
-                                    db
-                            )
-                    ).execute();
+                    final Events event = persister.persist(db);
 
-                    return new UserCreated(sequenceWhen.sequence(), entityId, sequenceWhen.when().toInstant());
+                    return new UserCreated(event.sequence(), entity.getId(), event.when().toInstant());
+                    
+//                    final Events sequenceWhen = db.insertInto(Tables.Events,
+//                            Tables.Events.Event,
+//                            Tables.Events.CodeVersion,
+//                            Tables.Events.EventVersion,
+//                            Tables.Events.Actor)
+//                            .values(UserCreated.EVENT_NAME, codeVersion, 1, actorId)
+//                            .returning(Tables.Events.Sequence, Tables.Events.When)
+//                            .fetchOne();
+// 
+//                    final Long entityId = db.insertInto(Tables.Entities)
+//                            .defaultValues()
+//                            .returning(Tables.Entities.EntityId)
+//                            .fetchOne()
+//                            .entityId();
+//
+//                    db.batch(
+//                            buildWriteQuery(
+//                                    entityId,
+//                                    db
+//                            ),
+//                            buildPasswordQuery(
+//                                    password,
+//                                    entityId,
+//                                    sequenceWhen.sequence(),
+//                                    db
+//                            ),
+//                            buildEmailQuery(
+//                                    email,
+//                                    entityId,
+//                                    sequenceWhen.sequence(),
+//                                    db
+//                            ),
+//                            buildUsernameQuery(
+//                                    username,
+//                                    entityId,
+//                                    sequenceWhen.sequence(),
+//                                    db
+//                            )
+//                    ).execute();
+//
+//                    return new UserCreated(sequenceWhen.sequence(), entityId, sequenceWhen.when().toInstant());
                 }
         ));
     }
