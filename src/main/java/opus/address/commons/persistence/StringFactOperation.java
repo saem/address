@@ -18,7 +18,6 @@ public final class StringFactOperation extends FactOperation<String> {
     @SuppressWarnings("unchecked")
     // We know the table field type, so therefore the field and value must match
     public Insert getQuery(DSLContext db, final Events event) {
-        // @todo this is seriously busted because it doesn't save the entity id or event sequence
         return db.insertInto(getTable(), getField(), DSL.fieldByName(Long.class, "sequence"), entityField)
                 .values(value, event.sequence(), entity.getId());
     }
