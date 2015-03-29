@@ -1,6 +1,7 @@
 package opus.address.users;
 
 import opus.address.commons.persistence.EntityOperation;
+import opus.address.commons.persistence.ExistingEntityOperation;
 import opus.address.commons.persistence.Persister;
 import opus.address.commons.persistence.StringFactOperation;
 import opus.address.database.jooq.generated.Tables;
@@ -181,17 +182,29 @@ public final class UserWriter {
             String password,
             Long actorId
     ) {
+        final Persister persister = new Persister(codeVersion, 1, actorId, UserUpdated.EVENT_NAME);
         return Optional.ofNullable(database.transactionResult(c -> {
                     final DSLContext db = DSL.using(c);
 
-                    final Events sequenceWhen = db.insertInto(Tables.Events,
-                            Tables.Events.Event,
-                            Tables.Events.CodeVersion,
-                            Tables.Events.EventVersion,
-                            Tables.Events.Actor)
-                            .values(UserCreated.EVENT_NAME, codeVersion, 1, actorId)
-                            .returning(Tables.Events.Sequence, Tables.Events.When)
-                            .fetchOne();
+//                    final Events sequenceWhen = db.insertInto(Tables.Events,
+//                            Tables.Events.Event,
+//                            Tables.Events.CodeVersion,
+//                            Tables.Events.EventVersion,
+//                            Tables.Events.Actor)
+//                            .values(UserUpdated.EVENT_NAME, codeVersion, 1, actorId)
+//                            .returning(Tables.Events.Sequence, Tables.Events.When)
+//                            .fetchOne();
+
+                    final ExistingEntityOperation entity = new ExistingEntityOperation(userId);
+
+                    persister.addOperation(entity)
+                            .addOperation(new StringFactOperation(entity, Tables.UsersFactsPassword.UserId, Tables.UsersFactsPassword.Password, password))
+                            .addOperation(new StringFactOperation(entity, Tables.UsersFactsEmail.UserId, Tables.UsersFactsEmail.Email, email))
+                            .addOperation(new StringFactOperation(entity, Tables.UsersFactsUsername.UserId, Tables.UsersFactsUsername.Username, username))
+                    ;
+
+                    final Events event = persister.persist(db);
+
 
                     db.batch(
                             buildPasswordQuery(

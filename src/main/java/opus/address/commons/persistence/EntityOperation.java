@@ -10,6 +10,10 @@ import org.jooq.InsertResultStep;
 public final class EntityOperation implements Operation {
     private final OneTimeSet<Long> id = new OneTimeSet<>();
 
+    public EntityOperation(final Long entityId) {
+        setId(entityId);
+    }
+    
     @Override
     public InsertResultStep<Entities> getQuery(
             final DSLContext db,
