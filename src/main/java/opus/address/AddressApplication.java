@@ -10,8 +10,7 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import opus.address.users.UserFactory;
-import opus.address.users.UserActionRepresentationDeserializer;
+import opus.address.people.PersonResource;
 import opus.address.users.UserResource;
 import org.joda.time.DateTimeZone;
 
@@ -57,13 +56,13 @@ public class AddressApplication extends Application<AddressConfiguration> {
         final String codeVersion = Optional.ofNullable(
                 Manifests.read("Implementation-Build"))
                 .orElseThrow(() -> new InvalidCodeVersionException("'Implementation-Build' property was not set."));
-        
+
         // Serialization Configuration
         ObjectMapper objectMapper = environment.getObjectMapper();
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        objectMapper.registerModule(new UserActionRepresentationDeserializer().getModule());
-        
-        environment.jersey().register(new UserResource(new UserFactory(codeVersion)));
+
+        environment.jersey().register(UserResource.build(codeVersion));
+        environment.jersey().register(PersonResource.build(codeVersion));
     }
 }
 

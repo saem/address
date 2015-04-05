@@ -1,15 +1,18 @@
 package opus.address.commons.persistence;
 
 import opus.address.database.jooq.generated.tables.records.Events;
-import org.jooq.*;
+import org.jooq.DSLContext;
+import org.jooq.Insert;
+import org.jooq.Record;
+import org.jooq.TableField;
 import org.jooq.impl.DSL;
 
-public final class StringFactOperation extends FactOperation<String> {
-    public StringFactOperation(
+public final class BooleanFactOperation extends FactOperation<Boolean> {
+    public BooleanFactOperation(
             final EntityIdProvider entity,
             final TableField<? extends Record, Long> entityField,
-            final TableField<? extends Record, String> field,
-            final String value
+            final TableField<? extends Record, Boolean> field,
+            final Boolean value
     ) {
         super(entity, entityField, field, value);
     }

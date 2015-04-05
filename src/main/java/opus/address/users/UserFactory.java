@@ -2,15 +2,15 @@ package opus.address.users;
 
 import org.jooq.DSLContext;
 
-public final class UserFactory {
+final class UserFactory {
     private final String codeVersion;
 
-    public UserFactory(String codeVersion) {
+    public UserFactory(final String codeVersion) {
         this.codeVersion = codeVersion;
     }
 
     public UserWriter buildUserWriter(
-            DSLContext database
+            final DSLContext database
     ) {
         return new UserWriter(database, codeVersion);
     }

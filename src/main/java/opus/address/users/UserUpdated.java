@@ -1,10 +1,8 @@
 package opus.address.users;
 
-import opus.address.commons.Event;
-
 import java.time.Instant;
 
-public class UserUpdated implements Event {
+final class UserUpdated implements UserEvent {
     public static final String EVENT_NAME = "user_updated";
 
     public final Long sequence;
@@ -17,4 +15,6 @@ public class UserUpdated implements Event {
         this.userId = userId;
         this.instant = instant;
     }
+
+    public long getSequence() { return sequence; }
 }

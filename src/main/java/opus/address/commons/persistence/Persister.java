@@ -43,7 +43,6 @@ public final class Persister {
 
     public Persister addOperation(final FactOperation operation) {
         this.facts.add(operation);
-        this.entities.add(operation.entity);
         return this;
     }
 

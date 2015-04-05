@@ -12,5 +12,7 @@ mvn clean && mvn package && java -jar target/address-0.1.jar server dev.yml
 ```
 
 # todos
-1) Rework the resource to post events instead of users.
-2) Write address book command processor.
+1) Create event detail and list view.
+2) Figure out how to handle updates/deletes to non-existent entities.
+3) Start working on phones.
+4) Write address book command processor.

@@ -7,13 +7,9 @@ import opus.address.database.jooq.generated.tables.records.Events;
 import org.jooq.DSLContext;
 import org.jooq.InsertResultStep;
 
-public final class EntityOperation implements Operation {
+public final class EntityOperation implements Operation, EntityIdProvider {
     private final OneTimeSet<Long> id = new OneTimeSet<>();
 
-    public EntityOperation(final Long entityId) {
-        setId(entityId);
-    }
-    
     @Override
     public InsertResultStep<Entities> getQuery(
             final DSLContext db,
