@@ -48,8 +48,8 @@
                              referencedColumnNames="entity_id"
                              nullable="false"/>
             </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_and_emails_facts_is_related_addresses"
+            <column name="email_id" type="bigint">
+                <constraints foreignKeyName="fk_entities_and_emails_facts_is_related_emails"
                              referencedTableName="emails"
                              referencedColumnNames="entity_id"
                              nullable="false"/>
@@ -60,7 +60,7 @@
         </createTable>
 
         <addPrimaryKey tableName="entities_and_emails_facts_is_related"
-                       columnNames="sequence,entity_id,address_id"
+                       columnNames="sequence,entity_id,email_id"
                        constraintName="pk_entities_and_emails_facts_is_related"/>
     </changeSet>
 

@@ -11,10 +11,11 @@
     <name>Glorified Address Book</name>
 
     <properties>
-        <dropwizard.version>0.8.0-rc2</dropwizard.version>
+        <dropwizard.version>0.8.0</dropwizard.version>
         <dropwizard.jooq.version>0.8.0-0-SNAPSHOT</dropwizard.jooq.version>
         <jooq.version>3.5.1</jooq.version>
         <jasypt.version>1.9.2</jasypt.version>
+        <jackson.version>2.5.1</jackson.version>
         
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -106,6 +107,18 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        
+        <!-- serialization -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 

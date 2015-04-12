@@ -4,12 +4,14 @@ import com.bendb.dropwizard.jooq.JooqBundle;
 import com.bendb.dropwizard.jooq.JooqFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.jcabi.manifests.Manifests;
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import opus.address.events.server.EventResource;
 import opus.address.people.PersonResource;
 import opus.address.users.UserResource;
 import org.joda.time.DateTimeZone;
@@ -60,9 +62,11 @@ public class AddressApplication extends Application<AddressConfiguration> {
         // Serialization Configuration
         ObjectMapper objectMapper = environment.getObjectMapper();
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.registerModule(new JSR310Module());
 
         environment.jersey().register(UserResource.build(codeVersion));
         environment.jersey().register(PersonResource.build(codeVersion));
+        environment.jersey().register(EventResource.build(codeVersion));
     }
 }
 

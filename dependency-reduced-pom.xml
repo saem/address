@@ -262,7 +262,7 @@
     <dependency>
       <groupId>io.dropwizard</groupId>
       <artifactId>dropwizard-testing</artifactId>
-      <version>0.8.0-rc2</version>
+      <version>0.8.0</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -291,8 +291,9 @@
   <properties>
     <jasypt.version>1.9.2</jasypt.version>
     <dropwizard.jooq.version>0.8.0-0-SNAPSHOT</dropwizard.jooq.version>
-    <dropwizard.version>0.8.0-rc2</dropwizard.version>
+    <dropwizard.version>0.8.0</dropwizard.version>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <jackson.version>2.5.1</jackson.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jooq.version>3.5.1</jooq.version>
   </properties>
