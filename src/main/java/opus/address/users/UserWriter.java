@@ -1,12 +1,10 @@
 package opus.address.users;
 
+import opus.address.commons.Try;
 import opus.address.commons.persistence.*;
 import opus.address.database.jooq.generated.Tables;
-import opus.address.database.jooq.generated.tables.records.Events;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
-
-import java.util.Optional;
 
 public final class UserWriter {
     private final DSLContext database;
@@ -20,13 +18,13 @@ public final class UserWriter {
         this.codeVersion = codeVersion;
     }
 
-    public Optional<UserCreated> write(
+    public Try<UserCreated> write(
             final String email,
             final String username,
             final String password,
             final Long actorId) {
         final Persister persister = new Persister(codeVersion, 1, actorId, UserCreated.EVENT_NAME);
-        return Optional.ofNullable(database.transactionResult(c -> {
+        return database.transactionResult(c -> {
                     final DSLContext db = DSL.using(c);
 
                     final EntityOperation entity = new EntityOperation();
@@ -38,14 +36,13 @@ public final class UserWriter {
                             .addOperation(new StringFactOperation(entity, Tables.UsersFactsUsername.UserId, Tables.UsersFactsUsername.Username, username))
                     ;
 
-                    final Events event = persister.persist(db);
-
-                    return new UserCreated(event.sequence(), entity.getId(), event.when().toInstant());
+                    return persister.persist(db)
+                            .map(event -> new UserCreated(event.sequence(), entity.getId(), event.when().toInstant()));
                 }
-        ));
+        );
     }
 
-    public Optional<UserUpdated> update(
+    public Try<UserUpdated> update(
             final long userId,
             final String email,
             final String username,
@@ -53,7 +50,7 @@ public final class UserWriter {
             final long actorId
     ) {
         final Persister persister = new Persister(codeVersion, 1, actorId, UserUpdated.EVENT_NAME);
-        return Optional.ofNullable(database.transactionResult(c -> {
+        return database.transactionResult(c -> {
                     final DSLContext db = DSL.using(c);
                     final ExistingEntity entity = new ExistingEntity(userId);
 
@@ -62,30 +59,28 @@ public final class UserWriter {
                             .addOperation(new StringFactOperation(entity, Tables.UsersFactsUsername.UserId, Tables.UsersFactsUsername.Username, username))
                     ;
 
-                    final Events event = persister.persist(db);
-
-                    return new UserUpdated(event.sequence(), userId, event.when().toInstant());
+                    return persister.persist(db)
+                            .map(event -> new UserUpdated(event.sequence(), userId, event.when().toInstant()));
                 }
-        ));
+        );
     }
 
-    public Optional<UserDeleted> delete(
+    public Try<UserDeleted> delete(
             final long userId,
             final long actorId
     ) {
         final Persister persister = new Persister(codeVersion, 1, actorId, UserUpdated.EVENT_NAME);
-        return Optional.ofNullable(database.transactionResult(c -> {
+        return database.transactionResult(c -> {
                     final DSLContext db = DSL.using(c);
                     final ExistingEntity entity = new ExistingEntity(userId);
 
                     persister.addOperation(new BooleanFactOperation(entity, Tables.UsersFactsIsDeleted.UserId, Tables.UsersFactsIsDeleted.IsDeleted, true))
                     ;
 
-                    final Events event = persister.persist(db);
-
-                    return new UserDeleted(event.sequence(), userId, event.when().toInstant());
+                    return persister.persist(db)
+                            .map(event -> new UserDeleted(event.sequence(), userId, event.when().toInstant()));
                 }
-        ));
+        );
     }
 }
 

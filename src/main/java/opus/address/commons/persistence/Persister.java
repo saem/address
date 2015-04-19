@@ -1,5 +1,6 @@
 package opus.address.commons.persistence;
 
+import opus.address.commons.Try;
 import opus.address.database.jooq.generated.Tables;
 import opus.address.database.jooq.generated.tables.records.Events;
 import org.jooq.DSLContext;
@@ -47,38 +48,40 @@ public final class Persister {
     }
 
     // @todo This should return the sequence and when
-    public Events persist(final DSLContext database) {
+    public Try<Events> persist(final DSLContext database) {
         // stage 1: insert of the event
         //  return ids
         //  complete all event futures
-        final String tablesAffected = Stream.concat(
-                Stream.concat(entities.stream().map(EntityOperation::getTable),
-                        entityTypes.stream().map(Operation::getTable)),
-                facts.stream().map(FactOperation::getTable)
-        ).distinct().map(Table::getName).collect(Collectors.joining(","));
+        return Try.attempt(() -> {
+            final String tablesAffected = Stream.concat(
+                    Stream.concat(entities.stream().map(EntityOperation::getTable),
+                            entityTypes.stream().map(Operation::getTable)),
+                    facts.stream().map(FactOperation::getTable)
+            ).distinct().map(Table::getName).collect(Collectors.joining(","));
 
-        final Events event = database.insertInto(Tables.Events,
-                Tables.Events.Event,
-                Tables.Events.CodeVersion,
-                Tables.Events.EventVersion,
-                Tables.Events.Actor,
-                Tables.Events.TablesAffected)
-                .values(eventName, codeVersion, eventVersion, actorId, tablesAffected)
-                .returning(Tables.Events.Sequence, Tables.Events.When)
-                .fetchOne();
-        
-        // stage 2: insert of the entities
-        //  return ids
-        //  complete all entity futures
-        entities.forEach(o -> o.setId(o.getQuery(database, event).fetchOne().entityId()));
+            final Events event = database.insertInto(Tables.Events,
+                    Tables.Events.Event,
+                    Tables.Events.CodeVersion,
+                    Tables.Events.EventVersion,
+                    Tables.Events.Actor,
+                    Tables.Events.TablesAffected)
+                    .values(eventName, codeVersion, eventVersion, actorId, tablesAffected)
+                    .returning(Tables.Events.Sequence, Tables.Events.When)
+                    .fetchOne();
 
-        // stage 3: insert of entity type operations
-        batchExecute(database, event, entityTypes);
-        
-        // stage 4: insert of facts
-        batchExecute(database, event, facts);
-        
-        return event;
+            // stage 2: insert of the entities
+            //  return ids
+            //  complete all entity futures
+            entities.forEach(o -> o.setId(o.getQuery(database, event).fetchOne().entityId()));
+
+            // stage 3: insert of entity type operations
+            batchExecute(database, event, entityTypes);
+
+            // stage 4: insert of facts
+            batchExecute(database, event, facts);
+
+            return event;
+        });
     }
     
     private void batchExecute(

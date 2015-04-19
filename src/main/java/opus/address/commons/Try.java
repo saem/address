@@ -77,7 +77,7 @@ public abstract class Try<T> {
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
         return other instanceof Try && (
                 (((Try) other).isFailure() && this.isFailure()) ||
                         (((Try) other).isSuccess() && this.isSuccess() && ((Success) other).get().equals(((Success) this).get()))
@@ -89,7 +89,7 @@ public abstract class Try<T> {
     private static class Failure<V> extends Try<V> {
         final private RuntimeException exception;
 
-        public Failure(Exception e) {
+        public Failure(final Exception e) {
             super();
             this.exception = new RuntimeException(e);
         }

@@ -1,6 +1,7 @@
 package opus.address.people;
 
 import opus.address.commons.Event;
+import opus.address.commons.Try;
 import opus.address.commons.http.Https;
 import opus.address.commons.persistence.*;
 import opus.address.database.jooq.generated.Tables;
@@ -109,13 +110,13 @@ final class PersonWriter {
         this.codeVersion = codeVersion;
     }
 
-    public Optional<PersonCreated> write(
+    public Try<PersonCreated> write(
             final String firstName,
             final String lastName,
             final Long actorId
     ) {
         final Persister persister = new Persister(codeVersion, 1, actorId, PersonCreated.EVENT_NAME);
-        return Optional.ofNullable(database.transactionResult(c -> {
+        return database.transactionResult(c -> {
                     final DSLContext db = DSL.using(c);
 
                     final EntityOperation entity = new EntityOperation();
@@ -125,21 +126,20 @@ final class PersonWriter {
                             .addOperation(new StringFactOperation(entity, Tables.PeopleFactsFirstName.EntityId, Tables.PeopleFactsFirstName.FirstName, firstName))
                             .addOperation(new StringFactOperation(entity, Tables.PeopleFactsLastName.EntityId, Tables.PeopleFactsLastName.LastName, lastName));
 
-                    final Events event = persister.persist(db);
-
-                    return new PersonCreated(event.sequence(), entity.getId(), event.when().toInstant());
+                    return persister.persist(db)
+                            .map(event -> new PersonCreated(event.sequence(), entity.getId(), event.when().toInstant()));
                 }
-        ));
+        );
     }
 
-    public Optional<PersonUpdated> update(
+    public Try<PersonUpdated> update(
             final long personId,
             final String firstName,
             final String lastName,
             final Long actorId
     ) {
         final Persister persister = new Persister(codeVersion, 1, actorId, PersonUpdated.EVENT_NAME);
-        return Optional.ofNullable(database.transactionResult(c -> {
+        return database.transactionResult(c -> {
                     final DSLContext db = DSL.using(c);
 
                     final ExistingEntity entity = new ExistingEntity(personId);
@@ -147,29 +147,27 @@ final class PersonWriter {
                     persister.addOperation(new StringFactOperation(entity, Tables.PeopleFactsFirstName.EntityId, Tables.PeopleFactsFirstName.FirstName, firstName))
                             .addOperation(new StringFactOperation(entity, Tables.PeopleFactsLastName.EntityId, Tables.PeopleFactsLastName.LastName, lastName));
 
-                    final Events event = persister.persist(db);
-
-                    return new PersonUpdated(event.sequence(), entity.getId(), event.when().toInstant());
+                    return persister.persist(db)
+                            .map(event -> new PersonUpdated(event.sequence(), entity.getId(), event.when().toInstant()));
                 }
-        ));
+        );
     }
 
-    public Optional<PersonDeleted> delete(
+    public Try<PersonDeleted> delete(
             final long personId,
             final long actorId
     ) {
         final Persister persister = new Persister(codeVersion, 1, actorId, PersonDeleted.EVENT_NAME);
-        return Optional.ofNullable(database.transactionResult(c -> {
+        return database.transactionResult(c -> {
                     final DSLContext db = DSL.using(c);
                     final ExistingEntity entity = new ExistingEntity(personId);
 
                     persister.addOperation(new BooleanFactOperation(entity, Tables.EntitiesFactsIsDeleted.EntityId, Tables.EntitiesFactsIsDeleted.IsDeleted, true));
 
-                    final Events event = persister.persist(db);
-
-                    return new PersonDeleted(event.sequence(), personId, event.when().toInstant());
+                    return persister.persist(db)
+                            .map(event -> new PersonDeleted(event.sequence(), personId, event.when().toInstant()));
                 }
-        ));
+        );
     }
 }
 
