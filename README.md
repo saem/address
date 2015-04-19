@@ -12,7 +12,9 @@ mvn clean && mvn package && java -jar target/address-0.1.jar server dev.yml
 ```
 
 # todos
-1) JSON-LD-ify the API (references: json-ld.org, www.w3.org/TR/json-ld/, and github.com/jsonld-java/jsonld-java)
-2) Redo Relationship schema to be generic related facts, update phones, emails, and addresses.
-3) Provide phones, emails, addresses API
-4) Write address book command processor.
+1) Redo Relationship schema to be generic related facts, update phones, emails, and addresses.
+2) Provide phones, emails, addresses API
+3) Write address book command processor.
+
+# research
+1) how to hypermedia JSON?
