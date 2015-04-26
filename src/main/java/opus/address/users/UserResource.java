@@ -26,7 +26,6 @@ public final class UserResource {
             
     ) {
         return new UserResource(new UserFactory(codeVersion));
-        
     }
 
     @POST

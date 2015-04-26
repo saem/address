@@ -27,79 +27,42 @@
         </createTable>
     </changeSet>
 
-    <!-- people_facts_primary_phone -->
+    <!-- entities_facts_primary_phone -->
     <changeSet id="2" author="saem">
         <preConditions>
-            <tableExists tableName="people"/>
+            <tableExists tableName="entities"/>
             <not>
-                <tableExists tableName="people_facts_primary_phone"/>
+                <tableExists tableName="entities_facts_primary_phone"/>
             </not>
         </preConditions>
 
-        <createTable tableName="people_facts_primary_phone">
+        <createTable tableName="entities_facts_primary_phone">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_people_facts_primary_phone_events"
+                <constraints foreignKeyName="fk_entities_facts_primary_phone_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence"
                              nullable="false"/>
             </column>
             <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_people_facts_primary_phone_people"
-                             referencedTableName="people"
+                <constraints foreignKeyName="fk_entities_facts_primary_phone_entities"
+                             referencedTableName="entities"
                              referencedColumnNames="entity_id"
                              nullable="false"/>
             </column>
             <column name="primary_phone" type="bigint">
                 <constraints nullable="true"
-                             foreignKeyName="fk_people_facts_primary_phone_phones"
+                             foreignKeyName="fk_entities_facts_primary_phone_phones"
                              referencedTableName="phones"
                              referencedColumnNames="entity_id"
                         />
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="people_facts_primary_phone" columnNames="sequence,entity_id" constraintName="pk_people_facts_primary_phone"/>
-    </changeSet>
-
-    <!-- entities_and_phones_facts_is_related -->
-    <changeSet id="3" author="saem">
-        <preConditions>
-            <not>
-                <tableExists tableName="entities_and_phones_facts_is_related"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="entities_and_phones_facts_is_related">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_entities_and_phones_facts_is_related_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_and_phones_facts_is_related_entities"
-                             referencedTableName="entities"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="phone_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_and_phones_facts_is_related_phones"
-                             referencedTableName="phones"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="is_related" type="bool" defaultValueBoolean="true">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="entities_and_phones_facts_is_related"
-                       columnNames="sequence,entity_id,phone_id"
-                       constraintName="pk_entities_and_phones_facts_is_related"/>
+        <addPrimaryKey tableName="entities_facts_primary_phone" columnNames="sequence,entity_id" constraintName="pk_entities_facts_primary_phone"/>
     </changeSet>
     
     <!-- phones_facts_number -->
-    <changeSet id="4" author="saem">
+    <changeSet id="3" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="phones_facts_number"/>
@@ -128,7 +91,7 @@
     </changeSet>
 
     <!-- phones_facts_extension -->
-    <changeSet id="5" author="saem">
+    <changeSet id="4" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="phones_facts_extension"/>
@@ -157,7 +120,7 @@
     </changeSet>
 
     <!-- phones_facts_type -->
-    <changeSet id="6" author="saem">
+    <changeSet id="5" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="phones_facts_type"/>
@@ -186,7 +149,7 @@
     </changeSet>
 
     <!-- phones_facts_do_not_call -->
-    <changeSet id="7" author="saem">
+    <changeSet id="6" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="phones_facts_do_not_call"/>

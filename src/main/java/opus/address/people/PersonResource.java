@@ -6,9 +6,11 @@ import opus.address.commons.http.Https;
 import opus.address.commons.persistence.*;
 import opus.address.database.jooq.generated.Tables;
 import opus.address.database.jooq.generated.tables.records.Events;
+import opus.address.people.representations.ContactInformationCreatedRepresentation;
 import opus.address.people.representations.PersonCreatedRepresentation;
 import opus.address.people.representations.PersonDeletedRepresentation;
 import opus.address.people.representations.PersonUpdatedRepresentation;
+import opus.address.phones.PhoneCreatedRepresentation;
 import org.jooq.DSLContext;
 import org.jooq.Insert;
 import org.jooq.Table;
@@ -22,7 +24,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Path("/events/person")
 public final class PersonResource {
@@ -45,12 +49,17 @@ public final class PersonResource {
             final @Valid PersonCreatedRepresentation personCreatedRepresentation,
             final @Context DSLContext database
     ) {
+        
+        
         return Https.mapEventToResponse(
                 personFactory.buildPersonWriter(database)
                         .write(
                                 personCreatedRepresentation.firstName,
                                 personCreatedRepresentation.lastName,
-                                personCreatedRepresentation.actorId));
+                                personCreatedRepresentation.actorId,
+                                personCreatedRepresentation.contactInfo
+                        )
+        );
     }
 
     @POST
@@ -99,6 +108,44 @@ final class PersonFactory {
     }
 }
 
+final class PersisterContext<T> {
+    private final Persister persister;
+
+    public PersisterContext(final String codeVersion,
+                            final int eventVersion,
+                            final long actorId,
+                            final String eventName) {
+        this.persister = new Persister(codeVersion, eventVersion, actorId, eventName);
+    }
+    
+    // something that takes a function, which uses a persister and returns a PersisterContext
+}
+
+/*
+getLine() {
+    // I have access to variables/state that let me read something
+}
+
+
+
+
+Optional<T> (T -> U) OPtional<U>
+
+Where U <> Persister
+PersisterContext<Persister> (Persister->U) PersisterContext<Persister>
+
+(DSLContext?, codeVersion) ->
+PersistenceContext.build(actorId, eventName, eventVersion) ->
+Persister
+
+Writer(Persister) ->
+.write { Persister.addOperations(operations) }
+
+Persister.persist(DSLContext?) ->
+mapToEvent
+
+*/
+
 final class PersonWriter {
     private final DSLContext database;
     private final String codeVersion;
@@ -113,20 +160,19 @@ final class PersonWriter {
     public Try<PersonCreated> write(
             final String firstName,
             final String lastName,
-            final Long actorId
-    ) {
+            final Long actorId,
+            final List<ContactInformationCreatedRepresentation> contactInfo) {
         final Persister persister = new Persister(codeVersion, 1, actorId, PersonCreated.EVENT_NAME);
+
+        final EntityOperation entity = new EntityOperation();
+        final PersonEntityTypeOperation personEntity = new PersonEntityTypeOperation(entity);
+
+        persister.addOperation(personEntity)
+                .addOperation(new StringFactOperation(entity, Tables.PeopleFactsFirstName.EntityId, Tables.PeopleFactsFirstName.FirstName, firstName))
+                .addOperation(new StringFactOperation(entity, Tables.PeopleFactsLastName.EntityId, Tables.PeopleFactsLastName.LastName, lastName));
+
         return database.transactionResult(c -> {
-                    final DSLContext db = DSL.using(c);
-
-                    final EntityOperation entity = new EntityOperation();
-                    final PersonEntityTypeOperation personEntity = new PersonEntityTypeOperation(entity);
-
-                    persister.addOperation(personEntity)
-                            .addOperation(new StringFactOperation(entity, Tables.PeopleFactsFirstName.EntityId, Tables.PeopleFactsFirstName.FirstName, firstName))
-                            .addOperation(new StringFactOperation(entity, Tables.PeopleFactsLastName.EntityId, Tables.PeopleFactsLastName.LastName, lastName));
-
-                    return persister.persist(db)
+                    return persister.persist(DSL.using(c))
                             .map(event -> new PersonCreated(event.sequence(), entity.getId(), event.when().toInstant()));
                 }
         );
@@ -139,15 +185,13 @@ final class PersonWriter {
             final Long actorId
     ) {
         final Persister persister = new Persister(codeVersion, 1, actorId, PersonUpdated.EVENT_NAME);
+        final ExistingEntity entity = new ExistingEntity(personId);
+
+        persister.addOperation(new StringFactOperation(entity, Tables.PeopleFactsFirstName.EntityId, Tables.PeopleFactsFirstName.FirstName, firstName))
+                .addOperation(new StringFactOperation(entity, Tables.PeopleFactsLastName.EntityId, Tables.PeopleFactsLastName.LastName, lastName));
+
         return database.transactionResult(c -> {
-                    final DSLContext db = DSL.using(c);
-
-                    final ExistingEntity entity = new ExistingEntity(personId);
-
-                    persister.addOperation(new StringFactOperation(entity, Tables.PeopleFactsFirstName.EntityId, Tables.PeopleFactsFirstName.FirstName, firstName))
-                            .addOperation(new StringFactOperation(entity, Tables.PeopleFactsLastName.EntityId, Tables.PeopleFactsLastName.LastName, lastName));
-
-                    return persister.persist(db)
+                    return persister.persist(DSL.using(c))
                             .map(event -> new PersonUpdated(event.sequence(), entity.getId(), event.when().toInstant()));
                 }
         );
@@ -158,13 +202,12 @@ final class PersonWriter {
             final long actorId
     ) {
         final Persister persister = new Persister(codeVersion, 1, actorId, PersonDeleted.EVENT_NAME);
+        final ExistingEntity entity = new ExistingEntity(personId);
+
+        persister.addOperation(new BooleanFactOperation(entity, Tables.EntitiesFactsIsDeleted.EntityId, Tables.EntitiesFactsIsDeleted.IsDeleted, true));
+        
         return database.transactionResult(c -> {
-                    final DSLContext db = DSL.using(c);
-                    final ExistingEntity entity = new ExistingEntity(personId);
-
-                    persister.addOperation(new BooleanFactOperation(entity, Tables.EntitiesFactsIsDeleted.EntityId, Tables.EntitiesFactsIsDeleted.IsDeleted, true));
-
-                    return persister.persist(db)
+                    return persister.persist(DSL.using(c))
                             .map(event -> new PersonDeleted(event.sequence(), personId, event.when().toInstant()));
                 }
         );

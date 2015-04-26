@@ -12,7 +12,7 @@ mvn clean && mvn package && java -jar target/address-0.1.jar server dev.yml
 ```
 
 # todos
-1) Redo Relationship schema to be generic related facts, update phones, emails, and addresses.
+1) Create a persister applicative(?).
 2) Provide phones, emails, addresses API
 3) Write address book command processor.
 

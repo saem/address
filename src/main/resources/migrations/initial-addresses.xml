@@ -27,79 +27,42 @@
         </createTable>
     </changeSet>
 
-    <!-- entities_and_addresses_facts_is_related -->
+    <!-- entities_facts_primary_address -->
     <changeSet id="2" author="saem">
         <preConditions>
+            <tableExists tableName="entities"/>
             <not>
-                <tableExists tableName="entities_and_addresses_facts_is_related"/>
+                <tableExists tableName="entities_facts_primary_address"/>
             </not>
         </preConditions>
 
-        <createTable tableName="entities_and_addresses_facts_is_related">
+        <createTable tableName="entities_facts_primary_address">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_entities_and_addresses_facts_is_related_events"
+                <constraints foreignKeyName="fk_entities_facts_primary_address_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence"
                              nullable="false"/>
             </column>
             <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_and_addresses_facts_is_related_entities"
+                <constraints foreignKeyName="fk_entities_facts_primary_address_entities"
                              referencedTableName="entities"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_and_addresses_facts_is_related_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="is_related" type="bool" defaultValueBoolean="true">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="entities_and_addresses_facts_is_related"
-                       columnNames="sequence,entity_id,address_id"
-                       constraintName="pk_entities_and_addresses_facts_is_related"/>
-    </changeSet>
-
-    <!-- people_facts_primary_address -->
-    <changeSet id="3" author="saem">
-        <preConditions>
-            <tableExists tableName="people"/>
-            <not>
-                <tableExists tableName="people_facts_primary_address"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="people_facts_primary_address">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_people_facts_primary_address_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_people_facts_primary_address_people"
-                             referencedTableName="people"
                              referencedColumnNames="entity_id"
                              nullable="false"/>
             </column>
             <column name="primary_address" type="bigint">
                 <constraints nullable="true"
-                             foreignKeyName="fk_people_facts_primary_address_addresses"
+                             foreignKeyName="fk_entities_facts_primary_address_addresses"
                              referencedTableName="addresses"
                              referencedColumnNames="entity_id"
                         />
             </column>
         </createTable>
         
-        <addPrimaryKey tableName="people_facts_primary_address" columnNames="sequence,entity_id" constraintName="pk_people_facts_primary_address"/>
+        <addPrimaryKey tableName="entities_facts_primary_address" columnNames="sequence,entity_id" constraintName="pk_entities_facts_primary_address"/>
     </changeSet>
 
     <!-- addresses_facts_country_code -->
-    <changeSet id="4" author="saem">
+    <changeSet id="3" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="addresses_facts_country_code"/>
@@ -128,7 +91,7 @@
     </changeSet>
 
     <!-- addresses_facts_address_line -->
-    <changeSet id="5" author="saem">
+    <changeSet id="4" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="addresses_facts_address_line"/>
@@ -157,7 +120,7 @@
     </changeSet>
     
     <!-- addresses_facts_administrative_area -->
-    <changeSet id="6" author="saem">
+    <changeSet id="5" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="addresses_facts_administrative_area"/>
@@ -186,7 +149,7 @@
     </changeSet>
     
     <!-- addresses_facts_locality -->
-    <changeSet id="7" author="saem">
+    <changeSet id="6" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="addresses_facts_locality"/>
@@ -215,7 +178,7 @@
     </changeSet>
     
     <!-- addresses_facts_suite -->
-    <changeSet id="8" author="saem">
+    <changeSet id="7" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="addresses_facts_suite"/>
@@ -244,7 +207,7 @@
     </changeSet>
 
     <!-- addresses_facts_dependent_locality -->
-    <changeSet id="9" author="saem">
+    <changeSet id="8" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="addresses_facts_dependent_locality"/>
@@ -273,7 +236,7 @@
     </changeSet>
     
     <!-- addresses_facts_postal_code -->
-    <changeSet id="10" author="saem">
+    <changeSet id="9" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="addresses_facts_postal_code"/>
@@ -302,7 +265,7 @@
     </changeSet>
     
     <!-- addresses_facts_sorting_code -->
-    <changeSet id="11" author="saem">
+    <changeSet id="10" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="addresses_facts_sorting_code"/>
@@ -331,7 +294,7 @@
     </changeSet>
     
     <!-- addresses_facts_organization -->
-    <changeSet id="12" author="saem">
+    <changeSet id="11" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="addresses_facts_organization"/>
@@ -360,7 +323,7 @@
     </changeSet>
     
     <!-- addresses_facts_recipient -->
-    <changeSet id="13" author="saem">
+    <changeSet id="12" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="addresses_facts_recipient"/>
@@ -389,7 +352,7 @@
     </changeSet>
 
     <!-- addresses_facts_language_code -->
-    <changeSet id="14" author="saem">
+    <changeSet id="13" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="addresses_facts_language_code"/>

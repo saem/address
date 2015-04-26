@@ -27,79 +27,42 @@
         </createTable>
     </changeSet>
 
-    <!-- entities_and_emails_facts_is_related -->
+    <!-- entities_facts_primary_email -->
     <changeSet id="2" author="saem">
         <preConditions>
+            <tableExists tableName="entities"/>
             <not>
-                <tableExists tableName="entities_and_emails_facts_is_related"/>
+                <tableExists tableName="entities_facts_primary_email"/>
             </not>
         </preConditions>
 
-        <createTable tableName="entities_and_emails_facts_is_related">
+        <createTable tableName="entities_facts_primary_email">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_entities_and_emails_facts_is_related_events"
+                <constraints foreignKeyName="fk_entities_facts_primary_email_events"
                              referencedTableName="events"
                              referencedColumnNames="sequence"
                              nullable="false"/>
             </column>
             <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_and_emails_facts_is_related_entities"
+                <constraints foreignKeyName="fk_entities_facts_primary_email_entities"
                              referencedTableName="entities"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="email_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_and_emails_facts_is_related_emails"
-                             referencedTableName="emails"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="is_related" type="bool" defaultValueBoolean="true">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="entities_and_emails_facts_is_related"
-                       columnNames="sequence,entity_id,email_id"
-                       constraintName="pk_entities_and_emails_facts_is_related"/>
-    </changeSet>
-
-    <!-- people_facts_primary_email -->
-    <changeSet id="3" author="saem">
-        <preConditions>
-            <tableExists tableName="people"/>
-            <not>
-                <tableExists tableName="people_facts_primary_email"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="people_facts_primary_email">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_people_facts_primary_email_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_people_facts_primary_email_people"
-                             referencedTableName="people"
                              referencedColumnNames="entity_id"
                              nullable="false"/>
             </column>
             <column name="primary_email" type="bigint">
                 <constraints nullable="true"
-                             foreignKeyName="fk_people_facts_primary_email_emails"
+                             foreignKeyName="fk_entities_facts_primary_email_emails"
                              referencedTableName="emails"
                              referencedColumnNames="entity_id"
                         />
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="people_facts_primary_email" columnNames="sequence,entity_id" constraintName="pk_people_facts_primary_email"/>
+        <addPrimaryKey tableName="entities_facts_primary_email" columnNames="sequence,entity_id" constraintName="pk_entities_facts_primary_email"/>
     </changeSet>
 
     <!-- emails_facts_local_part -->
-    <changeSet id="4" author="michael">
+    <changeSet id="3" author="michael">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="emails_facts_local_part"/>
@@ -128,7 +91,7 @@
     </changeSet>
 
     <!-- emails_facts_domain -->
-    <changeSet id="5" author="michael">
+    <changeSet id="4" author="michael">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="emails_facts_domain"/>
@@ -158,7 +121,7 @@
     </changeSet>
 
     <!-- emails_facts_opted_enum -->
-    <changeSet id="6" author="michael">
+    <changeSet id="5" author="michael">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="emails_facts_opted_enum"/>

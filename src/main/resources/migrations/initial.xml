@@ -166,4 +166,40 @@
         <addPrimaryKey tableName="entities_facts_is_deleted" columnNames="sequence,entity_id" constraintName="pk_entities_facts_is_deleted" />
     </changeSet>
 
+    <changeSet id="7" author="saem">
+        <preConditions>
+            <not>
+                <tableExists tableName="entities_facts_is_related"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="entities_facts_is_related">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_entities_facts_is_related_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence"
+                             nullable="false"/>
+            </column>
+            <column name="parent_id" type="bigint">
+                <constraints foreignKeyName="fk_entities_facts_is_related_entities_parent"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false"/>
+            </column>
+            <column name="child_id" type="bigint">
+                <constraints foreignKeyName="fk_entities_facts_is_related_entities_child"
+                             referencedTableName="entities"
+                             referencedColumnNames="entity_id"
+                             nullable="false"/>
+            </column>
+            <column name="is_related" type="bool" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="entities_facts_is_related"
+                       columnNames="sequence,parent_id,child_id"
+                       constraintName="pk_entities_facts_is_related"/>
+    </changeSet>
+
 </databaseChangeLog>
