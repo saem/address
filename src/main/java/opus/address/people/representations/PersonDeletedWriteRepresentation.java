@@ -5,18 +5,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 
-public final class PersonDeletedRepresentation {
+public final class PersonDeletedWriteRepresentation extends PersonEventWriteRepresentation {
+    private static final String EVENT_NAME = "person_deleted";
     @NotNull
     public final long personId;
-    @NotNull
-    public final long actorId;
 
     @JsonCreator
-    public PersonDeletedRepresentation(
+    public PersonDeletedWriteRepresentation(
             final @JsonProperty("personId") long personId,
             final @JsonProperty("actorId") long actorId
     ) {
+        super(actorId);
         this.personId = personId;
-        this.actorId = actorId;
+    }
+
+    @Override
+    public String getName() {
+        return EVENT_NAME;
     }
 }

@@ -119,9 +119,6 @@
             <column name="event" type="text">
                 <constraints nullable="false" />
             </column>
-            <column name="event_version" type="int">
-                <constraints nullable="false" />
-            </column>
             <column name="code_version" type="text">
                 <constraints nullable="false" />
             </column>

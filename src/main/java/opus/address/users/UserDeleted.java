@@ -2,7 +2,7 @@ package opus.address.users;
 
 import java.time.Instant;
 
-final class UserDeleted implements UserEvent {
+final class UserDeleted implements UserEventLogged {
     public static final String EVENT_NAME = "user_deleted";
 
     public final Long sequence;

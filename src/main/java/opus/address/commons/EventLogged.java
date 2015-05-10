@@ -1,5 +1,5 @@
 package opus.address.commons;
 
-public interface Event {
+public interface EventLogged {
     public long getSequence();
 }

@@ -1,6 +1,6 @@
 package opus.address.commons.http;
 
-import opus.address.commons.Event;
+import opus.address.commons.EventLogged;
 import opus.address.commons.Try;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 public final class Https {
     private static final Logger LOGGER = LoggerFactory.getLogger(Https.class);
-    public static Response mapEventToResponse(final Try<? extends Event> event) {
+    public static Response mapEventToResponse(final Try<? extends EventLogged> event) {
         return event.map(u ->
                 Response.created(
                         UriBuilder

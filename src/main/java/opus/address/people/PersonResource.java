@@ -1,16 +1,15 @@
 package opus.address.people;
 
-import opus.address.commons.Event;
+import opus.address.commons.EventLogged;
 import opus.address.commons.Try;
 import opus.address.commons.http.Https;
 import opus.address.commons.persistence.*;
 import opus.address.database.jooq.generated.Tables;
 import opus.address.database.jooq.generated.tables.records.Events;
-import opus.address.people.representations.ContactInformationCreatedRepresentation;
-import opus.address.people.representations.PersonCreatedRepresentation;
-import opus.address.people.representations.PersonDeletedRepresentation;
-import opus.address.people.representations.PersonUpdatedRepresentation;
-import opus.address.phones.PhoneCreatedRepresentation;
+import opus.address.people.representations.PersonCreatedWriteRepresentation;
+import opus.address.people.representations.PersonDeletedWriteRepresentation;
+import opus.address.people.representations.PersonEventWriteRepresentation;
+import opus.address.people.representations.PersonUpdatedWriteRepresentation;
 import org.jooq.DSLContext;
 import org.jooq.Insert;
 import org.jooq.Table;
@@ -24,8 +23,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Path("/events/person")
@@ -46,51 +43,51 @@ public final class PersonResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/created")
     public Response personCreated(
-            final @Valid PersonCreatedRepresentation personCreatedRepresentation,
+            final @Valid PersonCreatedWriteRepresentation personCreatedRepresentation,
             final @Context DSLContext database
     ) {
-        
-        
-        return Https.mapEventToResponse(
-                personFactory.buildPersonWriter(database)
+
+//        final List<ContactInformationCreatedRepresentation> contactInfo
+        return database.transactionResult(c -> Https.mapEventToResponse(
+                personFactory.buildPersonWriter(personCreatedRepresentation)
                         .write(
                                 personCreatedRepresentation.firstName,
-                                personCreatedRepresentation.lastName,
-                                personCreatedRepresentation.actorId,
-                                personCreatedRepresentation.contactInfo
+                                personCreatedRepresentation.lastName
                         )
-        );
+                        .apply(DSL.using(c))
+        ));
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/updated")
     public Response personUpdated(
-            @Valid PersonUpdatedRepresentation personUpdatedRepresentation,
+            @Valid PersonUpdatedWriteRepresentation personUpdatedRepresentation,
             @Context DSLContext database
     ) {
-        return Https.mapEventToResponse(
-                personFactory.buildPersonWriter(database)
+        return database.transactionResult(c -> Https.mapEventToResponse(
+                personFactory.buildPersonWriter(personUpdatedRepresentation)
                         .update(personUpdatedRepresentation.personId,
                                 personUpdatedRepresentation.firstName,
-                                personUpdatedRepresentation.lastName,
-                                personUpdatedRepresentation.actorId
-                        ));
+                                personUpdatedRepresentation.lastName
+                        )
+                        .apply(DSL.using(c))
+        ));
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/deleted")
     public Response personDeleted(
-            @Valid PersonDeletedRepresentation personDeletedRepresentation,
+            @Valid PersonDeletedWriteRepresentation personDeletedRepresentation,
             @Context DSLContext database
     ) {
-        return Https.mapEventToResponse(
-                personFactory.buildPersonWriter(database)
-                        .delete(personDeletedRepresentation.personId,
-                                personDeletedRepresentation.actorId
+        return database.transactionResult(c -> Https.mapEventToResponse(
+                personFactory.buildPersonWriter(personDeletedRepresentation)
+                        .delete(personDeletedRepresentation.personId
                         )
-        );
+                        .apply(DSL.using(c))
+        ));
     }
 }
 
@@ -100,70 +97,43 @@ final class PersonFactory {
     public PersonFactory(final String codeVersion) {
         this.codeVersion = codeVersion;
     }
-    
-    public PersonWriter buildPersonWriter(
-            final DSLContext database
-    ) {
-        return new PersonWriter(database, codeVersion);
+
+    public PersonWriter buildPersonWriter(final PersonEventWriteRepresentation event) {
+        return new PersonWriter(new Persister(codeVersion, event.actorId, event.getName()));
     }
 }
 
-final class PersisterContext<T> {
-    private final Persister persister;
-
-    public PersisterContext(final String codeVersion,
-                            final int eventVersion,
-                            final long actorId,
-                            final String eventName) {
-        this.persister = new Persister(codeVersion, eventVersion, actorId, eventName);
-    }
+class PersisterContext<A> implements Function<DSLContext, A> {
+    private final Function<DSLContext, A> computation;
     
-    // something that takes a function, which uses a persister and returns a PersisterContext
+    public PersisterContext(final Function<DSLContext, A> computation) {
+        this.computation = computation;
+    }
+
+    public <B> PersisterContext<B> flatMap(final Function<A,PersisterContext<B>> mapper) {
+        return new PersisterContext<>(dslContext ->
+                mapper
+                        .apply(computation.apply(dslContext))
+                        .apply(dslContext));
+    }
+
+    public A apply(final DSLContext db) {
+        return computation.apply(db);
+    } 
 }
-
-/*
-getLine() {
-    // I have access to variables/state that let me read something
-}
-
-
-
-
-Optional<T> (T -> U) OPtional<U>
-
-Where U <> Persister
-PersisterContext<Persister> (Persister->U) PersisterContext<Persister>
-
-(DSLContext?, codeVersion) ->
-PersistenceContext.build(actorId, eventName, eventVersion) ->
-Persister
-
-Writer(Persister) ->
-.write { Persister.addOperations(operations) }
-
-Persister.persist(DSLContext?) ->
-mapToEvent
-
-*/
 
 final class PersonWriter {
-    private final DSLContext database;
-    private final String codeVersion;
+    private final Persister persister;
 
     public PersonWriter(
-            final DSLContext database,
-            final String codeVersion) {
-        this.database = database;
-        this.codeVersion = codeVersion;
+            final Persister persister
+    ) {
+        this.persister = persister;
     }
 
-    public Try<PersonCreated> write(
+    public PersisterContext<Try<PersonCreateLogged>> write(
             final String firstName,
-            final String lastName,
-            final Long actorId,
-            final List<ContactInformationCreatedRepresentation> contactInfo) {
-        final Persister persister = new Persister(codeVersion, 1, actorId, PersonCreated.EVENT_NAME);
-
+            final String lastName) {
         final EntityOperation entity = new EntityOperation();
         final PersonEntityTypeOperation personEntity = new PersonEntityTypeOperation(entity);
 
@@ -171,46 +141,33 @@ final class PersonWriter {
                 .addOperation(new StringFactOperation(entity, Tables.PeopleFactsFirstName.EntityId, Tables.PeopleFactsFirstName.FirstName, firstName))
                 .addOperation(new StringFactOperation(entity, Tables.PeopleFactsLastName.EntityId, Tables.PeopleFactsLastName.LastName, lastName));
 
-        return database.transactionResult(c -> {
-                    return persister.persist(DSL.using(c))
-                            .map(event -> new PersonCreated(event.sequence(), entity.getId(), event.when().toInstant()));
-                }
-        );
+        return new PersisterContext<>(dslContext -> persister.persist(dslContext)
+                .map(event -> new PersonCreateLogged(event.sequence(), entity.getId(), event.when().toInstant())));
     }
 
-    public Try<PersonUpdated> update(
+    public PersisterContext<Try<PersonUpdateLogged>> update(
             final long personId,
             final String firstName,
-            final String lastName,
-            final Long actorId
+            final String lastName
     ) {
-        final Persister persister = new Persister(codeVersion, 1, actorId, PersonUpdated.EVENT_NAME);
         final ExistingEntity entity = new ExistingEntity(personId);
 
         persister.addOperation(new StringFactOperation(entity, Tables.PeopleFactsFirstName.EntityId, Tables.PeopleFactsFirstName.FirstName, firstName))
                 .addOperation(new StringFactOperation(entity, Tables.PeopleFactsLastName.EntityId, Tables.PeopleFactsLastName.LastName, lastName));
 
-        return database.transactionResult(c -> {
-                    return persister.persist(DSL.using(c))
-                            .map(event -> new PersonUpdated(event.sequence(), entity.getId(), event.when().toInstant()));
-                }
-        );
+        return new PersisterContext<>(dslContext -> persister.persist(dslContext)
+                .map(event -> new PersonUpdateLogged(event.sequence(), entity.getId(), event.when().toInstant())));
     }
 
-    public Try<PersonDeleted> delete(
-            final long personId,
-            final long actorId
+    public PersisterContext<Try<PersonDeleteLogged>> delete(
+            final long personId
     ) {
-        final Persister persister = new Persister(codeVersion, 1, actorId, PersonDeleted.EVENT_NAME);
         final ExistingEntity entity = new ExistingEntity(personId);
 
         persister.addOperation(new BooleanFactOperation(entity, Tables.EntitiesFactsIsDeleted.EntityId, Tables.EntitiesFactsIsDeleted.IsDeleted, true));
-        
-        return database.transactionResult(c -> {
-                    return persister.persist(DSL.using(c))
-                            .map(event -> new PersonDeleted(event.sequence(), personId, event.when().toInstant()));
-                }
-        );
+
+        return new PersisterContext<>(dslContext -> persister.persist(dslContext)
+                .map(event -> new PersonDeleteLogged(event.sequence(), personId, event.when().toInstant())));
     }
 }
 
@@ -230,14 +187,12 @@ final class PersonEntityTypeOperation extends EntityTypeOperation {
     }
 }
 
-final class PersonUpdated implements Event {
-    public static final String EVENT_NAME = "person_updated";
-
+abstract class PersonEventLogged implements EventLogged {
     public final long sequence;
     public final long personId;
     public final Instant instant;
 
-    public PersonUpdated(long sequence, long personId, final Instant instant) {
+    public PersonEventLogged(long sequence, long personId, final Instant instant) {
         this.sequence = sequence;
         this.personId = personId;
         this.instant = instant;
@@ -249,40 +204,20 @@ final class PersonUpdated implements Event {
     }
 }
 
-final class PersonDeleted implements Event {
-    public static final String EVENT_NAME = "person_deleted";
-
-    public final long sequence;
-    public final long personId;
-    public final Instant instant;
-
-    public PersonDeleted(long sequence, long personId, final Instant instant) {
-        this.sequence = sequence;
-        this.personId = personId;
-        this.instant = instant;
-    }
-
-    @Override
-    public long getSequence() {
-        return sequence;
+final class PersonUpdateLogged extends PersonEventLogged {
+    public PersonUpdateLogged(long sequence, long personId, final Instant instant) {
+        super(sequence, personId, instant);
     }
 }
 
-final class PersonCreated implements Event {
-    public static final String EVENT_NAME = "person_created";
-
-    public final long sequence;
-    public final long personId;
-    public final Instant instant;
-
-    public PersonCreated(long sequence, long personId, final Instant instant) {
-        this.sequence = sequence;
-        this.personId = personId;
-        this.instant = instant;
+final class PersonDeleteLogged extends PersonEventLogged {
+    public PersonDeleteLogged(long sequence, long personId, final Instant instant) {
+        super(sequence, personId, instant);
     }
+}
 
-    @Override
-    public long getSequence() {
-        return sequence;
+final class PersonCreateLogged extends PersonEventLogged {
+    public PersonCreateLogged(long sequence, long personId, final Instant instant) {
+        super(sequence, personId, instant);
     }
 }

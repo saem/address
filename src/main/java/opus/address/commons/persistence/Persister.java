@@ -19,14 +19,11 @@ public final class Persister {
     private final String codeVersion;
     private final long actorId;
     private final String eventName;
-    private final int eventVersion;
 
     public Persister(final String codeVersion,
-                     final int eventVersion,
                      final long actorId,
                      final String eventName) {
         this.codeVersion = codeVersion;
-        this.eventVersion = eventVersion;
         this.actorId = actorId;
         this.eventName = eventName;
     }
@@ -65,7 +62,7 @@ public final class Persister {
                     Tables.Events.EventVersion,
                     Tables.Events.Actor,
                     Tables.Events.TablesAffected)
-                    .values(eventName, codeVersion, eventVersion, actorId, tablesAffected)
+                    .values(eventName, codeVersion, 1, actorId, tablesAffected)
                     .returning(Tables.Events.Sequence, Tables.Events.When)
                     .fetchOne();
 
