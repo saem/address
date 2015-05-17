@@ -6,8 +6,7 @@ import opus.address.database.jooq.generated.tables.records.Events;
 import org.jooq.DSLContext;
 import org.jooq.Table;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,7 +44,7 @@ public final class Persister {
     }
 
     // @todo This should return the sequence and when
-    public Try<Events> persist(final DSLContext database) {
+    public Try<EventReport> persist(final DSLContext database) {
         // stage 1: insert of the event
         //  return ids
         //  complete all event futures
@@ -77,7 +76,17 @@ public final class Persister {
             // stage 4: insert of facts
             batchExecute(database, event, facts);
 
-            return event;
+            final Map<String, List<Long>> entitiesCreated = entityTypes.stream()
+                    .collect(
+                            Collectors.groupingBy(e -> e.getTable().getName(),                   // key
+                            Collectors.mapping(EntityTypeOperation::getId, Collectors.toList())) // value
+                    );
+            entitiesCreated.put(
+                    Tables.Entities.getName(),
+                    entities.stream().map(EntityOperation::getId).collect(Collectors.toList())
+            );
+
+            return new EventReport(event, entitiesCreated);
         });
     }
     

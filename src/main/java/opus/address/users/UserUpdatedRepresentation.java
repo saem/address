@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 
-public final class UserUpdatedRepresentation implements UserActionRepresentation {
+public final class UserUpdatedRepresentation extends UserEventWriteRepresentation {
+    private static final String EVENT_NAME = "user_updated";
+
     @NotNull
     public final long userId;
     @NotNull
@@ -14,8 +16,6 @@ public final class UserUpdatedRepresentation implements UserActionRepresentation
     public final String password;
     @NotNull
     public final String email;
-    @NotNull
-    public final long actorId;
 
     @JsonCreator
     public UserUpdatedRepresentation(
@@ -25,10 +25,15 @@ public final class UserUpdatedRepresentation implements UserActionRepresentation
             @JsonProperty("email") String email,
             @JsonProperty("actorId") long actorId
     ) {
+        super(actorId);
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.actorId = actorId;
+    }
+
+    @Override
+    public String getName() {
+        return EVENT_NAME;
     }
 }

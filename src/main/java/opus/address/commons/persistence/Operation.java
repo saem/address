@@ -7,5 +7,5 @@ import org.jooq.InsertResultStep;
 import org.jooq.Table;
 
 interface Operation extends TableBacked {
-    public Insert getQuery(DSLContext db, final Events event);
+    Insert getQuery(DSLContext db, final Events event);
 }

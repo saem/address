@@ -1,7 +1,7 @@
 package opus.address.commons.http;
 
-import opus.address.commons.EventLogged;
 import opus.address.commons.Try;
+import opus.address.commons.persistence.EventReport;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +12,11 @@ import java.sql.SQLException;
 
 public final class Https {
     private static final Logger LOGGER = LoggerFactory.getLogger(Https.class);
-    public static Response mapEventToResponse(final Try<? extends EventLogged> event) {
-        return event.map(u ->
-                Response.created(
-                        UriBuilder
-                                .fromPath("/events/{sequenceId}")
-                                .build(u.getSequence()))
+    public static Response mapEventToResponse(final Try<? extends EventReport> event) {
+        return event.map(e ->
+                Response
+                        .created(UriBuilder.fromPath("/events/{sequenceId}").build(e.event.sequence()))
+                        .entity(e)
                         .build())
                 .orElseGet(f -> {
                     LOGGER.debug("SQL Exception", f.getException());

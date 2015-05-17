@@ -20,6 +20,10 @@ import java.util.Optional;
 import java.util.TimeZone;
 
 public class AddressApplication extends Application<AddressConfiguration> {
+    public static final String CODE_VERSION = Optional.ofNullable(
+            Manifests.read("Implementation-Build"))
+            .orElseThrow(() -> new InvalidCodeVersionException("'Implementation-Build' property was not set."));
+
     private final JooqBundle<AddressConfiguration> jooq = new JooqBundle<AddressConfiguration>() {
         @Override
         public DataSourceFactory getDataSourceFactory(AddressConfiguration configuration) {
@@ -55,18 +59,14 @@ public class AddressApplication extends Application<AddressConfiguration> {
         // Set Java Time Zone to UTC
         TimeZone.setDefault(DateTimeZone.UTC.toTimeZone());
 
-        final String codeVersion = Optional.ofNullable(
-                Manifests.read("Implementation-Build"))
-                .orElseThrow(() -> new InvalidCodeVersionException("'Implementation-Build' property was not set."));
-
         // Serialization Configuration
         ObjectMapper objectMapper = environment.getObjectMapper();
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.registerModule(new JSR310Module());
 
-        environment.jersey().register(UserResource.build(codeVersion));
-        environment.jersey().register(PersonResource.build(codeVersion));
-        environment.jersey().register(EventResource.build(codeVersion));
+        environment.jersey().register(new UserResource());
+        environment.jersey().register(new PersonResource());
+        environment.jersey().register(new EventResource());
     }
 }
 

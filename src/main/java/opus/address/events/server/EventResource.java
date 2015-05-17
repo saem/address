@@ -22,12 +22,6 @@ import java.util.stream.Collectors;
 
 @Path("/events")
 public final class EventResource {
-    private final EventFactory eventFactory;
-
-    public EventResource(final EventFactory eventFactory) {
-        this.eventFactory = eventFactory;
-    }
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{eventId}")
@@ -36,7 +30,7 @@ public final class EventResource {
             final @Context DSLContext database
     ) {
         final Optional<EventProjection> event =
-                eventFactory.buildEventProvider(database).find(eventId.get());
+                new EventProvider(database).find(eventId.get());
 
         return event.map(this::mapEventToRead)
                 .orElseThrow(() -> new WebApplicationException(Response.Status.NOT_FOUND));
@@ -48,7 +42,7 @@ public final class EventResource {
             final @QueryParam("offset") @DefaultValue("0") IntParam offset,
             final @Context DSLContext database
     ) {
-        final List<EventProjection> events = eventFactory.buildEventProvider(database)
+        final List<EventProjection> events = new EventProvider(database)
                 .findAll(offset.get());
 
         return events.stream().map(this::mapEventToRead).collect(Collectors.toList());
@@ -66,38 +60,15 @@ public final class EventResource {
                 projection.actorType
         );
     }
-
-    public static EventResource build(final String codeVersion) {
-        return new EventResource(new EventFactory(codeVersion));
-    }
-}
-
-final class EventFactory {
-    private final String codeVersion;
-
-    public EventFactory(
-            final String codeVersion
-    ) {
-        this.codeVersion = codeVersion;
-    }
-
-    public EventProvider buildEventProvider(final DSLContext database) {
-        return new EventProvider(database, codeVersion);
-    }
 }
 
 final class EventProvider {
     private static final int MAX_FETCH = 1000;
     private static final String ACTOR_TYPE = "actorType";
     private final DSLContext database;
-    private final String codeVersion;
 
-    public EventProvider(
-            final DSLContext database,
-            final String codeVersion
-    ) {
+    public EventProvider(final DSLContext database) {
         this.database = database;
-        this.codeVersion = codeVersion;
     }
 
     public Optional<EventProjection> find(

@@ -1,8 +1,11 @@
 package opus.address.users;
 
+import opus.address.AddressApplication;
 import opus.address.commons.http.Https;
+import opus.address.commons.persistence.Persister;
 import opus.address.security.PasswordDigester;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -14,20 +17,6 @@ import javax.ws.rs.core.Response;
 
 @Path("/events/user")
 public final class UserResource {
-
-    private final UserFactory userFactory;
-
-    public UserResource(UserFactory userFactory) {
-        this.userFactory = userFactory;
-    }
-    
-    public static UserResource build(
-            final String codeVersion
-            
-    ) {
-        return new UserResource(new UserFactory(codeVersion));
-    }
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/created")
@@ -35,15 +24,17 @@ public final class UserResource {
             @Valid UserCreatedRepresentation userCreatedRepresentation,
             @Context DSLContext database
     ) {
-        return Https.mapEventToResponse(
-                userFactory.buildUserWriter(database)
-                        .write(
-                                userCreatedRepresentation.email,
-                                userCreatedRepresentation.username,
-                                new PasswordDigester().digestPassword(
-                                        userCreatedRepresentation.password
-                                ),
-                                userCreatedRepresentation.actorId));
+        final Persister persister = new Persister(AddressApplication.CODE_VERSION, userCreatedRepresentation.actorId, userCreatedRepresentation.getName());
+
+        new UserWriter(persister)
+                .write(
+                        userCreatedRepresentation.email,
+                        userCreatedRepresentation.username,
+                        new PasswordDigester().digestPassword(
+                                userCreatedRepresentation.password
+                        ));
+
+        return database.transactionResult(c -> Https.mapEventToResponse(persister.persist(DSL.using(c))));
     }
 
     @POST
@@ -53,14 +44,14 @@ public final class UserResource {
             @Valid UserUpdatedRepresentation userUpdatedRepresentation,
             @Context DSLContext database
     ) {
-        return Https.mapEventToResponse(
-                userFactory.buildUserWriter(database)
-                        .update(userUpdatedRepresentation.userId,
-                                userUpdatedRepresentation.email,
-                                userUpdatedRepresentation.username,
-                                userUpdatedRepresentation.password,
-                                userUpdatedRepresentation.actorId
-                        ));
+        final Persister persister = new Persister(AddressApplication.CODE_VERSION, userUpdatedRepresentation.actorId, userUpdatedRepresentation.getName());
+        new UserWriter(persister)
+                .update(userUpdatedRepresentation.userId,
+                        userUpdatedRepresentation.email,
+                        userUpdatedRepresentation.username,
+                        userUpdatedRepresentation.password
+                );
+        return database.transactionResult(c -> Https.mapEventToResponse(persister.persist(DSL.using(c))));
     }
 
     @POST
@@ -70,11 +61,10 @@ public final class UserResource {
             @Valid UserDeletedRepresentation userDeletedRepresentation,
             @Context DSLContext database
     ) {
-        return Https.mapEventToResponse(
-                userFactory.buildUserWriter(database)
-                        .delete(userDeletedRepresentation.userId,
-                                userDeletedRepresentation.actorId
-                        )
-        );
+        final Persister persister = new Persister(AddressApplication.CODE_VERSION, userDeletedRepresentation.actorId, userDeletedRepresentation.getName());
+        new UserWriter(persister)
+                .delete(userDeletedRepresentation.userId
+                );
+        return database.transactionResult(c -> Https.mapEventToResponse(persister.persist(DSL.using(c))));
     }
 }

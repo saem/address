@@ -5,15 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 
-public final class UserCreatedRepresentation implements UserActionRepresentation {
+public final class UserCreatedRepresentation extends UserEventWriteRepresentation {
+    private static final String EVENT_NAME = "user_created";
+
     @NotNull
     public final String username;
     @NotNull
     public final String password;
     @NotNull
     public final String email;
-    @NotNull
-    public final long actorId;
 
     @JsonCreator
     public UserCreatedRepresentation(
@@ -22,9 +22,14 @@ public final class UserCreatedRepresentation implements UserActionRepresentation
             @JsonProperty("email") String email,
             @JsonProperty("actorId") long actorId
     ) {
+        super(actorId);
         this.username = username;
         this.password = password;
         this.email = email;
-        this.actorId = actorId;
+    }
+
+    @Override
+    public String getName() {
+        return EVENT_NAME;
     }
 }
