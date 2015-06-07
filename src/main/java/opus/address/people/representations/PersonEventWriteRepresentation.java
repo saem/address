@@ -1,12 +1,9 @@
 package opus.address.people.representations;
 
-import javax.validation.constraints.NotNull;
+import opus.address.entities.representations.EntityEventWriteRepresentation;
 
-public abstract class PersonEventWriteRepresentation {
-    @NotNull
-    public final long actorId;
-
-    public PersonEventWriteRepresentation(final long actorId) { this.actorId = actorId; }
-
-    public abstract String getName();
+public abstract class PersonEventWriteRepresentation extends EntityEventWriteRepresentation {
+    public PersonEventWriteRepresentation(final long actorId) {
+        super(actorId);
+    }
 }

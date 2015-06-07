@@ -86,6 +86,11 @@ public final class Persister {
                     entities.stream().map(EntityOperation::getId).collect(Collectors.toList())
             );
 
+            // clear the persister operations
+            entities.clear();
+            entityTypes.clear();
+            facts.clear();
+
             return new EventReport(event, entitiesCreated);
         });
     }
