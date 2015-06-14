@@ -13,6 +13,8 @@ mvn clean && mvn package && java -agentlib:jdwp=transport=dt_socket,server=y,sus
 
 # todos
 1) Migrate to an operations based API
+    a) Make sure the OperationAlgebra still makes sense
+    b) Sketch some JSON of what the operations will look like
 2) Provide phones, emails, addresses API
 3) Write address book command processor
 

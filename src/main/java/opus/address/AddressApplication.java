@@ -19,6 +19,7 @@ import opus.address.users.UserEventOperationWriteRepresentation;
 import opus.address.users.UserResource;
 import org.joda.time.DateTimeZone;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
 
@@ -70,6 +71,7 @@ public class AddressApplication extends Application<AddressConfiguration> {
         // @todo move this into separate "module" initialization
         OperationResolver.idMap.put("user.1", UserEventOperationWriteRepresentation.class);
         OperationResolver.idMap.put("person.1", PersonEventOperationWriteRepresentation.class);
+        // operationResolver.registerOperation(PersonEventOperationWriteRepresentation.class);
 
         environment.jersey().register(new UserResource());
         environment.jersey().register(new PersonResource());
@@ -82,3 +84,34 @@ class InvalidCodeVersionException extends RuntimeException {
         super(message);
     }
 }
+
+/*
+* An Object Algebra, is an Abstract Algebra -- as in it doesn't do anything, until we make a "Concrete Algebra"
+* If we combine an Abstract/Object Algebra with a "Carrier Set", we get a Concrete Algebra
+* The Carrier Set defines the actual behaviours of the operations/datatypes that the Abstract/Object algebra is working over
+
+E is known a carrier set
+
+E could be:
+    - printing for debugging
+    - persisting
+*/
+
+interface StoreInsert {}
+
+interface EventOperation {
+    List<StoreInsert> getStoreOperations();
+}
+
+interface OperationAlgebra<E> {
+    CompletableOperationAlgebra<E> add(EventOperation operation);
+}
+
+interface CompletableOperationAlgebra<E> extends OperationAlgebra<E> {
+    OperationAlgebra<E> complete();
+}
+
+// tried a few factories, not sure how to dispatch dynamically such that a specific operation
+// will be handled by a specific method, on a specific Writer.
+// eg PersonEventOperationWriteRepresentation means we call PersonWriter.write(...)
+// Under the current regime we'd have another map from EventOperation to Writers
