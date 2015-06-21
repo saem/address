@@ -7,8 +7,8 @@ import io.dropwizard.jackson.Jackson;
 import opus.address.events.representations.EventOperationsWriteRepresentation;
 import opus.address.events.server.EventResource;
 import opus.address.events.server.OperationResolver;
-import opus.address.people.representations.PersonEventOperationWriteRepresentation;
-import opus.address.users.UserEventOperationWriteRepresentation;
+import opus.address.people.PersonOperationRepresentationMapping;
+import opus.address.users.UserOperationRepresentationMapping;
 import org.joda.time.DateTimeZone;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,8 +35,8 @@ public final class EventResourceTest {
         objectMapper.registerModule(new JSR310Module());
 
         // @todo move this into separate "module" initialization
-        OperationResolver.idMap.put("user.1", UserEventOperationWriteRepresentation.class);
-        OperationResolver.idMap.put("person.1", PersonEventOperationWriteRepresentation.class);
+        OperationResolver.idMap.register(new UserOperationRepresentationMapping());
+        OperationResolver.idMap.register(new PersonOperationRepresentationMapping());
         // operationResolver.registerOperation(PersonEventOperationWriteRepresentation.class);
     }
 

@@ -13,7 +13,29 @@ import java.util.Optional;
 
 public final class OperationResolver extends TypeIdResolverBase {
     private JavaType baseType;
-    public final static Map<String, Class<? extends EventOperationWriteRepresentation>> idMap = new HashMap<>();
+    public final static OperationRepresentationMap idMap = new OperationRepresentationMap() {
+        private final Map<String, OperationRepresentationMapping> representationMap =
+                new HashMap<>();
+
+        private final Map<Class<? extends EventOperationWriteRepresentation>, OperationRepresentationMapping> operationMap =
+                new HashMap<>();
+
+        @Override
+        public void register(final OperationRepresentationMapping mapping) {
+            representationMap.put(mapping.getName(), mapping);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Class<? extends EventOperationWriteRepresentation> toRepresentation(final String string) {
+            return representationMap.get(string).toRepresentationType();
+        }
+
+        @Override
+        public EventOperation toEventOperation(final EventOperationWriteRepresentation op) {
+            return operationMap.get(op.getClass()).toOperation();
+        }
+    };
 
     @Override
     public void init(final JavaType baseType) {
@@ -38,7 +60,7 @@ public final class OperationResolver extends TypeIdResolverBase {
     public JavaType typeFromId(DatabindContext context, String id) {
         return TypeFactory.defaultInstance().constructSpecializedType(
                 baseType,
-                Optional.ofNullable(idMap.get(id))
+                Optional.ofNullable(idMap.toRepresentation(id))
                         .orElseThrow(() -> new IllegalStateException("No type registered for name " + id))
         );
     }

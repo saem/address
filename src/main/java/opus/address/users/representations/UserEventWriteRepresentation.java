@@ -1,4 +1,4 @@
-package opus.address.users;
+package opus.address.users.representations;
 
 import opus.address.entities.representations.EntityEventWriteRepresentation;
 

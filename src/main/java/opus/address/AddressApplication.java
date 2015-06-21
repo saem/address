@@ -13,9 +13,10 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import opus.address.events.server.EventResource;
 import opus.address.events.server.OperationResolver;
+import opus.address.people.PersonOperationRepresentationMapping;
 import opus.address.people.PersonResource;
-import opus.address.people.representations.PersonEventOperationWriteRepresentation;
-import opus.address.users.UserEventOperationWriteRepresentation;
+import opus.address.users.UserOperationRepresentationMapping;
+import opus.address.users.representations.UserEventOperationWriteRepresentation;
 import opus.address.users.UserResource;
 import org.joda.time.DateTimeZone;
 
@@ -69,8 +70,8 @@ public class AddressApplication extends Application<AddressConfiguration> {
         objectMapper.registerModule(new JSR310Module());
 
         // @todo move this into separate "module" initialization
-        OperationResolver.idMap.put("user.1", UserEventOperationWriteRepresentation.class);
-        OperationResolver.idMap.put("person.1", PersonEventOperationWriteRepresentation.class);
+        OperationResolver.idMap.register(new UserOperationRepresentationMapping());
+        OperationResolver.idMap.register(new PersonOperationRepresentationMapping());
         // operationResolver.registerOperation(PersonEventOperationWriteRepresentation.class);
 
         environment.jersey().register(new UserResource());
@@ -97,10 +98,42 @@ E could be:
     - persisting
 */
 
+/*
+
+JSON ->
+map to deserialize ->
+PersonEventOperationWriteRepresentation:EventOperationWriteRepresentation ->
+crazy voodoo ->
+PersonWriteEventOperation
+
+JSON ->
+Mapper.toRepresentation(String) -> ? extends EventOperationWriteRepresentation ->
+PersonEventOperationWriteRepresentation:EventOperationWriteRepresentation ->
+Mapper.toEventOperation(? extends EventOperationWriteRepresentation) -> ? extends EventOperation ->
+PersonWriteEventOperation
+
+*/
+
 interface StoreInsert {}
 
-interface EventOperation {
+interface TypeApplication<C, T> {}
+
+class IdentityTypeApplication<T> implements TypeApplication<IdentityTypeApplication.t, T> {
+    public final T value;
+    public IdentityTypeApplication(T value) { this.value = value; }
+    public static class t {}
+    public static <A> IdentityTypeApplication<A> project(TypeApplication<IdentityTypeApplication.t, A> applied) {
+        return (IdentityTypeApplication<A>) applied;
+    }
+}
+
+interface EventOperation<E> extends TypeApplication<EventOperation.type, E> {
+    class type {}
     List<StoreInsert> getStoreOperations();
+}
+
+interface PersonWriteEventOperation extends EventOperation<PersonWriteEventOperation.type> {
+    class type {}
 }
 
 interface OperationAlgebra<E> {

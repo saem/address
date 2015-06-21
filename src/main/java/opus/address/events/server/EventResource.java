@@ -15,6 +15,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -55,9 +57,9 @@ public final class EventResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postEvents(
             @Valid final EventOperationsWriteRepresentation eventOperations
-    ) {
+    ) throws URISyntaxException {
         eventOperations.operations.stream().forEach(System.out::println);
-        return Response.ok().build();
+        return Response.created(new URI("butts")).build();
     }
 
     private EventReadRepresentation mapEventToRead(final EventProjection projection) {
