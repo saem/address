@@ -5,6 +5,21 @@
     },
     {
       "@operation": "user.1"
+    },
+    {
+      "operations": [
+        {
+          "@operation": "create_entity.1",
+          "@entity_types": [
+            {
+              "@type": "user.1"
+            },
+            {
+              "@type": "person.1"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

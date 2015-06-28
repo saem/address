@@ -25,7 +25,7 @@
         </preConditions>
 
         <comment>Entities are all things that change over time, and have an identity</comment>
-        
+
         <createTable tableName="entities">
             <column name="entity_id" type="bigint" autoIncrement="true">
                 <constraints primaryKeyName="pk_entities_entity_id" primaryKey="true" />

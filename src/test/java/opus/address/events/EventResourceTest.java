@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import io.dropwizard.jackson.Jackson;
-import opus.address.events.representations.EventOperationsWriteRepresentation;
+import opus.address.events.representations.EventWriteRepresentation;
 import opus.address.events.server.EventResource;
 import opus.address.events.server.OperationResolver;
 import opus.address.people.PersonOperationRepresentationMapping;
@@ -37,15 +37,14 @@ public final class EventResourceTest {
         // @todo move this into separate "module" initialization
         OperationResolver.idMap.register(new UserOperationRepresentationMapping());
         OperationResolver.idMap.register(new PersonOperationRepresentationMapping());
-        // operationResolver.registerOperation(PersonEventOperationWriteRepresentation.class);
     }
 
     @Test
     public void postEventsTest() throws Exception {
         final Response response = eventResource.postEvents(
                 objectMapper.readValue(
-                        fixture("fixtures/json/events/post_events.json"),
-                        EventOperationsWriteRepresentation.class
+                        fixture("fixtures/json/events/playground.json"),
+                        EventWriteRepresentation.class
                 )
         );
         assertThat(response.getStatus()).isEqualTo(201);

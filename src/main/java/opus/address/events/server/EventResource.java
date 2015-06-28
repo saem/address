@@ -3,7 +3,7 @@ package opus.address.events.server;
 import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.params.LongParam;
 import opus.address.database.jooq.generated.Tables;
-import opus.address.events.representations.EventOperationsWriteRepresentation;
+import opus.address.events.representations.EventWriteRepresentation;
 import opus.address.events.representations.EventReadRepresentation;
 import org.jooq.DSLContext;
 import org.jooq.Record8;
@@ -56,7 +56,7 @@ public final class EventResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postEvents(
-            @Valid final EventOperationsWriteRepresentation eventOperations
+            @Valid final EventWriteRepresentation eventOperations
     ) throws URISyntaxException {
         eventOperations.operations.stream().forEach(System.out::println);
         return Response.created(new URI("butts")).build();

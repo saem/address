@@ -11,11 +11,14 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import opus.address.events.Events;
 import opus.address.events.server.EventResource;
 import opus.address.events.server.OperationResolver;
+import opus.address.people.People;
 import opus.address.people.PersonOperationRepresentationMapping;
 import opus.address.people.PersonResource;
 import opus.address.users.UserOperationRepresentationMapping;
+import opus.address.users.Users;
 import opus.address.users.representations.UserEventOperationWriteRepresentation;
 import opus.address.users.UserResource;
 import org.joda.time.DateTimeZone;
@@ -69,14 +72,9 @@ public class AddressApplication extends Application<AddressConfiguration> {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.registerModule(new JSR310Module());
 
-        // @todo move this into separate "module" initialization
-        OperationResolver.idMap.register(new UserOperationRepresentationMapping());
-        OperationResolver.idMap.register(new PersonOperationRepresentationMapping());
-        // operationResolver.registerOperation(PersonEventOperationWriteRepresentation.class);
-
-        environment.jersey().register(new UserResource());
-        environment.jersey().register(new PersonResource());
-        environment.jersey().register(new EventResource());
+        Users.register(environment);
+        People.register(environment);
+        Events.register(environment);
     }
 }
 

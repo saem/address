@@ -20,17 +20,3 @@ mvn clean && mvn package && java -agentlib:jdwp=transport=dt_socket,server=y,sus
 
 # research
 1) how to hypermedia JSON?
-
-# Currently
-/person/created
-{ actorId, first, last, phones: [...] } -> db_operations* -> inserts*
-
-# Possibility
-/events
-```json
-{"event_operations": [
-    {"@operation": "person_created", "@ref":"123" first, last},
-    {"@operation": "phone_created", number, extension, "associated_to":"@ref(123)"}
-]
-} -> db_operations* -> inserts*
-```
