@@ -16,18 +16,51 @@
         </preConditions>
 
         <createTable tableName="phones">
-            <column name="entity_id" type="bigint" autoIncrement="false">
-                <constraints primaryKeyName="pk_phones"
-                             primaryKey="true"
-                             foreignKeyName="fk_phones"
-                             referencedTableName="entities"
-                             referencedColumnNames="entity_id"
-                             nullable="false" />
+            <column name="phone_id" type="bigint" autoIncrement="true">
+                <constraints primaryKeyName="pk_phones_phone_id"
+                             primaryKey="true"/>
+            </column>
+            <column name="number" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="extension" type="text">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
 
-    <!-- entities_facts_primary_phone -->
+    <!-- phones_facts_do_not_call -->
+    <changeSet id="2" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="phones_facts_do_not_call"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="phones_facts_do_not_call">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_phones_facts_do_not_call_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence"
+                             nullable="false" />
+            </column>
+            <column name="phone_id" type="bigint">
+                <constraints foreignKeyName="fk_phones_facts_do_not_call_phones"
+                             referencedTableName="phones"
+                             referencedColumnNames="phone_id"
+                             nullable="false" />
+            </column>
+            <column name="do_not_call" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="phones_facts_do_not_call" columnNames="sequence,phone_id" constraintName="pk_phones_facts_do_not_call" />
+    </changeSet>
+
+    <!-- Below this line is association related information -->
+
+    <!-- entities_facts_primary_phone
     <changeSet id="2" author="saem">
         <preConditions>
             <tableExists tableName="entities"/>
@@ -60,66 +93,8 @@
 
         <addPrimaryKey tableName="entities_facts_primary_phone" columnNames="sequence,entity_id" constraintName="pk_entities_facts_primary_phone"/>
     </changeSet>
-    
-    <!-- phones_facts_number -->
-    <changeSet id="3" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="phones_facts_number"/>
-            </not>
-        </preConditions>
 
-        <createTable tableName="phones_facts_number">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_phones_facts_number_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false" />
-            </column>
-            <column name="phone_id" type="bigint">
-                <constraints foreignKeyName="fk_phones_facts_number_phones"
-                             referencedTableName="phones"
-                             referencedColumnNames="entity_id"
-                             nullable="false" />
-            </column>
-            <column name="number" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="phones_facts_number" columnNames="sequence,phone_id" constraintName="pk_phones_facts_number" />
-    </changeSet>
-
-    <!-- phones_facts_extension -->
-    <changeSet id="4" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="phones_facts_extension"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="phones_facts_extension">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_phones_facts_extension_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false" />
-            </column>
-            <column name="phone_id" type="bigint">
-                <constraints foreignKeyName="fk_phones_facts_extension_phones"
-                             referencedTableName="phones"
-                             referencedColumnNames="entity_id"
-                             nullable="false" />
-            </column>
-            <column name="extension" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="phones_facts_extension" columnNames="sequence,phone_id" constraintName="pk_phone_facts_extension" />
-    </changeSet>
-
-    <!-- phones_facts_type -->
+     phones_facts_type
     <changeSet id="5" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -147,33 +122,5 @@
 
         <addPrimaryKey tableName="phones_facts_type" columnNames="sequence,phone_id" constraintName="pk_phones_facts_type" />
     </changeSet>
-
-    <!-- phones_facts_do_not_call -->
-    <changeSet id="6" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="phones_facts_do_not_call"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="phones_facts_do_not_call">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_phones_facts_do_not_call_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false" />
-            </column>
-            <column name="phone_id" type="bigint">
-                <constraints foreignKeyName="fk_phones_facts_do_not_call_phones"
-                             referencedTableName="phones"
-                             referencedColumnNames="entity_id"
-                             nullable="false" />
-            </column>
-            <column name="do_not_call" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="phones_facts_do_not_call" columnNames="sequence,phone_id" constraintName="pk_phones_facts_do_not_call" />
-    </changeSet>
+    -->
 </databaseChangeLog>

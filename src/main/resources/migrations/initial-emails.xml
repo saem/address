@@ -16,18 +16,52 @@
         </preConditions>
 
         <createTable tableName="emails">
-            <column name="entity_id" type="bigint" autoIncrement="false">
+            <column name="email_id" type="bigint" autoIncrement="true">
                 <constraints primaryKeyName="pk_emails"
-                             primaryKey="true"
-                             foreignKeyName="fk_emails_entities"
-                             referencedTableName="entities"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
+                             primaryKey="true"/>
+            </column>
+            <column name="local_part" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="domain" type="text">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
 
-    <!-- entities_facts_primary_email -->
+    <!-- emails_facts_opted_enum -->
+    <changeSet id="2" author="michael">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="emails_facts_opted_enum"/>
+            </not>
+        </preConditions>
+
+        <sql>CREATE TYPE opted_enum AS ENUM ('opted','opted-out','non-opted')</sql>
+
+        <createTable tableName="emails_facts_opted_enum">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_emails_facts_opted_enum_events"
+                             referencedTableName="events"
+                             referencedColumnNames="sequence"
+                             nullable="false"/>
+            </column>
+            <column name="email_id" type="bigint">
+                <constraints foreignKeyName="fk_emails_facts_opted_enum_emails"
+                             referencedTableName="emails"
+                             referencedColumnNames="email_id"
+                             nullable="false"/>
+            </column>
+            <column name="opted" type="opted_enum">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="emails_facts_opted_enum" columnNames="sequence,email_id"
+                       constraintName="pk_emails_facts_opted_enum"/>
+    </changeSet>
+
+    <!-- entities_facts_primary_email
     <changeSet id="2" author="saem">
         <preConditions>
             <tableExists tableName="entities"/>
@@ -59,96 +93,5 @@
         </createTable>
 
         <addPrimaryKey tableName="entities_facts_primary_email" columnNames="sequence,entity_id" constraintName="pk_entities_facts_primary_email"/>
-    </changeSet>
-
-    <!-- emails_facts_local_part -->
-    <changeSet id="3" author="michael">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="emails_facts_local_part"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="emails_facts_local_part">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_emails_facts_local_part_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="email_id" type="bigint">
-                <constraints foreignKeyName="fk_emails_facts_local_part_emails"
-                             referencedTableName="emails"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="local_part" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addPrimaryKey tableName="emails_facts_local_part" columnNames="sequence,email_id"
-                       constraintName="pk_emails_local_part"/>
-    </changeSet>
-
-    <!-- emails_facts_domain -->
-    <changeSet id="4" author="michael">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="emails_facts_domain"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="emails_facts_domain">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_emails_facts_domain_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="email_id" type="bigint">
-                <constraints foreignKeyName="fk_emails_facts_domain_emails"
-                             referencedTableName="emails"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="domain" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="emails_facts_domain" columnNames="sequence,email_id"
-                       constraintName="pk_emails_facts_domain"/>
-    </changeSet>
-
-    <!-- emails_facts_opted_enum -->
-    <changeSet id="5" author="michael">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="emails_facts_opted_enum"/>
-            </not>
-        </preConditions>
-
-        <sql>CREATE TYPE opted_enum AS ENUM ('opted','opted-out','non-opted')</sql>
-
-        <createTable tableName="emails_facts_opted_enum">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_emails_facts_opted_enum_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="email_id" type="bigint">
-                <constraints foreignKeyName="fk_emails_facts_opted_enum_emails"
-                             referencedTableName="emails"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="opted" type="opted_enum">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="emails_facts_opted_enum" columnNames="sequence,email_id"
-                       constraintName="pk_emails_facts_opted_enum"/>
     </changeSet>
 </databaseChangeLog>

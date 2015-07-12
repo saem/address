@@ -16,18 +16,49 @@
         </preConditions>
 
         <createTable tableName="addresses">
-            <column name="entity_id" type="bigint" autoIncrement="false">
+            <column name="address_id" type="bigint" autoIncrement="true">
                 <constraints primaryKeyName="pk_addresses"
-                             primaryKey="true"
-                             foreignKeyName="fk_addresses_entities"
-                             referencedTableName="entities"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
+                             primaryKey="true"/>
+            </column>
+            <column name="country_code" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address_line" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="administrative_area" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locality" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="suite" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dependent_locality" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="postal_code" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sorting_code" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organization" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="recipient" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="language_code" type="text">
+                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
 
-    <!-- entities_facts_primary_address -->
+    <!-- Below this line is association related information -->
+
+    <!-- entities_facts_primary_address
     <changeSet id="2" author="saem">
         <preConditions>
             <tableExists tableName="entities"/>
@@ -57,326 +88,8 @@
                         />
             </column>
         </createTable>
-        
+
         <addPrimaryKey tableName="entities_facts_primary_address" columnNames="sequence,entity_id" constraintName="pk_entities_facts_primary_address"/>
     </changeSet>
-
-    <!-- addresses_facts_country_code -->
-    <changeSet id="3" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="addresses_facts_country_code"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="addresses_facts_country_code">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_country_code_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_country_code_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="country_code" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="addresses_facts_country_code" columnNames="sequence,address_id" constraintName="pk_address_facts_country_code"/>
-    </changeSet>
-
-    <!-- addresses_facts_address_line -->
-    <changeSet id="4" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="addresses_facts_address_line"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="addresses_facts_address_line">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_address_line_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_address_line_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="address_line" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="addresses_facts_address_line" columnNames="sequence,address_id" constraintName="pk_address_facts_address_line"/>
-    </changeSet>
-    
-    <!-- addresses_facts_administrative_area -->
-    <changeSet id="5" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="addresses_facts_administrative_area"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="addresses_facts_administrative_area">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_administrative_area_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_administrative_area_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="administrative_area" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="addresses_facts_administrative_area" columnNames="sequence,address_id" constraintName="pk_address_facts_administrative_area"/>
-    </changeSet>
-    
-    <!-- addresses_facts_locality -->
-    <changeSet id="6" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="addresses_facts_locality"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="addresses_facts_locality">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_locality_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_locality_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="locality" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="addresses_facts_locality" columnNames="sequence,address_id" constraintName="pk_address_facts_locality"/>
-    </changeSet>
-    
-    <!-- addresses_facts_suite -->
-    <changeSet id="7" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="addresses_facts_suite"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="addresses_facts_suite">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_suite_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_suite_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="suite" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="addresses_facts_suite" columnNames="sequence,address_id" constraintName="pk_address_facts_suite"/>
-    </changeSet>
-
-    <!-- addresses_facts_dependent_locality -->
-    <changeSet id="8" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="addresses_facts_dependent_locality"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="addresses_facts_dependent_locality">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_dependent_locality_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_dependent_locality_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="dependent_locality" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="addresses_facts_dependent_locality" columnNames="sequence,address_id" constraintName="pk_address_facts_dependent_locality"/>
-    </changeSet>
-    
-    <!-- addresses_facts_postal_code -->
-    <changeSet id="9" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="addresses_facts_postal_code"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="addresses_facts_postal_code">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_postal_code_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_postal_code_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="postal_code" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="addresses_facts_postal_code" columnNames="sequence,address_id" constraintName="pk_address_facts_postal_code"/>
-    </changeSet>
-    
-    <!-- addresses_facts_sorting_code -->
-    <changeSet id="10" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="addresses_facts_sorting_code"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="addresses_facts_sorting_code">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_sorting_code_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_sorting_code_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="sorting_code" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="addresses_facts_sorting_code" columnNames="sequence,address_id" constraintName="pk_address_facts_sorting_code"/>
-    </changeSet>
-    
-    <!-- addresses_facts_organization -->
-    <changeSet id="11" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="addresses_facts_organization"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="addresses_facts_organization">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_organization_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_organization_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="organization" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="addresses_facts_organization" columnNames="sequence,address_id" constraintName="pk_address_facts_organization"/>
-    </changeSet>
-    
-    <!-- addresses_facts_recipient -->
-    <changeSet id="12" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="addresses_facts_recipient"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="addresses_facts_recipient">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_recipient_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_recipient_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="recipient" type="text">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="addresses_facts_recipient" columnNames="sequence,address_id" constraintName="pk_address_facts_recipient"/>
-    </changeSet>
-
-    <!-- addresses_facts_language_code -->
-    <changeSet id="13" author="saem">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="addresses_facts_language_code"/>
-            </not>
-        </preConditions>
-
-        <createTable tableName="addresses_facts_language_code">
-            <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_language_code_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
-            </column>
-            <column name="address_id" type="bigint">
-                <constraints foreignKeyName="fk_addresses_facts_language_code_addresses"
-                             referencedTableName="addresses"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="language_code" type="text">
-                <constraints nullable="true"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey tableName="addresses_facts_language_code" columnNames="sequence,address_id" constraintName="pk_addresses_facts_language_code"/>
-    </changeSet>
+    -->
 </databaseChangeLog>
