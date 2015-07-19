@@ -17,64 +17,69 @@ package opus.address.database.jooq.generated;
 public class Tables {
 
 	/**
-	 * The table addresses
+	 * The table address
 	 */
-	public static final opus.address.database.jooq.generated.tables.Addresses Addresses = opus.address.database.jooq.generated.tables.Addresses.Addresses;
+	public static final opus.address.database.jooq.generated.tables.Address Address = opus.address.database.jooq.generated.tables.Address.Address;
 
 	/**
-	 * The table addresses_facts_address_line
+	 * The table address_fact_address_line
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressesFactsAddressLine AddressesFactsAddressLine = opus.address.database.jooq.generated.tables.AddressesFactsAddressLine.AddressesFactsAddressLine;
+	public static final opus.address.database.jooq.generated.tables.AddressFactAddressLine AddressFactAddressLine = opus.address.database.jooq.generated.tables.AddressFactAddressLine.AddressFactAddressLine;
 
 	/**
-	 * The table addresses_facts_administrative_area
+	 * The table address_fact_administrative_area
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressesFactsAdministrativeArea AddressesFactsAdministrativeArea = opus.address.database.jooq.generated.tables.AddressesFactsAdministrativeArea.AddressesFactsAdministrativeArea;
+	public static final opus.address.database.jooq.generated.tables.AddressFactAdministrativeArea AddressFactAdministrativeArea = opus.address.database.jooq.generated.tables.AddressFactAdministrativeArea.AddressFactAdministrativeArea;
 
 	/**
-	 * The table addresses_facts_country_code
+	 * The table address_fact_country_code
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressesFactsCountryCode AddressesFactsCountryCode = opus.address.database.jooq.generated.tables.AddressesFactsCountryCode.AddressesFactsCountryCode;
+	public static final opus.address.database.jooq.generated.tables.AddressFactCountryCode AddressFactCountryCode = opus.address.database.jooq.generated.tables.AddressFactCountryCode.AddressFactCountryCode;
 
 	/**
-	 * The table addresses_facts_dependent_locality
+	 * The table address_fact_dependent_locality
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressesFactsDependentLocality AddressesFactsDependentLocality = opus.address.database.jooq.generated.tables.AddressesFactsDependentLocality.AddressesFactsDependentLocality;
+	public static final opus.address.database.jooq.generated.tables.AddressFactDependentLocality AddressFactDependentLocality = opus.address.database.jooq.generated.tables.AddressFactDependentLocality.AddressFactDependentLocality;
 
 	/**
-	 * The table addresses_facts_language_code
+	 * The table address_fact_language_code
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressesFactsLanguageCode AddressesFactsLanguageCode = opus.address.database.jooq.generated.tables.AddressesFactsLanguageCode.AddressesFactsLanguageCode;
+	public static final opus.address.database.jooq.generated.tables.AddressFactLanguageCode AddressFactLanguageCode = opus.address.database.jooq.generated.tables.AddressFactLanguageCode.AddressFactLanguageCode;
 
 	/**
-	 * The table addresses_facts_locality
+	 * The table address_fact_locality
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressesFactsLocality AddressesFactsLocality = opus.address.database.jooq.generated.tables.AddressesFactsLocality.AddressesFactsLocality;
+	public static final opus.address.database.jooq.generated.tables.AddressFactLocality AddressFactLocality = opus.address.database.jooq.generated.tables.AddressFactLocality.AddressFactLocality;
 
 	/**
-	 * The table addresses_facts_organization
+	 * The table address_fact_organization
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressesFactsOrganization AddressesFactsOrganization = opus.address.database.jooq.generated.tables.AddressesFactsOrganization.AddressesFactsOrganization;
+	public static final opus.address.database.jooq.generated.tables.AddressFactOrganization AddressFactOrganization = opus.address.database.jooq.generated.tables.AddressFactOrganization.AddressFactOrganization;
 
 	/**
-	 * The table addresses_facts_postal_code
+	 * The table address_fact_postal_code
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressesFactsPostalCode AddressesFactsPostalCode = opus.address.database.jooq.generated.tables.AddressesFactsPostalCode.AddressesFactsPostalCode;
+	public static final opus.address.database.jooq.generated.tables.AddressFactPostalCode AddressFactPostalCode = opus.address.database.jooq.generated.tables.AddressFactPostalCode.AddressFactPostalCode;
 
 	/**
-	 * The table addresses_facts_recipient
+	 * The table address_fact_primary
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressesFactsRecipient AddressesFactsRecipient = opus.address.database.jooq.generated.tables.AddressesFactsRecipient.AddressesFactsRecipient;
+	public static final opus.address.database.jooq.generated.tables.AddressFactPrimary AddressFactPrimary = opus.address.database.jooq.generated.tables.AddressFactPrimary.AddressFactPrimary;
 
 	/**
-	 * The table addresses_facts_sorting_code
+	 * The table address_fact_recipient
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressesFactsSortingCode AddressesFactsSortingCode = opus.address.database.jooq.generated.tables.AddressesFactsSortingCode.AddressesFactsSortingCode;
+	public static final opus.address.database.jooq.generated.tables.AddressFactRecipient AddressFactRecipient = opus.address.database.jooq.generated.tables.AddressFactRecipient.AddressFactRecipient;
 
 	/**
-	 * The table addresses_facts_suite
+	 * The table address_fact_sorting_code
 	 */
-	public static final opus.address.database.jooq.generated.tables.AddressesFactsSuite AddressesFactsSuite = opus.address.database.jooq.generated.tables.AddressesFactsSuite.AddressesFactsSuite;
+	public static final opus.address.database.jooq.generated.tables.AddressFactSortingCode AddressFactSortingCode = opus.address.database.jooq.generated.tables.AddressFactSortingCode.AddressFactSortingCode;
+
+	/**
+	 * The table address_fact_suite
+	 */
+	public static final opus.address.database.jooq.generated.tables.AddressFactSuite AddressFactSuite = opus.address.database.jooq.generated.tables.AddressFactSuite.AddressFactSuite;
 
 	/**
 	 * The table databasechangelog
@@ -87,109 +92,99 @@ public class Tables {
 	public static final opus.address.database.jooq.generated.tables.Databasechangeloglock Databasechangeloglock = opus.address.database.jooq.generated.tables.Databasechangeloglock.Databasechangeloglock;
 
 	/**
-	 * The table emails
+	 * The table email
 	 */
-	public static final opus.address.database.jooq.generated.tables.Emails Emails = opus.address.database.jooq.generated.tables.Emails.Emails;
+	public static final opus.address.database.jooq.generated.tables.Email Email = opus.address.database.jooq.generated.tables.Email.Email;
 
 	/**
-	 * The table emails_facts_domain
+	 * The table email_fact_domain
 	 */
-	public static final opus.address.database.jooq.generated.tables.EmailsFactsDomain EmailsFactsDomain = opus.address.database.jooq.generated.tables.EmailsFactsDomain.EmailsFactsDomain;
+	public static final opus.address.database.jooq.generated.tables.EmailFactDomain EmailFactDomain = opus.address.database.jooq.generated.tables.EmailFactDomain.EmailFactDomain;
 
 	/**
-	 * The table emails_facts_local_part
+	 * The table email_fact_local_part
 	 */
-	public static final opus.address.database.jooq.generated.tables.EmailsFactsLocalPart EmailsFactsLocalPart = opus.address.database.jooq.generated.tables.EmailsFactsLocalPart.EmailsFactsLocalPart;
+	public static final opus.address.database.jooq.generated.tables.EmailFactLocalPart EmailFactLocalPart = opus.address.database.jooq.generated.tables.EmailFactLocalPart.EmailFactLocalPart;
 
 	/**
-	 * The table emails_facts_opted_enum
+	 * The table email_fact_opted_enum
 	 */
-	public static final opus.address.database.jooq.generated.tables.EmailsFactsOptedEnum EmailsFactsOptedEnum = opus.address.database.jooq.generated.tables.EmailsFactsOptedEnum.EmailsFactsOptedEnum;
+	public static final opus.address.database.jooq.generated.tables.EmailFactOptedEnum EmailFactOptedEnum = opus.address.database.jooq.generated.tables.EmailFactOptedEnum.EmailFactOptedEnum;
 
 	/**
-	 * The table entities
+	 * The table email_fact_primary
 	 */
-	public static final opus.address.database.jooq.generated.tables.Entities Entities = opus.address.database.jooq.generated.tables.Entities.Entities;
+	public static final opus.address.database.jooq.generated.tables.EmailFactPrimary EmailFactPrimary = opus.address.database.jooq.generated.tables.EmailFactPrimary.EmailFactPrimary;
 
 	/**
-	 * The table entities_and_addresses_facts_is_related
+	 * The table entity
 	 */
-	public static final opus.address.database.jooq.generated.tables.EntitiesAndAddressesFactsIsRelated EntitiesAndAddressesFactsIsRelated = opus.address.database.jooq.generated.tables.EntitiesAndAddressesFactsIsRelated.EntitiesAndAddressesFactsIsRelated;
+	public static final opus.address.database.jooq.generated.tables.Entity Entity = opus.address.database.jooq.generated.tables.Entity.Entity;
 
 	/**
-	 * The table entities_and_emails_facts_is_related
+	 * The table entity_fact_is_deleted
 	 */
-	public static final opus.address.database.jooq.generated.tables.EntitiesAndEmailsFactsIsRelated EntitiesAndEmailsFactsIsRelated = opus.address.database.jooq.generated.tables.EntitiesAndEmailsFactsIsRelated.EntitiesAndEmailsFactsIsRelated;
+	public static final opus.address.database.jooq.generated.tables.EntityFactIsDeleted EntityFactIsDeleted = opus.address.database.jooq.generated.tables.EntityFactIsDeleted.EntityFactIsDeleted;
 
 	/**
-	 * The table entities_and_phones_facts_is_related
+	 * The table event
 	 */
-	public static final opus.address.database.jooq.generated.tables.EntitiesAndPhonesFactsIsRelated EntitiesAndPhonesFactsIsRelated = opus.address.database.jooq.generated.tables.EntitiesAndPhonesFactsIsRelated.EntitiesAndPhonesFactsIsRelated;
+	public static final opus.address.database.jooq.generated.tables.Event Event = opus.address.database.jooq.generated.tables.Event.Event;
 
 	/**
-	 * The table entities_facts_is_deleted
+	 * The table person
 	 */
-	public static final opus.address.database.jooq.generated.tables.EntitiesFactsIsDeleted EntitiesFactsIsDeleted = opus.address.database.jooq.generated.tables.EntitiesFactsIsDeleted.EntitiesFactsIsDeleted;
+	public static final opus.address.database.jooq.generated.tables.Person Person = opus.address.database.jooq.generated.tables.Person.Person;
 
 	/**
-	 * The table events
+	 * The table person_fact_first_name
 	 */
-	public static final opus.address.database.jooq.generated.tables.Events Events = opus.address.database.jooq.generated.tables.Events.Events;
+	public static final opus.address.database.jooq.generated.tables.PersonFactFirstName PersonFactFirstName = opus.address.database.jooq.generated.tables.PersonFactFirstName.PersonFactFirstName;
 
 	/**
-	 * The table people
+	 * The table person_fact_last_name
 	 */
-	public static final opus.address.database.jooq.generated.tables.People People = opus.address.database.jooq.generated.tables.People.People;
+	public static final opus.address.database.jooq.generated.tables.PersonFactLastName PersonFactLastName = opus.address.database.jooq.generated.tables.PersonFactLastName.PersonFactLastName;
 
 	/**
-	 * The table people_facts_first_name
+	 * The table phone
 	 */
-	public static final opus.address.database.jooq.generated.tables.PeopleFactsFirstName PeopleFactsFirstName = opus.address.database.jooq.generated.tables.PeopleFactsFirstName.PeopleFactsFirstName;
+	public static final opus.address.database.jooq.generated.tables.Phone Phone = opus.address.database.jooq.generated.tables.Phone.Phone;
 
 	/**
-	 * The table people_facts_last_name
+	 * The table phone_fact_do_not_call
 	 */
-	public static final opus.address.database.jooq.generated.tables.PeopleFactsLastName PeopleFactsLastName = opus.address.database.jooq.generated.tables.PeopleFactsLastName.PeopleFactsLastName;
+	public static final opus.address.database.jooq.generated.tables.PhoneFactDoNotCall PhoneFactDoNotCall = opus.address.database.jooq.generated.tables.PhoneFactDoNotCall.PhoneFactDoNotCall;
 
 	/**
-	 * The table people_facts_primary_address
+	 * The table phone_fact_extension
 	 */
-	public static final opus.address.database.jooq.generated.tables.PeopleFactsPrimaryAddress PeopleFactsPrimaryAddress = opus.address.database.jooq.generated.tables.PeopleFactsPrimaryAddress.PeopleFactsPrimaryAddress;
+	public static final opus.address.database.jooq.generated.tables.PhoneFactExtension PhoneFactExtension = opus.address.database.jooq.generated.tables.PhoneFactExtension.PhoneFactExtension;
 
 	/**
-	 * The table people_facts_primary_email
+	 * The table phone_fact_number
 	 */
-	public static final opus.address.database.jooq.generated.tables.PeopleFactsPrimaryEmail PeopleFactsPrimaryEmail = opus.address.database.jooq.generated.tables.PeopleFactsPrimaryEmail.PeopleFactsPrimaryEmail;
+	public static final opus.address.database.jooq.generated.tables.PhoneFactNumber PhoneFactNumber = opus.address.database.jooq.generated.tables.PhoneFactNumber.PhoneFactNumber;
 
 	/**
-	 * The table people_facts_primary_phone
+	 * The table phone_fact_primary
 	 */
-	public static final opus.address.database.jooq.generated.tables.PeopleFactsPrimaryPhone PeopleFactsPrimaryPhone = opus.address.database.jooq.generated.tables.PeopleFactsPrimaryPhone.PeopleFactsPrimaryPhone;
+	public static final opus.address.database.jooq.generated.tables.PhoneFactPrimary PhoneFactPrimary = opus.address.database.jooq.generated.tables.PhoneFactPrimary.PhoneFactPrimary;
 
 	/**
-	 * The table phones
+	 * The table phone_fact_type
 	 */
-	public static final opus.address.database.jooq.generated.tables.Phones Phones = opus.address.database.jooq.generated.tables.Phones.Phones;
+	public static final opus.address.database.jooq.generated.tables.PhoneFactType PhoneFactType = opus.address.database.jooq.generated.tables.PhoneFactType.PhoneFactType;
 
 	/**
-	 * The table phones_facts_do_not_call
+	 * The table relationship
 	 */
-	public static final opus.address.database.jooq.generated.tables.PhonesFactsDoNotCall PhonesFactsDoNotCall = opus.address.database.jooq.generated.tables.PhonesFactsDoNotCall.PhonesFactsDoNotCall;
+	public static final opus.address.database.jooq.generated.tables.Relationship Relationship = opus.address.database.jooq.generated.tables.Relationship.Relationship;
 
 	/**
-	 * The table phones_facts_extension
+	 * The table relationship_fact_is_related
 	 */
-	public static final opus.address.database.jooq.generated.tables.PhonesFactsExtension PhonesFactsExtension = opus.address.database.jooq.generated.tables.PhonesFactsExtension.PhonesFactsExtension;
-
-	/**
-	 * The table phones_facts_number
-	 */
-	public static final opus.address.database.jooq.generated.tables.PhonesFactsNumber PhonesFactsNumber = opus.address.database.jooq.generated.tables.PhonesFactsNumber.PhonesFactsNumber;
-
-	/**
-	 * The table phones_facts_type
-	 */
-	public static final opus.address.database.jooq.generated.tables.PhonesFactsType PhonesFactsType = opus.address.database.jooq.generated.tables.PhonesFactsType.PhonesFactsType;
+	public static final opus.address.database.jooq.generated.tables.RelationshipFactIsRelated RelationshipFactIsRelated = opus.address.database.jooq.generated.tables.RelationshipFactIsRelated.RelationshipFactIsRelated;
 
 	/**
 	 * The table system
@@ -197,27 +192,27 @@ public class Tables {
 	public static final opus.address.database.jooq.generated.tables.System System = opus.address.database.jooq.generated.tables.System.System;
 
 	/**
-	 * The table users
+	 * The table user
 	 */
-	public static final opus.address.database.jooq.generated.tables.Users Users = opus.address.database.jooq.generated.tables.Users.Users;
+	public static final opus.address.database.jooq.generated.tables.User User = opus.address.database.jooq.generated.tables.User.User;
 
 	/**
-	 * The table users_facts_email
+	 * The table user_fact_email
 	 */
-	public static final opus.address.database.jooq.generated.tables.UsersFactsEmail UsersFactsEmail = opus.address.database.jooq.generated.tables.UsersFactsEmail.UsersFactsEmail;
+	public static final opus.address.database.jooq.generated.tables.UserFactEmail UserFactEmail = opus.address.database.jooq.generated.tables.UserFactEmail.UserFactEmail;
 
 	/**
-	 * The table users_facts_is_deleted
+	 * The table user_fact_is_deleted
 	 */
-	public static final opus.address.database.jooq.generated.tables.UsersFactsIsDeleted UsersFactsIsDeleted = opus.address.database.jooq.generated.tables.UsersFactsIsDeleted.UsersFactsIsDeleted;
+	public static final opus.address.database.jooq.generated.tables.UserFactIsDeleted UserFactIsDeleted = opus.address.database.jooq.generated.tables.UserFactIsDeleted.UserFactIsDeleted;
 
 	/**
-	 * The table users_facts_password
+	 * The table user_fact_password
 	 */
-	public static final opus.address.database.jooq.generated.tables.UsersFactsPassword UsersFactsPassword = opus.address.database.jooq.generated.tables.UsersFactsPassword.UsersFactsPassword;
+	public static final opus.address.database.jooq.generated.tables.UserFactPassword UserFactPassword = opus.address.database.jooq.generated.tables.UserFactPassword.UserFactPassword;
 
 	/**
-	 * The table users_facts_username
+	 * The table user_fact_username
 	 */
-	public static final opus.address.database.jooq.generated.tables.UsersFactsUsername UsersFactsUsername = opus.address.database.jooq.generated.tables.UsersFactsUsername.UsersFactsUsername;
+	public static final opus.address.database.jooq.generated.tables.UserFactUsername UserFactUsername = opus.address.database.jooq.generated.tables.UserFactUsername.UserFactUsername;
 }

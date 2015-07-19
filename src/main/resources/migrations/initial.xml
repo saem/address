@@ -9,8 +9,8 @@
 
     <!--
         @TODO
-        * Differentiate between Entities (things that vary state over time), and
-            Actors, Entities that can initiate actions (maybe)
+        * Differentiate between Entity (things that vary state over time), and
+            Actors, entity that can initiate actions (maybe)
         * TUUID for sequences, assuming they're efficient
         * naming convention for primary keys and foreign keys
         * indices
@@ -20,15 +20,15 @@
     <changeSet id="1" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="entities" />
+                <tableExists tableName="entity" />
             </not>
         </preConditions>
 
-        <comment>Entities are all things that change over time, and have an identity</comment>
+        <comment>entity are all things that change over time, and have an identity</comment>
 
-        <createTable tableName="entities">
+        <createTable tableName="entity">
             <column name="entity_id" type="bigint" autoIncrement="true">
-                <constraints primaryKeyName="pk_entities_entity_id" primaryKey="true" />
+                <constraints primaryKeyName="pk_entity_entity_id" primaryKey="true" />
             </column>
         </createTable>
     </changeSet>
@@ -36,18 +36,18 @@
     <changeSet id="2" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="users" />
+                <tableExists tableName="user" />
             </not>
         </preConditions>
 
-        <comment>These are the authenticatable entities that can make changes (actors)</comment>
+        <comment>These are the authenticatable entity that can make changes (actors)</comment>
         
-        <createTable tableName="users">
+        <createTable tableName="user">
             <column name="entity_id" type="bigint" autoIncrement="false">
-                <constraints primaryKeyName="pk_users"
+                <constraints primaryKeyName="pk_user"
                              primaryKey="true"
-                             foreignKeyName="fk_users_entities"
-                             referencedTableName="entities"
+                             foreignKeyName="fk_user_entity"
+                             referencedTableName="entity"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
@@ -67,8 +67,8 @@
             <column name="entity_id" type="bigint" autoIncrement="false">
                 <constraints primaryKeyName="pk_system"
                              primaryKey="true"
-                             foreignKeyName="fk_system_entities"
-                             referencedTableName="entities"
+                             foreignKeyName="fk_system_entity"
+                             referencedTableName="entity"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
@@ -82,39 +82,39 @@
 
         <comment>Create the system itself (extrinsic part)</comment>
 
-        <insert tableName="entities">
-            <column name="entity_id" valueComputed="nextval('entities_entity_id_seq')" />
+        <insert tableName="entity">
+            <column name="entity_id" valueComputed="nextval('entity_entity_id_seq')" />
         </insert>
         
         <insert tableName="system">
-            <column name="entity_id" valueComputed="currval('entities_entity_id_seq')" />
+            <column name="entity_id" valueComputed="currval('entity_entity_id_seq')" />
         </insert>
 
-        <insert tableName="users">
-            <column name="entity_id" valueComputed="currval('entities_entity_id_seq')" />
+        <insert tableName="user">
+            <column name="entity_id" valueComputed="currval('entity_entity_id_seq')" />
         </insert>
     </changeSet>
     
     <changeSet id="5" author="saem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="events" />
+                <tableExists tableName="event" />
             </not>
         </preConditions>
         
-        <!-- Events -->
+        <!-- event -->
         
-        <createTable tableName="events">
+        <createTable tableName="event">
             
             <!--
-            There are two requirements primary for the events table:
-            - They provide a valid partial order based on causality of events.
+            There are two requirements primary for the event table:
+            - They provide a valid partial order based on causality of event.
             - They are stored on disk in a total order satisfying the partial 
                 order.
             -->
             
             <column name="sequence" type="bigint" autoIncrement="true">
-                <constraints primaryKeyName="pk_events_sequence" primaryKey="true" />
+                <constraints primaryKeyName="pk_event_sequence" primaryKey="true" />
             </column>
             <column name="event" type="text">
                 <constraints nullable="false" />
@@ -123,8 +123,8 @@
                 <constraints nullable="false" />
             </column>
             <column name="actor" type="bigint">
-                <constraints foreignKeyName="fk_events_users"
-                             referencedTableName="users"
+                <constraints foreignKeyName="fk_event_user"
+                             referencedTableName="user"
                              referencedColumnNames="entity_id"
                              nullable="false" />
             </column>
@@ -140,19 +140,19 @@
     <changeSet id="6" author="michael">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="entities_facts_is_deleted" />
+                <tableExists tableName="entity_fact_is_deleted" />
             </not>
         </preConditions>
 
-        <createTable tableName="entities_facts_is_deleted">
+        <createTable tableName="entity_fact_is_deleted">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_entities_facts_is_deleted_events"
-                             referencedTableName="events"
+                <constraints foreignKeyName="fk_entity_fact_is_deleted_event"
+                             referencedTableName="event"
                              referencedColumnNames="sequence" />
             </column>
             <column name="entity_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_facts_is_deleted_people"
-                             referencedTableName="entities"
+                <constraints foreignKeyName="fk_entity_fact_is_deleted"
+                             referencedTableName="entity"
                              referencedColumnNames="entity_id" />
             </column>
             <column name="is_deleted" type="boolean" defaultValueBoolean="false">
@@ -160,69 +160,70 @@
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="entities_facts_is_deleted" columnNames="sequence,entity_id" constraintName="pk_entities_facts_is_deleted" />
+        <addPrimaryKey tableName="entity_fact_is_deleted" columnNames="sequence,entity_id" constraintName="pk_entity_fact_is_deleted" />
     </changeSet>
 
     <changeSet id="7" author="saem">
         <preConditions>
             <not>
-                <tableExists tableName="relationships"/>
+                <tableExists tableName="relationship"/>
             </not>
         </preConditions>
 
-        <createTable tableName="relationships">
+        <createTable tableName="relationship">
             <column name="relationship_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_facts_is_related_events"
-                             referencedTableName="events"
-                             referencedColumnNames="sequence"
-                             nullable="false"/>
+                <constraints primaryKeyName="pk_relationship_relationship_id"
+                             primaryKey="true"
+                             foreignKeyName="fk_entity_entity"
+                             referencedTableName="entity"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
             </column>
-            <column name="parent_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_facts_is_related_entities_parent"
-                             referencedTableName="entities"
+            <column name="entity_id_min" type="bigint">
+                <constraints foreignKeyName="fk_relationship_entity_min"
+                             referencedTableName="entity"
                              referencedColumnNames="entity_id"
                              nullable="false"/>
             </column>
-            <column name="child_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_facts_is_related_entities_child"
-                             referencedTableName="entities"
+            <column name="entity_id_max" type="bigint">
+                <constraints foreignKeyName="fk_relationship_entity_max"
+                             referencedTableName="entity"
                              referencedColumnNames="entity_id"
                              nullable="false"/>
-            </column>
-            <column name="is_related" type="bool" defaultValueBoolean="true">
-                <constraints nullable="false"/>
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="entities_facts_is_related"
-                       columnNames="sequence,parent_id,child_id"
-                       constraintName="pk_entities_facts_is_related"/>
+        <!--
+        Ensure that the entity_id_min is less than or equal to entity_id_max, to ensure a
+        relationship only has one possible representation. The equal to is required for recursive
+        relationships.
+        -->
+
+        <sql>
+            ALTER TABLE relationship
+            ADD CONSTRAINT relationship_entity_id_min_lte_entity_id_max
+            CHECK (entity_id_min &lt;= entity_id_max)
+        </sql>
     </changeSet>
 
     <changeSet id="8" author="saem">
         <preConditions>
             <not>
-                <tableExists tableName="entities_facts_is_related"/>
+                <tableExists tableName="relationship_fact_is_related"/>
             </not>
         </preConditions>
 
-        <createTable tableName="entities_facts_is_related">
+        <createTable tableName="relationship_fact_is_related">
             <column name="sequence" type="bigint">
-                <constraints foreignKeyName="fk_entities_facts_is_related_events"
-                             referencedTableName="events"
+                <constraints foreignKeyName="fk_relationship_fact_is_related_event"
+                             referencedTableName="event"
                              referencedColumnNames="sequence"
                              nullable="false"/>
             </column>
-            <column name="parent_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_facts_is_related_entities_parent"
-                             referencedTableName="entities"
-                             referencedColumnNames="entity_id"
-                             nullable="false"/>
-            </column>
-            <column name="child_id" type="bigint">
-                <constraints foreignKeyName="fk_entities_facts_is_related_entities_child"
-                             referencedTableName="entities"
-                             referencedColumnNames="entity_id"
+            <column name="relationship_id" type="bigint">
+                <constraints foreignKeyName="fk_relationship_fact_is_related_relationship"
+                             referencedTableName="relationship"
+                             referencedColumnNames="relationship_id"
                              nullable="false"/>
             </column>
             <column name="is_related" type="bool" defaultValueBoolean="true">
@@ -230,9 +231,9 @@
             </column>
         </createTable>
 
-        <addPrimaryKey tableName="entities_facts_is_related"
-                       columnNames="sequence,parent_id,child_id"
-                       constraintName="pk_entities_facts_is_related"/>
+        <addPrimaryKey tableName="relationship_fact_is_related"
+                       columnNames="sequence,relationship_id"
+                       constraintName="pk_relationship_fact_is_related"/>
     </changeSet>
 
 </databaseChangeLog>

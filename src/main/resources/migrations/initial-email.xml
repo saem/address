@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!-- email -->
+    <changeSet id="1" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="email"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="email">
+            <column name="email_id" type="bigint">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_email"
+                             foreignKeyName="fk_email_entity_email_id"
+                             referencedTableName="entity"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+            <column name="parent_id" type="bigint">
+                <constraints foreignKeyName="fk_email_entity_parent_id"
+                             referencedTableName="entity"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- entity_fact_primary_email -->
+    <changeSet id="2" author="saem">
+        <preConditions>
+            <tableExists tableName="entity"/>
+            <not>
+                <tableExists tableName="email_fact_primary"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="email_fact_primary">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_email_fact_primary_event"
+                             referencedTableName="event"
+                             referencedColumnNames="sequence"
+                             nullable="false"/>
+            </column>
+            <column name="email_id" type="bigint">
+                <constraints foreignKeyName="fk_email_fact_primary_email"
+                             referencedTableName="email"
+                             referencedColumnNames="email_id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="email_fact_primary"
+                       columnNames="sequence,email_id"
+                       constraintName="pk_email_fact_primary"/>
+    </changeSet>
+
+    <!-- email_fact_local_part -->
+    <changeSet id="3" author="michael">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="email_fact_local_part"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="email_fact_local_part">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_email_fact_local_part_event"
+                             referencedTableName="event"
+                             referencedColumnNames="sequence"
+                             nullable="false"/>
+            </column>
+            <column name="email_id" type="bigint">
+                <constraints foreignKeyName="fk_email_fact_local_part_email"
+                             referencedTableName="email"
+                             referencedColumnNames="email_id"
+                             nullable="false"/>
+            </column>
+            <column name="local_part" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="email_fact_local_part"
+                       columnNames="sequence,email_id"
+                       constraintName="pk_email_local_part"/>
+    </changeSet>
+
+    <!-- email_fact_domain -->
+    <changeSet id="4" author="michael">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="email_fact_domain"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="email_fact_domain">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_email_fact_domain_event"
+                             referencedTableName="event"
+                             referencedColumnNames="sequence"
+                             nullable="false"/>
+            </column>
+            <column name="email_id" type="bigint">
+                <constraints foreignKeyName="fk_email_fact_domain_email"
+                             referencedTableName="email"
+                             referencedColumnNames="email_id"
+                             nullable="false"/>
+            </column>
+            <column name="domain" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="email_fact_domain"
+                       columnNames="sequence,email_id"
+                       constraintName="pk_email_fact_domain"/>
+    </changeSet>
+
+    <!-- email_fact_opted_enum -->
+    <changeSet id="5" author="michael">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="email_fact_opted_enum"/>
+            </not>
+        </preConditions>
+
+        <sql>CREATE TYPE opted_enum AS ENUM ('opted','opted-out','non-opted')</sql>
+
+        <createTable tableName="email_fact_opted_enum">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_email_fact_opted_enum_event"
+                             referencedTableName="event"
+                             referencedColumnNames="sequence"
+                             nullable="false"/>
+            </column>
+            <column name="email_id" type="bigint">
+                <constraints foreignKeyName="fk_email_fact_opted_enum_email"
+                             referencedTableName="email"
+                             referencedColumnNames="email_id"
+                             nullable="false"/>
+            </column>
+            <column name="opted" type="opted_enum">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="email_fact_opted_enum"
+                       columnNames="sequence,email_id"
+                       constraintName="pk_email_fact_opted_enum"/>
+    </changeSet>
+</databaseChangeLog>

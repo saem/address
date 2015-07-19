@@ -6,9 +6,9 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
   <include file="migrations/initial.xml"/>
-  <include file="migrations/initial-users.xml"/>
-  <include file="migrations/initial-people.xml"/>
-  <include file="migrations/initial-emails.xml"/>
-  <include file="migrations/initial-addresses.xml"/>
-  <include file="migrations/initial-phones.xml"/>
+  <include file="migrations/initial-user.xml"/>
+  <include file="migrations/initial-person.xml"/>
+  <include file="migrations/initial-email.xml"/>
+  <include file="migrations/initial-address.xml"/>
+  <include file="migrations/initial-phone.xml"/>
 </databaseChangeLog>

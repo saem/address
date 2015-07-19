@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!-- person -->
+    <changeSet id="1" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="person" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="person">
+            <column name="entity_id" type="bigint" autoIncrement="false">
+                <constraints primaryKeyName="pk_person"
+                             primaryKey="true"
+                             foreignKeyName="fk_person_entity"
+                             referencedTableName="entity"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- person_fact_first_name -->
+    <changeSet id="2" author="michael">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="person_fact_first_name" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="person_fact_first_name">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_person_fact_first_name_event"
+                             referencedTableName="event"
+                             referencedColumnNames="sequence" />
+            </column>
+            <column name="entity_id" type="bigint">
+                <constraints foreignKeyName="fk_person_fact_first_name_person"
+                             referencedTableName="person"
+                             referencedColumnNames="entity_id" />
+            </column>
+            <column name="first_name" type="text">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="person_fact_first_name" columnNames="sequence,entity_id" constraintName="pk_person_fact_first_name" />
+    </changeSet>
+
+    <!-- person_fact_last_name -->
+    <changeSet id="3" author="michael">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="person_fact_last_name" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="person_fact_last_name">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_person_fact_last_name_event"
+                             referencedTableName="event"
+                             referencedColumnNames="sequence" />
+            </column>
+            <column name="entity_id" type="bigint">
+                <constraints foreignKeyName="fk_person_fact_last_name_person"
+                             referencedTableName="person"
+                             referencedColumnNames="entity_id" />
+            </column>
+            <column name="last_name" type="text">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="person_fact_last_name" columnNames="sequence,entity_id" constraintName="pk_person_fact_last_name" />
+    </changeSet>
+
+</databaseChangeLog>

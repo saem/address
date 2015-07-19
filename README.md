@@ -12,14 +12,8 @@ mvn clean && mvn package && java -agentlib:jdwp=transport=dt_socket,server=y,sus
 ```
 
 # ToDos
-## Database
-* Singularize tables (http://stackoverflow.com/a/5841297/68131)
-* Fix phones, emails, and addresses, to deal with value types and only effect associations
-* Relationships are an entity-like-thing (relationship_id, entity_id_a_min, entity_id_b_max)
-* Relationship specialization tables can add metadata to the relationship, such as directionality
-* Relationship fact tables can also add metadata to relationships, varying over time
-
 ## Java Code
+* Get code to compile after the database tables have all been renamed
 * New architecture:
     * Resource -> Reader|Writer (Command log side-effect) -> Persister|Provider (DataStore side-effect) -> Report -> Response
     * Resource translates from HTTP Request to Command
@@ -33,3 +27,8 @@ mvn clean && mvn package && java -agentlib:jdwp=transport=dt_socket,server=y,sus
 
 ## Research
 1) how to hypermedia JSON?
+
+# Relationship Notes
+* Relationships are an entity-like-thing (relationship_id, entity_id_a_min, entity_id_b_max)
+* Relationship specialization tables can add metadata to the relationship, such as directionality
+* Relationship fact tables can also add metadata to relationships, varying over time

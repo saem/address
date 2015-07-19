@@ -16,7 +16,7 @@ package opus.address.database.jooq.generated.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class System extends org.jooq.impl.TableImpl<opus.address.database.jooq.generated.tables.records.System> {
 
-	private static final long serialVersionUID = 222276675;
+	private static final long serialVersionUID = -1473645343;
 
 	/**
 	 * The reference instance of <code>system</code>
@@ -79,7 +79,7 @@ public class System extends org.jooq.impl.TableImpl<opus.address.database.jooq.g
 	 */
 	@Override
 	public java.util.List<org.jooq.ForeignKey<opus.address.database.jooq.generated.tables.records.System, ?>> getReferences() {
-		return java.util.Arrays.<org.jooq.ForeignKey<opus.address.database.jooq.generated.tables.records.System, ?>>asList(opus.address.database.jooq.generated.Keys.SYSTEM__FK_SYSTEM_ENTITIES);
+		return java.util.Arrays.<org.jooq.ForeignKey<opus.address.database.jooq.generated.tables.records.System, ?>>asList(opus.address.database.jooq.generated.Keys.SYSTEM__FK_SYSTEM_ENTITY);
 	}
 
 	/**

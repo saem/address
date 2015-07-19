@@ -17,12 +17,12 @@ package opus.address.database.jooq.generated;
 public class Sequences {
 
 	/**
-	 * The sequence <code>entities_entity_id_seq</code>
+	 * The sequence <code>entity_entity_id_seq</code>
 	 */
-	public static final org.jooq.Sequence<java.lang.Long> entities_entity_id_seq = new org.jooq.impl.SequenceImpl<java.lang.Long>("entities_entity_id_seq", opus.address.database.jooq.generated.DefaultSchema.DEFAULT_SCHEMA, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+	public static final org.jooq.Sequence<java.lang.Long> entity_entity_id_seq = new org.jooq.impl.SequenceImpl<java.lang.Long>("entity_entity_id_seq", opus.address.database.jooq.generated.DefaultSchema.DEFAULT_SCHEMA, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
 	/**
-	 * The sequence <code>events_sequence_seq</code>
+	 * The sequence <code>event_sequence_seq</code>
 	 */
-	public static final org.jooq.Sequence<java.lang.Long> events_sequence_seq = new org.jooq.impl.SequenceImpl<java.lang.Long>("events_sequence_seq", opus.address.database.jooq.generated.DefaultSchema.DEFAULT_SCHEMA, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+	public static final org.jooq.Sequence<java.lang.Long> event_sequence_seq = new org.jooq.impl.SequenceImpl<java.lang.Long>("event_sequence_seq", opus.address.database.jooq.generated.DefaultSchema.DEFAULT_SCHEMA, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 }

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!-- phone -->
+    <changeSet id="1" author="saem">
+        <preConditions>
+            <not>
+                <tableExists tableName="phone" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="phone">
+            <column name="phone_id" type="bigint">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_phone"
+                             foreignKeyName="fk_phone_entity_phone_id"
+                             referencedTableName="entity"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+            <column name="parent_id" type="bigint">
+                <constraints foreignKeyName="fk_phone_entity_parent_id"
+                             referencedTableName="entity"
+                             referencedColumnNames="entity_id"
+                             nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="phone_fact_number"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="phone_fact_number">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_phone_fact_number_event"
+                             referencedTableName="event"
+                             referencedColumnNames="sequence"
+                             nullable="false"/>
+            </column>
+            <column name="phone_id" type="bigint">
+                <constraints foreignKeyName="fk_phone_number_fact_phone"
+                             referencedTableName="phone"
+                             referencedColumnNames="phone_id"
+                             nullable="false" />
+            </column>
+            <column name="number" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="phone_fact_number"
+                       columnNames="sequence,phone_id"
+                       constraintName="pk_phone_fact_number" />
+    </changeSet>
+
+    <changeSet id="3" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="phone_fact_extension"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="phone_fact_extension">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_phone_fact_extension_event"
+                             referencedTableName="event"
+                             referencedColumnNames="sequence"
+                             nullable="false"/>
+            </column>
+            <column name="phone_id" type="bigint">
+                <constraints foreignKeyName="fk_phone_fact_extension_phone"
+                             referencedTableName="phone"
+                             referencedColumnNames="phone_id"
+                             nullable="false" />
+            </column>
+            <column name="number" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="phone_fact_extension"
+                       columnNames="sequence,phone_id"
+                       constraintName="pk_phone_fact_extension" />
+    </changeSet>
+
+    <!-- phone_fact_do_not_call -->
+    <changeSet id="4" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="phone_fact_do_not_call"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="phone_fact_do_not_call">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_phone_fact_do_not_call_event"
+                             referencedTableName="event"
+                             referencedColumnNames="sequence"
+                             nullable="false" />
+            </column>
+            <column name="phone_id" type="bigint">
+                <constraints foreignKeyName="fk_phone_fact_do_not_call_phone"
+                             referencedTableName="phone"
+                             referencedColumnNames="phone_id"
+                             nullable="false" />
+            </column>
+            <column name="do_not_call" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="phone_fact_do_not_call"
+                       columnNames="sequence,phone_id"
+                       constraintName="pk_phone_fact_do_not_call" />
+    </changeSet>
+
+    <!-- entity_fact_primary_phone -->
+    <changeSet id="5" author="saem">
+        <preConditions>
+            <tableExists tableName="phone"/>
+            <not>
+                <tableExists tableName="phone_fact_primary"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="phone_fact_primary">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_phone_fact_primary_event"
+                             referencedTableName="event"
+                             referencedColumnNames="sequence"
+                             nullable="false"/>
+            </column>
+            <column name="phone_id" type="bigint">
+                <constraints foreignKeyName="fk_phone_fact_primary_phone"
+                             referencedTableName="phone"
+                             referencedColumnNames="phone_id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="phone_fact_primary"
+                       columnNames="sequence,phone_id"
+                       constraintName="pk_phone_fact_primary"/>
+    </changeSet>
+
+    <!-- phone_fact_type -->
+    <changeSet id="6" author="saem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="phone_fact_type"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="phone_fact_type">
+            <column name="sequence" type="bigint">
+                <constraints foreignKeyName="fk_phone_fact_type_event"
+                             referencedTableName="event"
+                             referencedColumnNames="sequence"
+                             nullable="false" />
+            </column>
+            <column name="phone_id" type="bigint">
+                <constraints foreignKeyName="fk_phone_fact_type_phone"
+                             referencedTableName="phone"
+                             referencedColumnNames="phone_id"
+                             nullable="false" />
+            </column>
+            <column name="type" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="phone_fact_type"
+                       columnNames="sequence,phone_id"
+                       constraintName="pk_phone_fact_type" />
+    </changeSet>
+</databaseChangeLog>
