@@ -2,6 +2,9 @@ package opus.address;
 
 import com.bendb.dropwizard.jooq.JooqBundle;
 import com.bendb.dropwizard.jooq.JooqFactory;
+import com.bendb.dropwizard.jooq.JooqHealthCheck;
+import com.bendb.dropwizard.jooq.jersey.JooqBinder;
+import com.bendb.dropwizard.jooq.jersey.LoggingDataAccessExceptionMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
@@ -15,6 +18,7 @@ import opus.address.events.Events;
 import opus.address.people.People;
 import opus.address.users.Users;
 import org.joda.time.DateTimeZone;
+import org.jooq.Configuration;
 
 import java.util.Optional;
 import java.util.TimeZone;
@@ -24,15 +28,10 @@ public class AddressApplication extends Application<AddressConfiguration> {
             Manifests.read("Implementation-Build"))
             .orElseThrow(() -> new InvalidCodeVersionException("'Implementation-Build' property was not set."));
 
-    private final JooqBundle<AddressConfiguration> jooq = new JooqBundle<AddressConfiguration>() {
+    private final JooqBundle<AddressConfiguration> jooqEvent = new JooqBundle<AddressConfiguration>() {
         @Override
         public DataSourceFactory getDataSourceFactory(AddressConfiguration configuration) {
-            return configuration.getDataSourceFactory();
-        }
-
-        @Override
-        public JooqFactory getJooqFactory(AddressConfiguration configuration) {
-            return configuration.getJooqFactory();
+            return configuration.getEventDataSourceFactory();
         }
     };
 
@@ -40,14 +39,21 @@ public class AddressApplication extends Application<AddressConfiguration> {
         new AddressApplication().run(args);
     }
 
+    private final JooqBundle<AddressConfiguration> jooqViews = new JooqBundle<AddressConfiguration>() {
+        @Override
+        public DataSourceFactory getDataSourceFactory(final AddressConfiguration configuration) {
+            return configuration.getViewDataSourceFactory();
+        }
+    };
+
     @Override
     public void initialize(Bootstrap<AddressConfiguration> bootstrap) {
-        bootstrap.addBundle(this.jooq);
+        bootstrap.addBundle(this.jooqEvent);
         bootstrap.addBundle(new MigrationsBundle<AddressConfiguration>() {
 
             @Override
             public DataSourceFactory getDataSourceFactory(AddressConfiguration configuration) {
-                return configuration.getDataSourceFactory();
+                return configuration.getEventDataSourceFactory();
             }
         });
     }

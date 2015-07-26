@@ -1,8 +1,6 @@
 package opus.address.events.representations;
 
-import opus.address.events.server.ActorType;
-
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.List;
 
 public final class EventReadRepresentation {
@@ -11,8 +9,7 @@ public final class EventReadRepresentation {
     public final String codeVersion;
     public final long actorId;
     public final List<String> tablesAffected;
-    public final ZonedDateTime when;
-    public final ActorType actorType;
+    public final Instant when;
 
     public EventReadRepresentation(
             final long sequence, 
@@ -20,8 +17,7 @@ public final class EventReadRepresentation {
             final String codeVersion,
             final long actorId, 
             final List<String> tablesAffected, 
-            final ZonedDateTime when,
-            final ActorType actorType
+            final Instant when
     ) {
         this.sequence = sequence;
         this.event = event;
@@ -29,6 +25,5 @@ public final class EventReadRepresentation {
         this.actorId = actorId;
         this.tablesAffected = tablesAffected;
         this.when = when;
-        this.actorType = actorType;
     }
 }

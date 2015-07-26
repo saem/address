@@ -13,8 +13,10 @@ mvn clean && mvn package && java -agentlib:jdwp=transport=dt_socket,server=y,sus
 
 # ToDos
 ## Java Code
+* Fix BenDB jOOQ bundle to allow for multiple connections
+* Setup multiple DBs for ViewDB and LogDB
 * New architecture:
-    * Resource -> Reader|Writer (Command log side-effect) -> Persister|Provider (DataStore side-effect) -> Report -> Response
+    * Resource -> Reader|Writer (ViewDB, Command log side-effect) -> Persister|Provider (LogDB, DataStore side-effect) -> Report -> Response
     * Resource translates from HTTP Request to Command
     * Reader/Writer accepts Command and turns it into a Report
     * Reader/Writer side-effect the Event into a read/write, respectively
@@ -23,6 +25,19 @@ mvn clean && mvn package && java -agentlib:jdwp=transport=dt_socket,server=y,sus
     * Report is translated by the Resource to a Response
 * Write address book command processor
 * Write resource
+
+### Write Handling
+```
+http<request>                   -> resource
+validate (http)                 -> resource
+request                         -> resource/commander
+command                         -> commander
+validate (command, uniqueness)  -> commander
+event                           -> commander/writer
+event_log_write                 -> persister
+response                        -> writer
+http<response>                  -> resource
+```
 
 ## Research
 1) how to hypermedia JSON?
