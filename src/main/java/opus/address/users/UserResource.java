@@ -2,8 +2,8 @@ package opus.address.users;
 
 import opus.address.commons.persistence.*;
 import opus.address.database.jooq.generated.Tables;
-import opus.address.database.jooq.generated.tables.Users;
-import opus.address.database.jooq.generated.tables.records.Events;
+import opus.address.database.jooq.generated.tables.User;
+import opus.address.database.jooq.generated.tables.records.EventRecord;
 import org.jooq.DSLContext;
 import org.jooq.Insert;
 
@@ -29,9 +29,9 @@ final class UserWriter {
         final UserEntityTypeOperation userEntity = new UserEntityTypeOperation(entity);
 
         persister.addOperation(userEntity)
-                .addOperation(new StringFactOperation(entity, Tables.UsersFactsPassword.UserId, Tables.UsersFactsPassword.Password, password))
-                .addOperation(new StringFactOperation(entity, Tables.UsersFactsEmail.UserId, Tables.UsersFactsEmail.Email, email))
-                .addOperation(new StringFactOperation(entity, Tables.UsersFactsUsername.UserId, Tables.UsersFactsUsername.Username, username))
+                .addOperation(new StringFactOperation(entity, Tables.UserFactPassword.UserId, Tables.UserFactPassword.Password, password))
+                .addOperation(new StringFactOperation(entity, Tables.UserFactEmail.UserId, Tables.UserFactEmail.Email, email))
+                .addOperation(new StringFactOperation(entity, Tables.UserFactUsername.UserId, Tables.UserFactUsername.Username, username))
         ;
     }
 
@@ -43,9 +43,9 @@ final class UserWriter {
     ) {
         final ExistingEntity entity = new ExistingEntity(userId);
 
-        persister.addOperation(new StringFactOperation(entity, Tables.UsersFactsPassword.UserId, Tables.UsersFactsPassword.Password, password))
-                .addOperation(new StringFactOperation(entity, Tables.UsersFactsEmail.UserId, Tables.UsersFactsEmail.Email, email))
-                .addOperation(new StringFactOperation(entity, Tables.UsersFactsUsername.UserId, Tables.UsersFactsUsername.Username, username))
+        persister.addOperation(new StringFactOperation(entity, Tables.UserFactPassword.UserId, Tables.UserFactPassword.Password, password))
+                .addOperation(new StringFactOperation(entity, Tables.UserFactEmail.UserId, Tables.UserFactEmail.Email, email))
+                .addOperation(new StringFactOperation(entity, Tables.UserFactUsername.UserId, Tables.UserFactUsername.Username, username))
         ;
     }
 
@@ -54,7 +54,7 @@ final class UserWriter {
     ) {
         final ExistingEntity entity = new ExistingEntity(userId);
 
-        persister.addOperation(new BooleanFactOperation(entity, Tables.UsersFactsIsDeleted.UserId, Tables.UsersFactsIsDeleted.IsDeleted, true))
+        persister.addOperation(new BooleanFactOperation(entity, Tables.UserFactIsDeleted.UserId, Tables.UserFactIsDeleted.IsDeleted, true))
         ;
     }
 }
@@ -65,11 +65,11 @@ final class UserEntityTypeOperation extends EntityTypeOperation {
     }
 
     @Override
-    public Insert getQuery(final DSLContext db, final Events event) {
-        return db.insertInto(Tables.Users,
-                Tables.Users.EntityId)
+    public Insert getQuery(final DSLContext db, final EventRecord event) {
+        return db.insertInto(Tables.User,
+                Tables.User.EntityId)
                 .values(entity.getId());
     }
 
-    public Users getTable() { return Tables.Users; }
+    public User getTable() { return Tables.User; }
 }

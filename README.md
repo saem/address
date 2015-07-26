@@ -13,7 +13,6 @@ mvn clean && mvn package && java -agentlib:jdwp=transport=dt_socket,server=y,sus
 
 # ToDos
 ## Java Code
-* Get code to compile after the database tables have all been renamed
 * New architecture:
     * Resource -> Reader|Writer (Command log side-effect) -> Persister|Provider (DataStore side-effect) -> Report -> Response
     * Resource translates from HTTP Request to Command

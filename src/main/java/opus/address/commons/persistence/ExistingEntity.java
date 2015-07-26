@@ -1,6 +1,8 @@
 package opus.address.commons.persistence;
 
-import opus.address.database.jooq.generated.Tables;
+import opus.address.database.jooq.generated.tables.Entity;
+
+import static opus.address.database.jooq.generated.Tables.Entity;
 
 public final class ExistingEntity implements EntityIdProvider {
     private final Long entityId;
@@ -11,7 +13,7 @@ public final class ExistingEntity implements EntityIdProvider {
     
     public Long getId() { return entityId; }
     
-    public opus.address.database.jooq.generated.tables.Entities getTable() {
-        return Tables.Entities;
+    public Entity getTable() {
+        return Entity;
     }
 }

@@ -1,28 +1,30 @@
 package opus.address.commons.persistence;
 
 import opus.address.commons.OneTimeSet;
-import opus.address.database.jooq.generated.Tables;
-import opus.address.database.jooq.generated.tables.records.Entities;
-import opus.address.database.jooq.generated.tables.records.Events;
+import opus.address.database.jooq.generated.tables.Entity;
+import opus.address.database.jooq.generated.tables.records.EntityRecord;
+import opus.address.database.jooq.generated.tables.records.EventRecord;
 import org.jooq.DSLContext;
 import org.jooq.InsertResultStep;
+
+import static opus.address.database.jooq.generated.tables.Entity.Entity;
 
 public final class EntityOperation implements Operation, EntityIdProvider {
     private final OneTimeSet<Long> id = new OneTimeSet<>();
 
     @Override
-    public InsertResultStep<Entities> getQuery(
+    public InsertResultStep<EntityRecord> getQuery(
             final DSLContext db,
-            final Events event) {
-        return db.insertInto(Tables.Entities)
+            final EventRecord event) {
+        return db.insertInto(Entity)
                 .defaultValues()
-                .returning(Tables.Entities.EntityId);
+                .returning(Entity.EntityId);
     }
 
     public void setId(Long id) { this.id.set(id); }
     public Long getId() { return id.get(); }
     
-    public opus.address.database.jooq.generated.tables.Entities getTable() {
-        return Tables.Entities;
+    public Entity getTable() {
+        return Entity;
     }
 }

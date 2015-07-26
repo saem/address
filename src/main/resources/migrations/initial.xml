@@ -116,7 +116,7 @@
             <column name="sequence" type="bigint" autoIncrement="true">
                 <constraints primaryKeyName="pk_event_sequence" primaryKey="true" />
             </column>
-            <column name="event" type="text">
+            <column name="event_name" type="text">
                 <constraints nullable="false" />
             </column>
             <column name="code_version" type="text">

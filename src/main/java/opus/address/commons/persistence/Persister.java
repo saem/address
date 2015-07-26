@@ -2,11 +2,14 @@ package opus.address.commons.persistence;
 
 import opus.address.commons.Try;
 import opus.address.database.jooq.generated.Tables;
-import opus.address.database.jooq.generated.tables.records.Events;
+import opus.address.database.jooq.generated.tables.records.EventRecord;
 import org.jooq.DSLContext;
 import org.jooq.Table;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,14 +58,13 @@ public final class Persister {
                     facts.stream().map(FactOperation::getTable)
             ).distinct().map(Table::getName).collect(Collectors.joining(","));
 
-            final Events event = database.insertInto(Tables.Events,
-                    Tables.Events.Event,
-                    Tables.Events.CodeVersion,
-                    Tables.Events.EventVersion,
-                    Tables.Events.Actor,
-                    Tables.Events.TablesAffected)
-                    .values(eventName, codeVersion, 1, actorId, tablesAffected)
-                    .returning(Tables.Events.Sequence, Tables.Events.When)
+            final EventRecord event = database.insertInto(Tables.Event,
+                    Tables.Event.EventName,
+                    Tables.Event.CodeVersion,
+                    Tables.Event.Actor,
+                    Tables.Event.TablesAffected)
+                    .values(eventName, codeVersion, actorId, tablesAffected)
+                    .returning(Tables.Event.Sequence, Tables.Event.When)
                     .fetchOne();
 
             // stage 2: insert of the entities
@@ -82,7 +84,7 @@ public final class Persister {
                             Collectors.mapping(EntityTypeOperation::getId, Collectors.toList())) // value
                     );
             entitiesCreated.put(
-                    Tables.Entities.getName(),
+                    Tables.Entity.getName(),
                     entities.stream().map(EntityOperation::getId).collect(Collectors.toList())
             );
 
@@ -97,7 +99,7 @@ public final class Persister {
     
     private void batchExecute(
             final DSLContext database, 
-            final Events event, 
+            final EventRecord event,
             final Set<? extends Operation> operations) {
         database.batch(
                 operations.stream().map(o -> o.getQuery(database, event)).collect(Collectors.toList()))

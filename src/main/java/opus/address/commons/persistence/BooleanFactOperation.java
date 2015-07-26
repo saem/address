@@ -1,6 +1,6 @@
 package opus.address.commons.persistence;
 
-import opus.address.database.jooq.generated.tables.records.Events;
+import opus.address.database.jooq.generated.tables.records.EventRecord;
 import org.jooq.DSLContext;
 import org.jooq.Insert;
 import org.jooq.Record;
@@ -20,7 +20,7 @@ public final class BooleanFactOperation extends FactOperation<Boolean> {
     @Override
     @SuppressWarnings("unchecked")
     // We know the table field type, so therefore the field and value must match
-    public Insert getQuery(DSLContext db, final Events event) {
+    public Insert getQuery(DSLContext db, final EventRecord event) {
         return db.insertInto(getTable(), getField(), DSL.fieldByName(Long.class, "sequence"), entityField)
                 .values(value, event.sequence(), entity.getId());
     }

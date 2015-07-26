@@ -432,7 +432,7 @@
                                         <transform>PASCAL</transform>
                                         <!-- The mandatory expression element lets you specify a replacement expression to be used when
                                         replacing the matcher's regular expression. You can use indexed variables $0, $1, $2. -->
-                                        <expression>$0</expression>
+                                        <expression>$0_Record</expression>
                                     </recordClass>
                                     <interfaceClass>
                                         <!-- The optional transform element lets you apply a name transformation algorithm

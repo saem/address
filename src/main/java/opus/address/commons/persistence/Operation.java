@@ -1,11 +1,9 @@
 package opus.address.commons.persistence;
 
-import opus.address.database.jooq.generated.tables.records.Events;
+import opus.address.database.jooq.generated.tables.records.EventRecord;
 import org.jooq.DSLContext;
 import org.jooq.Insert;
-import org.jooq.InsertResultStep;
-import org.jooq.Table;
 
 interface Operation extends TableBacked {
-    Insert getQuery(DSLContext db, final Events event);
+    Insert getQuery(DSLContext db, final EventRecord event);
 }

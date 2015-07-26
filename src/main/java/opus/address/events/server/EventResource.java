@@ -5,6 +5,7 @@ import io.dropwizard.jersey.params.LongParam;
 import opus.address.database.jooq.generated.Tables;
 import opus.address.events.representations.EventReadRepresentation;
 import org.jooq.DSLContext;
+import org.jooq.Record7;
 import org.jooq.Record8;
 import org.jooq.SelectOnConditionStep;
 import org.jooq.impl.DSL;
@@ -53,7 +54,6 @@ public final class EventResource {
         return new EventReadRepresentation(
                 projection.sequence,
                 projection.event,
-                projection.eventVersion,
                 projection.codeVersion,
                 projection.actorId,
                 Arrays.asList(projection.tablesAffected.split(",")),
@@ -76,7 +76,7 @@ final class EventProvider {
             final long eventId
     ) {
         return queryBuilder()
-                .where(Tables.Events.Sequence.eq(eventId))
+                .where(Tables.Event.Sequence.eq(eventId))
                 .limit(1)
                 .fetch()
                 .map(this::map)
@@ -92,38 +92,37 @@ final class EventProvider {
     }
 
     private
-    SelectOnConditionStep<Record8<Long, String, Integer, String, Long, String, Timestamp, String>>
+    SelectOnConditionStep<Record7<Long, String, String, Long, String, Timestamp, String>>
     queryBuilder() {
         return database.select(
-                Tables.Events.Sequence,
-                Tables.Events.Event,
-                Tables.Events.EventVersion,
-                Tables.Events.CodeVersion,
-                Tables.Events.Actor,
-                Tables.Events.TablesAffected,
-                Tables.Events.When,
+                Tables.Event.Sequence,
+                Tables.Event.EventName,
+                Tables.Event.CodeVersion,
+                Tables.Event.Actor,
+                Tables.Event.TablesAffected,
+                Tables.Event.When,
                 DSL.decode().when(Tables.System.EntityId.isNotNull(), ActorType.SYSTEM.name())
                         .otherwise(ActorType.USER.name())
                         .as(ACTOR_TYPE)
         )
-                .from(Tables.Events)
+                .from(Tables.Event)
                 .leftOuterJoin(Tables.System).on(
-                        Tables.Events.Actor
+                        Tables.Event.Actor
                                 .eq(
                                         Tables.System.EntityId
                                 )
                 )
-                .leftOuterJoin(Tables.Users).on(
-                        Tables.Events.Actor
+                .leftOuterJoin(Tables.User).on(
+                        Tables.Event.Actor
                                 .eq(
-                                        Tables.Users.EntityId
+                                        Tables.User.EntityId
                                 )
                 );
 
     }
     
     private EventProjection map(
-            final Record8<Long, String, Integer, String, Long, String, Timestamp, String> record
+            final Record7<Long, String, String, Long, String, Timestamp, String> record
     ) {
         return new EventProjection(
                 record.value1(),
@@ -131,9 +130,8 @@ final class EventProvider {
                 record.value3(),
                 record.value4(),
                 record.value5(),
-                record.value6(),
-                ZonedDateTime.ofInstant(record.value7().toInstant(), ZoneOffset.UTC),
-                ActorType.valueOf(record.value8())
+                ZonedDateTime.ofInstant(record.value6().toInstant(), ZoneOffset.UTC),
+                ActorType.valueOf(record.value7())
         );
     }
 }
@@ -141,7 +139,6 @@ final class EventProvider {
 final class EventProjection {
     public final long sequence;
     public final String event;
-    public final int eventVersion;
     public final String codeVersion;
     public final long actorId;
     public final String tablesAffected;
@@ -151,7 +148,6 @@ final class EventProjection {
     public EventProjection(
             final long sequence,
             final String event,
-            final int eventVersion,
             final String codeVersion,
             final long actorId,
             final String tablesAffected,
@@ -160,7 +156,6 @@ final class EventProjection {
     ) {
         this.sequence = sequence;
         this.event = event;
-        this.eventVersion = eventVersion;
         this.codeVersion = codeVersion;
         this.actorId = actorId;
         this.tablesAffected = tablesAffected;
